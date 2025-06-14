@@ -9,13 +9,15 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { User, Menu, X } from "lucide-react";
+import { User, Menu, X, Sun, Moon, Monitor } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "next-themes";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,13 +61,41 @@ const Header = () => {
             </DropdownMenu>
           </div>
 
-          {/* Centered Logo */}
+          {/* Centered Logo with Theme Switcher */}
           <div className="flex justify-center w-1/3">
-            <Link to="/" className="flex items-center hover:opacity-80 transition-all duration-300">
-              <span className="text-2xl font-semibold tracking-tight text-foreground">
-                market01
-              </span>
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-2xl font-semibold tracking-tight text-foreground hover:opacity-80 transition-all duration-300">
+                  market01
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="w-48 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
+                <DropdownMenuItem 
+                  onClick={() => setTheme("light")}
+                  className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200"
+                >
+                  <Sun className="h-4 w-4 mr-3" />
+                  Light
+                  {theme === "light" && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setTheme("dark")}
+                  className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200"
+                >
+                  <Moon className="h-4 w-4 mr-3" />
+                  Dark
+                  {theme === "dark" && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setTheme("system")}
+                  className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200"
+                >
+                  <Monitor className="h-4 w-4 mr-3" />
+                  System Default
+                  {theme === "system" && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Right Side - Live Status */}
