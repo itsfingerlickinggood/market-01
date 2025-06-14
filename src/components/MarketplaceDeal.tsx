@@ -51,7 +51,7 @@ const MarketplaceDeal = ({ gpu }: MarketplaceDealProps) => {
       
       setPriceData(newPriceData);
       setCurrentPrice(newCurrentPrice);
-    }, 5000);
+    }, 3000); // Changed from 5000 to 3000 (3 seconds)
 
     return () => clearInterval(interval);
   }, [gpu.basePrice, gpu.sites.length]);

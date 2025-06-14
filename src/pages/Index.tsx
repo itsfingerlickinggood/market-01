@@ -1,9 +1,9 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Zap, Target, Github, Star, TrendingUp, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import MarketplaceDeal from "@/components/MarketplaceDeal";
+import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
+import LiveMarketSection from "@/components/LiveMarketSection";
+import FeaturesSection from "@/components/FeaturesSection";
+import CTASection from "@/components/CTASection";
 
 const Index = () => {
   // Realistic top deals data based on actual market prices
@@ -12,7 +12,7 @@ const Index = () => {
       id: '1',
       company: 'NVIDIA',
       model: 'H100 SXM',
-      basePrice: 2.37, // Silicon Data average
+      basePrice: 2.37,
       sites: ['Thunder Compute', 'DigitalOcean', 'CoreWeave', 'RunPod']
     },
     {
@@ -96,119 +96,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                  <Zap className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <h1 className="text-2xl font-bold text-foreground">GPUTrade</h1>
-              </div>
-            </div>
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-foreground hover:text-primary transition-colors">Dashboard</a>
-              <Link to="/marketplace" className="text-muted-foreground hover:text-primary transition-colors">Marketplace</Link>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Analytics</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Portfolio</a>
-            </nav>
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
-                <Github className="h-4 w-4" />
-                <Star className="h-4 w-4" />
-                <span>2.3k</span>
-              </div>
-              <Button variant="outline" className="border-border hover:bg-accent hover:text-accent-foreground">
-                Sign In
-              </Button>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Get Started
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
+      <Header />
+      
       <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold mb-6 flex items-center justify-center gap-3">
-            <TrendingUp className="h-12 w-12 text-primary" />
-            Real-Time GPU Marketplace
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Track live GPU prices across multiple cloud providers. Compare deals, find the best rates, and make informed decisions for your compute needs.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/marketplace">
-              <Button size="lg" className="text-lg px-8 py-6">
-                <Target className="h-5 w-5 mr-2" />
-                Explore Marketplace
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </Link>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-6">
-              View Analytics
-            </Button>
-          </div>
-        </div>
-
-        {/* Live Market Data Section */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-semibold mb-4">Live Market Data</h3>
-            <p className="text-lg text-muted-foreground">
-              Real-time pricing from leading cloud providers, updated every 5 seconds
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {topDeals.map((deal) => (
-              <MarketplaceDeal key={deal.id} gpu={deal} />
-            ))}
-          </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          <div className="text-center p-6 border border-border rounded-lg bg-card">
-            <TrendingUp className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h4 className="text-xl font-semibold mb-2">Live Price Tracking</h4>
-            <p className="text-muted-foreground">
-              Monitor real-time price fluctuations across multiple providers and get the best deals.
-            </p>
-          </div>
-          <div className="text-center p-6 border border-border rounded-lg bg-card">
-            <Target className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h4 className="text-xl font-semibold mb-2">Smart Recommendations</h4>
-            <p className="text-muted-foreground">
-              Get personalized GPU recommendations based on your specific use case and requirements.
-            </p>
-          </div>
-          <div className="text-center p-6 border border-border rounded-lg bg-card">
-            <Zap className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h4 className="text-xl font-semibold mb-2">Instant Deployment</h4>
-            <p className="text-muted-foreground">
-              Quick access to available GPUs with one-click deployment across trusted providers.
-            </p>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center bg-secondary/30 rounded-lg p-12">
-          <h3 className="text-3xl font-bold mb-4">Ready to Find Your Perfect GPU?</h3>
-          <p className="text-xl text-muted-foreground mb-8">
-            Join thousands of developers and researchers finding the best GPU deals.
-          </p>
-          <Link to="/marketplace">
-            <Button size="lg" className="text-lg px-12 py-6">
-              Start Exploring
-              <ArrowRight className="h-5 w-5 ml-2" />
-            </Button>
-          </Link>
-        </div>
+        <HeroSection />
+        <LiveMarketSection deals={topDeals} />
+        <FeaturesSection />
+        <CTASection />
       </main>
     </div>
   );
