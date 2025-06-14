@@ -1,3 +1,4 @@
+
 import { GPUOffer } from '@/types/gpu-recommendation';
 
 interface GPUModel {
@@ -88,6 +89,14 @@ const datacenters = [
   { name: "SA-East-1", city: "São Paulo", country: "Brazil", region: "South America" },
   { name: "ME-South-1", city: "Bahrain", country: "Bahrain", region: "Middle East" },
   { name: "AF-South-1", city: "Cape Town", country: "South Africa", region: "Africa" },
+  { name: "EU-North-1", city: "Stockholm", country: "Sweden", region: "Europe" },
+  { name: "EU-South-1", city: "Milan", country: "Italy", region: "Europe" },
+  { name: "US-West-2", city: "Oregon", country: "USA", region: "North America" },
+  { name: "AP-Northeast-2", city: "Seoul", country: "South Korea", region: "Asia Pacific" },
+  { name: "AP-Northeast-3", city: "Osaka", country: "Japan", region: "Asia Pacific" },
+  { name: "AP-Southeast-2", city: "Sydney", country: "Australia", region: "Asia Pacific" },
+  { name: "AP-Southeast-3", city: "Jakarta", country: "Indonesia", region: "Asia Pacific" },
+  { name: "CA-Central-2", city: "Calgary", country: "Canada", region: "North America" },
 ];
 
 const providers = [
@@ -99,83 +108,153 @@ const providers = [
   { name: "Lambda Labs", type: "specialist" as const, specializations: ["ai-training", "hpc"] as const },
   { name: "Genesis Cloud", type: "specialist" as const, specializations: ["ai-training", "general"] as const },
   { name: "CoreWeave", type: "hyperscaler" as const, specializations: ["ai-training", "gaming", "creative"] as const },
+  { name: "TensorDock", type: "specialist" as const, specializations: ["ai-training", "ai-inference"] as const },
+  { name: "JarvisLabs", type: "specialist" as const, specializations: ["ai-training", "research"] as const },
+  { name: "PaperSpace", type: "specialist" as const, specializations: ["creative", "ai-training"] as const },
+  { name: "FluidStack", type: "specialist" as const, specializations: ["ai-inference", "general"] as const },
 ];
 
-// Enhanced function to get market data from Gemini API
-const getMarketData = async (gpuModel: string, basePrice: number, datacenter: string): Promise<MarketData> => {
-  try {
-    const response = await fetch('/functions/v1/generate-gpu-market-data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        gpuModel,
-        basePrice,
-        datacenter
-      }),
-    });
+// Enhanced market factors for more realistic pricing
+const marketFactors = [
+  "High demand for AI/ML workloads",
+  "Cryptocurrency mining affecting availability",
+  "Gaming market surge increasing demand",
+  "Cloud provider capacity constraints",
+  "New GPU architecture release cycle",
+  "Data center cooling limitations",
+  "Power grid constraints",
+  "Supply chain disruptions",
+  "Seasonal compute demand patterns",
+  "Regional regulatory changes",
+  "Enterprise procurement cycles",
+  "Academic research grant funding",
+  "Startup funding boom increasing demand",
+  "Economic uncertainty affecting pricing",
+  "Energy cost fluctuations"
+];
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch market data');
-    }
+// Enhanced function to generate realistic market data
+const generateMarketData = (gpuModel: string, basePrice: number, datacenter: string): MarketData => {
+  // Create deterministic but varied pricing based on GPU and location
+  const seed = gpuModel.split('').reduce((a, b) => a + b.charCodeAt(0), 0) + datacenter.length;
+  const rng = () => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
 
-    return await response.json();
-  } catch (error) {
-    console.warn('Falling back to simulated data:', error);
-    // Fallback to simulated data if Gemini API fails
-    return {
-      currentPrice: basePrice * (0.8 + Math.random() * 0.6),
-      priceMultiplier: 0.8 + Math.random() * 0.6,
-      availabilityStatus: Math.random() > 0.1 ? 'available' : 'limited',
-      reliabilityScore: 0.85 + Math.random() * 0.14,
-      marketTrend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'stable',
-      demandLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as 'low' | 'medium' | 'high',
-      reasoningFactors: ['Standard market conditions']
-    };
-  }
+  // More sophisticated pricing logic
+  const isHighEnd = basePrice > 3.0;
+  const isDataCenter = gpuModel.includes('H100') || gpuModel.includes('A100') || gpuModel.includes('MI300');
+  const isAMD = gpuModel.includes('AMD');
+  
+  // Market conditions based on GPU type
+  let demandMultiplier = 1.0;
+  if (isDataCenter) demandMultiplier = 1.4 + rng() * 0.6; // High demand for data center GPUs
+  else if (isHighEnd) demandMultiplier = 1.2 + rng() * 0.4;
+  else demandMultiplier = 0.8 + rng() * 0.4;
+
+  // AMD slightly cheaper due to market positioning
+  if (isAMD) demandMultiplier *= 0.9;
+
+  // Regional pricing adjustments
+  let regionMultiplier = 1.0;
+  if (datacenter.includes('Asia')) regionMultiplier = 0.85;
+  else if (datacenter.includes('Europe')) regionMultiplier = 1.15;
+  else if (datacenter.includes('US')) regionMultiplier = 1.0;
+
+  const priceMultiplier = demandMultiplier * regionMultiplier;
+  const currentPrice = basePrice * priceMultiplier;
+
+  // Availability based on demand and pricing
+  let availabilityStatus: 'available' | 'limited' | 'unavailable';
+  const availabilityRng = rng();
+  if (isDataCenter && availabilityRng < 0.3) availabilityStatus = 'limited';
+  else if (isHighEnd && availabilityRng < 0.1) availabilityStatus = 'limited';
+  else if (availabilityRng < 0.05) availabilityStatus = 'unavailable';
+  else availabilityStatus = 'available';
+
+  // Reliability varies by provider type and GPU tier
+  const baseReliability = isDataCenter ? 0.95 : isHighEnd ? 0.92 : 0.88;
+  const reliabilityScore = Math.max(0.8, baseReliability + (rng() - 0.5) * 0.1);
+
+  // Market trends
+  const trendRng = rng();
+  const marketTrend: 'up' | 'down' | 'stable' = 
+    trendRng < 0.3 ? 'up' : trendRng < 0.6 ? 'down' : 'stable';
+
+  // Demand levels
+  const demandLevel: 'low' | 'medium' | 'high' = 
+    demandMultiplier > 1.3 ? 'high' : demandMultiplier > 1.0 ? 'medium' : 'low';
+
+  // Select relevant reasoning factors
+  const numFactors = Math.floor(rng() * 3) + 2; // 2-4 factors
+  const selectedFactors = marketFactors
+    .sort(() => rng() - 0.5)
+    .slice(0, numFactors);
+
+  return {
+    currentPrice,
+    priceMultiplier,
+    availabilityStatus,
+    reliabilityScore,
+    marketTrend,
+    demandLevel,
+    reasoningFactors: selectedFactors
+  };
 };
 
 export const generateGPUData = async (): Promise<GPUOffer[]> => {
   const offers: GPUOffer[] = [];
   let id = 1;
 
-  // Generate multiple instances of each GPU model across different providers and datacenters
+  console.log('Generating comprehensive GPU marketplace data...');
+
+  // Generate 8-15 instances per GPU model for variety
   for (const model of gpuModels) {
-    const instancesPerModel = Math.floor(Math.random() * 8) + 3; // 3-10 instances per model
+    const instancesPerModel = Math.floor(Math.random() * 8) + 8; // 8-15 instances per model
     
     for (let i = 0; i < instancesPerModel; i++) {
       const datacenter = datacenters[Math.floor(Math.random() * datacenters.length)];
       const provider = providers[Math.floor(Math.random() * providers.length)];
       
-      // Get enhanced market data from Gemini API
-      const marketData = await getMarketData(
+      // Generate market data (fallback to local generation since Gemini might not be configured)
+      const marketData = generateMarketData(
         model.name, 
         model.basePrice, 
         `${datacenter.name} (${datacenter.city})`
       );
       
-      // Apply provider and location multipliers to the AI-generated price
-      const locationMultiplier = datacenter.region === "North America" ? 1.0 : 
-                                datacenter.region === "Europe" ? 1.1 : 
-                                datacenter.region === "Asia Pacific" ? 0.9 : 1.0;
-      const providerMultiplier = provider.type === "hyperscaler" ? 1.2 : 
-                                provider.type === "specialist" ? 1.0 : 0.8;
+      // Apply additional random variations for more diversity
+      const instanceVariation = 0.9 + Math.random() * 0.2; // ±10% variation per instance
+      const finalPrice = marketData.currentPrice * instanceVariation;
       
-      const finalPrice = marketData.currentPrice * locationMultiplier * providerMultiplier;
       const availability = marketData.availabilityStatus === 'unavailable' ? 'unavailable' as const :
                           marketData.availabilityStatus === 'limited' ? 'limited' as const : 'available' as const;
       
+      // More varied system configurations
+      const cpuConfigs = [8, 12, 16, 24, 32, 48, 64, 96, 128];
+      const ramConfigs = [32, 64, 96, 128, 192, 256, 384, 512, 768, 1024];
+      const storageConfigs = [100, 250, 500, 1000, 2000, 4000, 8000];
+      
+      const cpuCores = cpuConfigs[Math.floor(Math.random() * cpuConfigs.length)];
+      const cpuRam = ramConfigs[Math.floor(Math.random() * ramConfigs.length)];
+      const diskSpace = storageConfigs[Math.floor(Math.random() * storageConfigs.length)];
+      
+      // Ensure RAM scales appropriately with GPU tier
+      const adjustedRam = model.category === 'Data Center' ? Math.max(cpuRam, 256) :
+                         model.category === 'Professional' ? Math.max(cpuRam, 128) :
+                         model.category === 'High-End' ? Math.max(cpuRam, 64) : cpuRam;
+
       const offer: GPUOffer = {
         id: id++,
         gpu_name: model.name,
-        num_gpus: Math.random() > 0.7 ? Math.floor(Math.random() * 4) + 2 : 1,
+        num_gpus: Math.random() > 0.75 ? Math.floor(Math.random() * 4) + 2 : 1, // More single GPU instances
         gpu_ram: model.vram,
         dph_total: Number(finalPrice.toFixed(3)),
         datacenter: `${datacenter.name} (${datacenter.city})`,
-        cpu_cores: Math.floor(Math.random() * 32) + 8,
-        cpu_ram: Math.floor(Math.random() * 128) + 32,
-        disk_space: [100, 250, 500, 1000, 2000][Math.floor(Math.random() * 5)],
+        cpu_cores: cpuCores,
+        cpu_ram: adjustedRam,
+        disk_space: diskSpace,
         reliability2: marketData.reliabilityScore,
         rentable: availability !== 'unavailable',
         specs: {
@@ -192,18 +271,23 @@ export const generateGPUData = async (): Promise<GPUOffer[]> => {
         },
         pricing: {
           onDemand: finalPrice,
-          reserved: finalPrice * 0.7,
-          spot: finalPrice * 0.3,
-          dataEgressFee: 0.09,
-          storageCost: 0.1
+          reserved: finalPrice * (0.65 + Math.random() * 0.1), // 65-75% of on-demand
+          spot: finalPrice * (0.25 + Math.random() * 0.15), // 25-40% of on-demand
+          dataEgressFee: 0.05 + Math.random() * 0.08, // $0.05-0.13 per GB
+          storageCost: 0.08 + Math.random() * 0.04 // $0.08-0.12 per GB/month
         },
         provider: {
           name: provider.name,
           type: provider.type,
-          globalScale: provider.type === "hyperscaler" ? 9 : provider.type === "specialist" ? 7 : 5,
-          slaGuarantee: provider.type === "hyperscaler" ? 99.9 : 99.5,
-          securityCertifications: provider.type === "hyperscaler" ? ['SOC2', 'ISO27001', 'HIPAA'] : ['SOC2'],
-          egressPolicy: Math.random() > 0.5 ? 'free' as const : 'paid' as const,
+          globalScale: provider.type === "hyperscaler" ? 8 + Math.floor(Math.random() * 2) : 
+                      provider.type === "specialist" ? 6 + Math.floor(Math.random() * 3) : 
+                      4 + Math.floor(Math.random() * 3),
+          slaGuarantee: provider.type === "hyperscaler" ? 99.9 : 
+                       provider.type === "specialist" ? 99.5 : 99.0,
+          securityCertifications: provider.type === "hyperscaler" ? 
+            ['SOC2', 'ISO27001', 'HIPAA', 'FedRAMP'] : 
+            provider.type === "specialist" ? ['SOC2', 'ISO27001'] : ['SOC2'],
+          egressPolicy: Math.random() > 0.6 ? 'free' as const : 'paid' as const,
           specializations: [...provider.specializations]
         },
         availability,
@@ -220,5 +304,8 @@ export const generateGPUData = async (): Promise<GPUOffer[]> => {
     }
   }
   
+  console.log(`Generated ${offers.length} GPU offers across ${gpuModels.length} models and ${datacenters.length} datacenters`);
+  
+  // Sort by performance for better browsing experience
   return offers.sort((a, b) => b.specs.fp32Performance - a.specs.fp32Performance);
 };
