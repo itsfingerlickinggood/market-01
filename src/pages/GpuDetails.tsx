@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Share2, Heart, Bell, ExternalLink } from "lucide-react";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import {
   Breadcrumb,
@@ -12,9 +12,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import GpuHeroSection from "@/components/GpuHeroSection";
-import InteractivePricingDashboard from "@/components/InteractivePricingDashboard";
-import EnhancedSpecsSection from "@/components/EnhancedSpecsSection";
+import CompactGpuHeader from "@/components/CompactGpuHeader";
+import CompactPricingSection from "@/components/CompactPricingSection";
+import CompactSpecsSection from "@/components/CompactSpecsSection";
 
 interface PlatformProvider {
   name: string;
@@ -61,6 +61,8 @@ const GpuDetails = () => {
   const { data: offers } = useVastAiOffers();
   const [gpu, setGpu] = useState<any>(null);
   const [providerData, setProviderData] = useState<PlatformProvider[]>([]);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [hasAlert, setHasAlert] = useState(false);
 
   useEffect(() => {
     if (offers && id) {
@@ -76,12 +78,12 @@ const GpuDetails = () => {
 
   if (!gpu) {
     return (
-      <div className="min-h-screen bg-background p-8">
+      <div className="min-h-screen bg-background p-4">
         <div className="container mx-auto">
           <div className="text-center">
             <p className="text-muted-foreground">GPU not found</p>
             <Link to="/marketplace">
-              <Button variant="outline" className="mt-4">
+              <Button variant="outline" className="mt-4" size="sm">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Marketplace
               </Button>
@@ -94,63 +96,79 @@ const GpuDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Compact Header */}
       <header className="border-b border-border bg-background/95 backdrop-blur sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
+        <div className="container mx-auto px-4 py-2">
+          <div className="flex items-center justify-between mb-2">
             <Link to="/marketplace">
-              <Button variant="outline">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Marketplace
+              <Button variant="outline" size="sm">
+                <ArrowLeft className="h-3 w-3 mr-1" />
+                Back
               </Button>
             </Link>
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Compare with</div>
+            
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setIsFavorited(!isFavorited)}
+              >
+                <Heart className={`h-3 w-3 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setHasAlert(!hasAlert)}
+              >
+                <Bell className={`h-3 w-3 ${hasAlert ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+              </Button>
+              <Button variant="outline" size="sm">
+                <Share2 className="h-3 w-3" />
+              </Button>
               <Link to={`/gpu/${id}/compare`}>
                 <Button variant="outline" size="sm">
-                  View Comparison
+                  <ExternalLink className="h-3 w-3" />
                 </Button>
               </Link>
             </div>
           </div>
           
-          {/* Breadcrumb */}
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/">Home</Link>
+                  <Link to="/" className="text-xs">Home</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/marketplace">GPU Marketplace</Link>
+                  <Link to="/marketplace" className="text-xs">Marketplace</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{gpu.gpu_name}</BreadcrumbPage>
+                <BreadcrumbPage className="text-xs">{gpu.gpu_name}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <GpuHeroSection gpu={gpu} />
+      {/* Compact Hero Section */}
+      <CompactGpuHeader gpu={gpu} />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
-        <div className="grid xl:grid-cols-3 gap-8">
-          {/* Left Column - Pricing Dashboard */}
-          <div className="xl:col-span-2">
-            <InteractivePricingDashboard gpu={gpu} providerData={providerData} />
+      <main className="container mx-auto px-4 py-4">
+        <div className="grid lg:grid-cols-3 gap-4">
+          {/* Left Column - Pricing */}
+          <div className="lg:col-span-2">
+            <CompactPricingSection gpu={gpu} providerData={providerData} />
           </div>
 
           {/* Right Column - Specs */}
-          <div className="space-y-8">
-            <EnhancedSpecsSection gpu={gpu} />
+          <div>
+            <CompactSpecsSection gpu={gpu} />
           </div>
         </div>
       </main>
