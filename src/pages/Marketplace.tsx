@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,54 +50,11 @@ const Marketplace = () => {
     if (!offers) return [];
     
     return offers.map(offer => {
-      const enhancedOffer: GPUOffer = {
-        // Preserve original Vast.ai properties
-        ...offer,
-        // Enhanced properties
-        specs: {
-          vramCapacity: offer.gpu_name?.includes('H100') ? 80 : 
-                       offer.gpu_name?.includes('4090') ? 24 :
-                       offer.gpu_name?.includes('4080') ? 16 :
-                       offer.gpu_name?.includes('3090') ? 24 : 12,
-          memoryBandwidth: offer.gpu_name?.includes('H100') ? 3350 : 
-                          offer.gpu_name?.includes('4090') ? 1008 : 936,
-          memoryType: offer.gpu_name?.includes('H100') ? 'HBM3' : 'GDDR6X' as const,
-          fp64Performance: offer.gpu_name?.includes('MI300X') ? 163 : 
-                          offer.gpu_name?.includes('H100') ? 67 : 19,
-          fp32Performance: offer.gpu_name?.includes('H100') ? 989 : 
-                          offer.gpu_name?.includes('4090') ? 166 : 84,
-          fp16Performance: offer.gpu_name?.includes('H100') ? 1979 : 
-                          offer.gpu_name?.includes('4090') ? 332 : 168,
-          nvlinkSupport: offer.gpu_name?.includes('H100') || offer.gpu_name?.includes('4090'),
-          rtCores: offer.gpu_name?.includes('RTX') ? 128 : 0,
-          cudaCores: offer.gpu_name?.includes('4090') ? 16384 : 10496
-        },
-        pricing: {
-          onDemand: offer.dph_total || 1.0,
-          spot: offer.dph_total ? offer.dph_total * 0.3 : 0.3,
-          reserved: offer.dph_total ? offer.dph_total * 0.7 : 0.7,
-          dataEgressFee: 0.09,
-          storageCost: 0.1
-        },
-        provider: {
-          name: 'Vast.ai',
-          type: 'specialist' as const,
-          globalScale: 7,
-          slaGuarantee: 99.5,
-          securityCertifications: ['SOC2'],
-          egressPolicy: 'paid' as const,
-          specializations: ['ai-training', 'ai-inference'] as const
-        },
-        availability: 'available' as const,
-        location: offer.datacenter || 'Unknown',
-        reliability: offer.reliability2 || 0.95
-      };
-
-      const score = recommendationEngine.calculateScore(enhancedOffer, userProfile);
-      const matchReason = recommendationEngine.getMatchReasons(enhancedOffer, userProfile);
+      const score = recommendationEngine.calculateScore(offer, userProfile);
+      const matchReason = recommendationEngine.getMatchReasons(offer, userProfile);
       
       return {
-        ...enhancedOffer,
+        ...offer,
         recommendationScore: score,
         matchReason
       };
@@ -113,6 +69,10 @@ const Marketplace = () => {
     setMousePosition({ x: event.clientX, y: event.clientY });
   };
 
+  const handleGpuLeave = () => {
+    setHoveredGpu(null);
+  };
+
   const getSortLabel = (value: string) => {
     switch (value) {
       case 'price': return 'Price (Low to High)';
@@ -125,10 +85,49 @@ const Marketplace = () => {
 
   const topRecommendations = [...smartOffers]
     .sort((a, b) => (b.recommendationScore || 0) - (a.recommendationScore || 0))
-    .slice(0, 4);
+    .slice(0, 6);
+
+  const filteredOffers = smartOffers.filter(offer => {
+    // Apply search filter
+    if (searchTerm && !offer.gpu_name.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false;
+    }
+    
+    // Apply price filter
+    const price = offer.dph_total || offer.pricing.onDemand;
+    if (price < priceRange[0] || price > priceRange[1]) {
+      return false;
+    }
+    
+    // Apply brand filter
+    if (selectedBrands.length > 0) {
+      const matchesBrand = selectedBrands.some(brand => 
+        offer.gpu_name.toLowerCase().includes(brand.toLowerCase())
+      );
+      if (!matchesBrand) return false;
+    }
+    
+    return true;
+  });
+
+  const sortedOffers = [...filteredOffers].sort((a, b) => {
+    switch (sortBy) {
+      case 'price':
+        return (a.dph_total || a.pricing.onDemand) - (b.dph_total || b.pricing.onDemand);
+      case 'performance':
+        return (b.reliability2 || b.reliability || 0) - (a.reliability2 || a.reliability || 0);
+      case 'recommendation':
+        return (b.recommendationScore || 0) - (a.recommendationScore || 0);
+      case 'availability':
+        const orderMap = { 'available': 0, 'limited': 1, 'unavailable': 2 };
+        return orderMap[a.availability] - orderMap[b.availability];
+      default:
+        return 0;
+    }
+  });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-16">
       <Header />
       <MarketplaceHero />
       
@@ -148,7 +147,7 @@ const Marketplace = () => {
                 <Slider
                   value={priceRange}
                   onValueChange={setPriceRange}
-                  max={20}
+                  max={15}
                   min={0}
                   step={0.1}
                   className="w-full"
@@ -187,7 +186,7 @@ const Marketplace = () => {
               <div className="space-y-3 mb-6">
                 <label className="text-sm font-medium">Performance Tier</label>
                 <div className="space-y-2">
-                  {['Entry', 'Mid-Range', 'High-End', 'Enthusiast'].map(tier => (
+                  {['Entry', 'Mid-Range', 'High-End', 'Professional', 'Data Center'].map(tier => (
                     <label key={tier} className="flex items-center space-x-2">
                       <input type="radio" name="performance" className="rounded" />
                       <span className="text-sm">{tier}</span>
@@ -222,7 +221,7 @@ const Marketplace = () => {
                   </TabsTrigger>
                   <TabsTrigger value="browse" className="flex items-center gap-2">
                     <Search className="h-4 w-4" />
-                    Browse All
+                    Browse All ({sortedOffers.length})
                   </TabsTrigger>
                 </TabsList>
 
@@ -237,7 +236,7 @@ const Marketplace = () => {
                         <ChevronDown className="h-3 w-3 ml-1.5" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-md">
                       <DropdownMenuItem onClick={() => setSortBy('price')}>
                         Price (Low to High)
                       </DropdownMenuItem>
@@ -256,14 +255,13 @@ const Marketplace = () => {
               </div>
 
               <TabsContent value="recommendations" className="space-y-6">
-                {/* Smart Recommendations Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {topRecommendations.map((offer) => (
                     <Card 
                       key={offer.id} 
                       className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary/20"
                       onMouseEnter={(e) => handleGpuHover(offer, e)}
-                      onMouseLeave={() => setHoveredGpu(null)}
+                      onMouseLeave={handleGpuLeave}
                     >
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-3">
@@ -316,7 +314,68 @@ const Marketplace = () => {
                 </div>
 
                 {/* GPU Grid */}
-                <VastAiGrid searchTerm={searchTerm} sortBy={sortBy} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {isLoading ? (
+                    Array.from({ length: 12 }).map((_, i) => (
+                      <Card key={i} className="animate-pulse">
+                        <CardContent className="p-4">
+                          <div className="space-y-2">
+                            <div className="h-4 bg-muted rounded w-3/4"></div>
+                            <div className="h-3 bg-muted rounded w-1/2"></div>
+                            <div className="h-6 bg-muted rounded w-1/3"></div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    sortedOffers.map((offer) => (
+                      <Card 
+                        key={offer.id} 
+                        className="hover:shadow-lg transition-all cursor-pointer"
+                        onMouseEnter={(e) => handleGpuHover(offer, e)}
+                        onMouseLeave={handleGpuLeave}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h4 className="font-semibold">{offer.gpu_name}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {offer.num_gpus || 1}x GPU • {offer.gpu_ram || offer.specs.vramCapacity}GB VRAM
+                              </p>
+                            </div>
+                            <Badge className={
+                              offer.availability === 'available' ? "bg-green-100 text-green-800" :
+                              offer.availability === 'limited' ? "bg-yellow-100 text-yellow-800" :
+                              "bg-red-100 text-red-800"
+                            }>
+                              {offer.availability}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-lg font-bold">${(offer.dph_total || offer.pricing.onDemand).toFixed(3)}/hour</span>
+                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                              <MapPin className="h-3 w-3" />
+                              {(offer.datacenter || offer.location || "Unknown").split('(')[0].trim()}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 text-sm">
+                            <Zap className="h-3 w-3 text-yellow-500" />
+                            {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
+                          </div>
+                          
+                          <div className="mt-3 pt-3 border-t border-border">
+                            <div className="flex justify-between text-xs text-muted-foreground">
+                              <span>CPU: {offer.cpu_cores || 8} cores</span>
+                              <span>RAM: {offer.cpu_ram || 32}GB</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
               </TabsContent>
             </Tabs>
           </div>
