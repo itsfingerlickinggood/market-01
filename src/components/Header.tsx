@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +62,7 @@ const Header = () => {
           {/* Centered Logo */}
           <div className="flex justify-center w-1/3">
             <Link to="/" className="flex items-center hover:opacity-80 transition-all duration-300">
-              <span className="text-base font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+              <span className="text-2xl font-semibold tracking-tight text-foreground">
                 market01
               </span>
             </Link>
@@ -102,3 +103,4 @@ const Header = () => {
 };
 
 export default Header;
+
