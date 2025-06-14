@@ -96,38 +96,40 @@ const GpuDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Compact Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-2">
-          <div className="flex items-center justify-between mb-2">
+      {/* Enhanced Header */}
+      <header className="border-b border-border bg-background/95 backdrop-blur sticky top-0 z-40 shadow-sm">
+        <div className="container mx-auto px-6 py-3">
+          <div className="flex items-center justify-between mb-3">
             <Link to="/marketplace">
-              <Button variant="outline" size="sm">
-                <ArrowLeft className="h-3 w-3 mr-1" />
-                Back
+              <Button variant="outline" size="sm" className="flex items-center gap-2 shadow-sm">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="font-medium">Back</span>
               </Button>
             </Link>
             
-            <div className="flex gap-2">
+            <div className="flex items-center gap-3">
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => setIsFavorited(!isFavorited)}
+                className="shadow-sm"
               >
-                <Heart className={`h-3 w-3 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
+                <Heart className={`h-4 w-4 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => setHasAlert(!hasAlert)}
+                className="shadow-sm"
               >
-                <Bell className={`h-3 w-3 ${hasAlert ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+                <Bell className={`h-4 w-4 ${hasAlert ? 'fill-yellow-500 text-yellow-500' : ''}`} />
               </Button>
-              <Button variant="outline" size="sm">
-                <Share2 className="h-3 w-3" />
+              <Button variant="outline" size="sm" className="shadow-sm">
+                <Share2 className="h-4 w-4" />
               </Button>
               <Link to={`/gpu/${id}/compare`}>
-                <Button variant="outline" size="sm">
-                  <ExternalLink className="h-3 w-3" />
+                <Button variant="outline" size="sm" className="shadow-sm">
+                  <ExternalLink className="h-4 w-4" />
                 </Button>
               </Link>
             </div>
@@ -137,18 +139,18 @@ const GpuDetails = () => {
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/" className="text-xs">Home</Link>
+                  <Link to="/" className="text-sm font-medium">Home</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/marketplace" className="text-xs">Marketplace</Link>
+                  <Link to="/marketplace" className="text-sm font-medium">Marketplace</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage className="text-xs">{gpu.gpu_name}</BreadcrumbPage>
+                <BreadcrumbPage className="text-sm font-medium">{gpu.gpu_name}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -158,16 +160,16 @@ const GpuDetails = () => {
       {/* Compact Hero Section */}
       <CompactGpuHeader gpu={gpu} />
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-4">
-        <div className="grid lg:grid-cols-3 gap-4">
-          {/* Left Column - Pricing */}
-          <div className="lg:col-span-2">
+      {/* Main Content - Improved layout proportions */}
+      <main className="container mx-auto px-6 py-6">
+        <div className="grid lg:grid-cols-5 gap-8">
+          {/* Left Column - Pricing (60% width) */}
+          <div className="lg:col-span-3">
             <CompactPricingSection gpu={gpu} providerData={providerData} />
           </div>
 
-          {/* Right Column - Specs */}
-          <div>
+          {/* Right Column - Specs (40% width) */}
+          <div className="lg:col-span-2">
             <CompactSpecsSection gpu={gpu} />
           </div>
         </div>

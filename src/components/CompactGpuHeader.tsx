@@ -13,96 +13,122 @@ const CompactGpuHeader = ({ gpu }: CompactGpuHeaderProps) => {
   const isRented = !gpu.rentable || gpu.rented;
 
   return (
-    <div className="bg-gradient-to-r from-background to-primary/5 border-b border-border">
-      <div className="container mx-auto px-4 py-4">
-        {/* GPU Title and Status */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">{gpu.gpu_name}</h1>
-            <Badge className={isRented ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'}>
+    <div className="bg-gradient-to-r from-background via-background to-primary/5 border-b border-border">
+      <div className="container mx-auto px-6 py-6">
+        {/* GPU Title and Status - Improved alignment */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4">
+            <h1 className="text-3xl font-bold tracking-tight">{gpu.gpu_name}</h1>
+            <Badge className={`px-3 py-1 font-medium ${isRented ? 'bg-red-100 text-red-800 border-red-200' : 'bg-green-100 text-green-800 border-green-200'}`}>
               {isRented ? 'Rented' : 'Available'}
             </Badge>
           </div>
           
-          {/* Category Tags */}
-          <div className="flex gap-1">
-            <Badge variant="secondary" className="text-xs">Gaming</Badge>
-            <Badge variant="secondary" className="text-xs">AI/ML</Badge>
-            <Badge variant="secondary" className="text-xs">High-end</Badge>
+          {/* Category Tags - Better spacing */}
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="px-2 py-1 text-xs font-medium">Gaming</Badge>
+            <Badge variant="secondary" className="px-2 py-1 text-xs font-medium">AI/ML</Badge>
+            <Badge variant="secondary" className="px-2 py-1 text-xs font-medium">High-end</Badge>
           </div>
         </div>
 
-        {/* Key Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
-          <Card className="bg-card/50">
-            <CardContent className="p-3 text-center">
-              <div className="text-lg font-bold text-primary">${(gpu.dph_total || 1.0).toFixed(3)}</div>
-              <div className="text-xs text-muted-foreground">per hour</div>
+        {/* Key Stats Row - Consistent alignment and spacing */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+          <Card className="bg-gradient-to-br from-card to-card/50 shadow-sm border border-border/50 hover:shadow-md transition-all duration-200">
+            <CardContent className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Zap className="h-4 w-4 text-primary" />
+                <div className="text-xl font-bold text-primary">${(gpu.dph_total || 1.0).toFixed(3)}</div>
+              </div>
+              <div className="text-xs text-muted-foreground font-medium">per hour</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-card/50">
-            <CardContent className="p-3 text-center">
-              <div className="text-lg font-bold text-blue-500">{gpu.gpu_ram}GB</div>
-              <div className="text-xs text-muted-foreground">VRAM</div>
+          <Card className="bg-gradient-to-br from-card to-card/50 shadow-sm border border-border/50 hover:shadow-md transition-all duration-200">
+            <CardContent className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="h-4 w-4 bg-blue-500 rounded-sm"></div>
+                <div className="text-xl font-bold text-blue-500">{gpu.gpu_ram}GB</div>
+              </div>
+              <div className="text-xs text-muted-foreground font-medium">VRAM</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-card/50">
-            <CardContent className="p-3 text-center">
-              <div className="text-lg font-bold text-green-500">{performanceScore}%</div>
-              <div className="text-xs text-muted-foreground">Performance</div>
+          <Card className="bg-gradient-to-br from-card to-card/50 shadow-sm border border-border/50 hover:shadow-md transition-all duration-200">
+            <CardContent className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Star className="h-4 w-4 text-green-500" />
+                <div className="text-xl font-bold text-green-500">{performanceScore}%</div>
+              </div>
+              <div className="text-xs text-muted-foreground font-medium">Performance</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-card/50">
-            <CardContent className="p-3 text-center">
-              <div className="text-lg font-bold text-orange-500">{gpu.cpu_cores}</div>
-              <div className="text-xs text-muted-foreground">CPU Cores</div>
+          <Card className="bg-gradient-to-br from-card to-card/50 shadow-sm border border-border/50 hover:shadow-md transition-all duration-200">
+            <CardContent className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="h-4 w-4 bg-orange-500 rounded-sm"></div>
+                <div className="text-xl font-bold text-orange-500">{gpu.cpu_cores}</div>
+              </div>
+              <div className="text-xs text-muted-foreground font-medium">CPU Cores</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-card/50">
-            <CardContent className="p-3 text-center">
-              <div className="text-lg font-bold text-purple-500">{gpu.cpu_ram}GB</div>
-              <div className="text-xs text-muted-foreground">RAM</div>
+          <Card className="bg-gradient-to-br from-card to-card/50 shadow-sm border border-border/50 hover:shadow-md transition-all duration-200">
+            <CardContent className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="h-4 w-4 bg-purple-500 rounded-sm"></div>
+                <div className="text-xl font-bold text-purple-500">{gpu.cpu_ram}GB</div>
+              </div>
+              <div className="text-xs text-muted-foreground font-medium">RAM</div>
             </CardContent>
           </Card>
           
-          <Card className="bg-card/50">
-            <CardContent className="p-3 text-center">
-              <div className="text-lg font-bold text-red-500">{gpu.disk_space}GB</div>
-              <div className="text-xs text-muted-foreground">Storage</div>
+          <Card className="bg-gradient-to-br from-card to-card/50 shadow-sm border border-border/50 hover:shadow-md transition-all duration-200">
+            <CardContent className="p-4 text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <div className="h-4 w-4 bg-red-500 rounded-sm"></div>
+                <div className="text-xl font-bold text-red-500">{gpu.disk_space}GB</div>
+              </div>
+              <div className="text-xs text-muted-foreground font-medium">Storage</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Quick Info Row */}
+        {/* Quick Info Row - Better alignment and spacing */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <MapPin className="h-3 w-3" />
-              <span>{gpu.datacenter || gpu.country || 'Global'}</span>
+          <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium text-foreground">{gpu.datacenter || gpu.country || 'Global'}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Star className="h-3 w-3 text-yellow-500" />
-              <span>{performanceScore}% Reliability</span>
+            <div className="flex items-center gap-2">
+              <Star className="h-4 w-4 text-yellow-500" />
+              <span className="font-medium text-foreground">{performanceScore}% Reliability</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              <span>Setup: ~2-5 min</span>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium text-foreground">Setup: ~2-5 min</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Zap className="h-3 w-3" />
-              <span>{gpu.inet_down || '1Gbps'} Network</span>
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-muted-foreground" />
+              <span className="font-medium text-foreground">{gpu.inet_down || '1Gbps'} Network</span>
             </div>
           </div>
           
-          <div className="flex gap-2">
-            <Button size="sm" disabled={isRented}>
+          <div className="flex items-center gap-3">
+            <Button 
+              size="sm" 
+              disabled={isRented}
+              className="px-6 py-2 font-medium shadow-sm"
+            >
               {isRented ? "Rented" : "Rent Now"}
             </Button>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="px-4 py-2 font-medium shadow-sm"
+            >
               Compare
             </Button>
           </div>
