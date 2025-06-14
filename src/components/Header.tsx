@@ -33,18 +33,18 @@ const Header = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-background/95 backdrop-blur-md border-b border-border shadow-sm' 
-          : 'bg-background/80 backdrop-blur-sm'
+          ? 'bg-background/98 backdrop-blur-xl border-b border-border/60 shadow-lg' 
+          : 'bg-background/95 backdrop-blur-md'
       }`}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="container mx-auto px-6">
+        <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Zap className="h-5 w-5 text-white" />
+          <Link to="/" className="flex items-center space-x-3 hover:opacity-90 transition-all duration-200 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary via-primary/80 to-primary/60 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200">
+              <Zap className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               GPUCloud
             </span>
           </Link>
@@ -55,14 +55,16 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-all duration-200 hover:text-primary relative group ${
+                className={`text-sm font-semibold transition-all duration-300 hover:text-primary relative group py-2 ${
                   location.pathname === item.href 
                     ? 'text-primary' 
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-200 group-hover:w-full" />
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300 ${
+                  location.pathname === item.href ? 'w-full' : 'w-0 group-hover:w-full'
+                }`} />
               </Link>
             ))}
           </nav>
@@ -71,36 +73,36 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             {/* Search Bar */}
             <div className="hidden lg:flex relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search GPUs..."
-                className="pl-10 w-64 bg-background/50 border-border/50 focus:bg-background focus:border-primary/50"
+                className="pl-12 w-72 h-11 bg-muted/50 border-border/60 focus:bg-background focus:border-primary/40 rounded-xl transition-all duration-200"
               />
             </div>
 
             {/* User Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <User className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-muted/80 transition-all duration-200">
+                  <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-md">
-                <DropdownMenuItem>
-                  <User className="h-4 w-4 mr-2" />
+              <DropdownMenuContent align="end" className="w-52 bg-background/98 backdrop-blur-xl border border-border/60 shadow-xl rounded-xl">
+                <DropdownMenuItem className="h-10 rounded-lg">
+                  <User className="h-4 w-4 mr-3" />
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="h-10 rounded-lg">
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem className="h-10 rounded-lg">
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Get Started Button */}
-            <Button className="hidden sm:flex bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+            <Button className="hidden sm:flex h-11 px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
               Get Started
             </Button>
 
@@ -108,34 +110,34 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden h-10 w-10 rounded-xl hover:bg-muted/80 transition-all duration-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-md">
-            <nav className="py-4 space-y-2">
+          <div className="md:hidden border-t border-border/60 bg-background/98 backdrop-blur-xl rounded-b-xl mt-2">
+            <nav className="py-6 space-y-3">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`block px-4 py-2 text-sm font-medium transition-colors hover:bg-muted rounded-lg ${
+                  className={`block px-6 py-3 text-sm font-semibold transition-all duration-200 hover:bg-muted/60 rounded-lg mx-4 ${
                     location.pathname === item.href 
-                      ? 'text-primary bg-muted' 
-                      : 'text-muted-foreground'
+                      ? 'text-primary bg-muted/80' 
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
-              <div className="px-4 py-2">
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
+              <div className="px-6 pt-4">
+                <Button className="w-full h-11 bg-gradient-to-r from-primary to-primary/80 text-white font-semibold rounded-xl shadow-lg">
                   Get Started
                 </Button>
               </div>
