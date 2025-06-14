@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Zap, DollarSign, Wifi } from "lucide-react";
+import { Link } from "react-router-dom";
 import MiniPriceChart from "./MiniPriceChart";
 import CandlestickChart from "./CandlestickChart";
 
@@ -157,9 +158,11 @@ const GpuCard = ({ offer }: GpuCardProps) => {
           >
             {!offer.rentable ? "Unavailable" : offer.rented ? "Rented" : "Rent Now"}
           </Button>
-          <Button variant="outline" className="w-full">
-            View Details
-          </Button>
+          <Link to={`/gpu/${offer.id}`}>
+            <Button variant="outline" className="w-full">
+              View Details
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>
