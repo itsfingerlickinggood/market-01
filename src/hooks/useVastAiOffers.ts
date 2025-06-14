@@ -26,8 +26,14 @@ interface VastAiOffer {
 }
 
 const fetchVastAiOffers = async (): Promise<VastAiOffer[]> => {
-  console.log('Fetching data from Vast.ai API...');
-  const response = await fetch('https://vast.ai/api/v0/offers');
+  console.log('Fetching data from Vast.ai API via CORS proxy...');
+  
+  // Using a CORS proxy to bypass CORS restrictions
+  const proxyUrl = 'https://api.allorigins.win/raw?url=';
+  const targetUrl = encodeURIComponent('https://vast.ai/api/v0/offers');
+  const fullUrl = proxyUrl + targetUrl;
+  
+  const response = await fetch(fullUrl);
   
   if (!response.ok) {
     throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
