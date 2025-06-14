@@ -26,6 +26,37 @@ const getModelTypeBadge = (modelType: string) => {
   return colors[modelType as keyof typeof colors] || 'bg-gray-100 text-gray-800';
 };
 
+const getCompanyLogo = (gpuName: string) => {
+  const name = gpuName.toLowerCase();
+  if (name.includes('nvidia') || name.includes('rtx') || name.includes('gtx') || name.includes('tesla') || name.includes('quadro') || name.includes('geforce')) {
+    return {
+      src: "/lovable-uploads/ea42f8a1-a209-460e-9282-59e2f86b0671.png",
+      alt: "NVIDIA",
+      company: "NVIDIA"
+    };
+  }
+  if (name.includes('amd') || name.includes('radeon') || name.includes('rx ') || name.includes('vega')) {
+    return {
+      src: "/lovable-uploads/41bc1768-42eb-4076-85a7-acf5a1380358.png",
+      alt: "AMD",
+      company: "AMD"
+    };
+  }
+  if (name.includes('intel') || name.includes('arc') || name.includes('xe')) {
+    return {
+      src: "/lovable-uploads/6b5e8159-3d79-49b1-a1df-9265f822064a.png",
+      alt: "Intel",
+      company: "Intel"
+    };
+  }
+  // Default fallback
+  return {
+    src: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=100&h=100&fit=crop&crop=center",
+    alt: "GPU",
+    company: "GPU"
+  };
+};
+
 const generatePriceTrend = (basePrice: number) => {
   const data = [];
   let currentPrice = basePrice;
@@ -47,17 +78,25 @@ const GpuCard = ({ offer }: GpuCardProps) => {
   const priceData = generatePriceTrend(offer.dph_total || 0);
   const priceChange = Math.random() > 0.5 ? 1 : -1; // Random for demo
   const priceChangePercent = (Math.random() * 5).toFixed(2);
+  const companyLogo = getCompanyLogo(offer.gpu_name || '');
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <CardTitle className="text-lg">{offer.gpu_name || 'GPU'}</CardTitle>
-              <Badge className={getModelTypeBadge(offer.model_type)}>
-                {offer.model_type}
-              </Badge>
+            <div className="flex items-center gap-3 mb-1">
+              <img 
+                src={companyLogo.src}
+                alt={companyLogo.alt}
+                className="w-8 h-8 object-contain flex-shrink-0"
+              />
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                <CardTitle className="text-lg truncate">{offer.gpu_name || 'GPU'}</CardTitle>
+                <Badge className={getModelTypeBadge(offer.model_type)}>
+                  {offer.model_type}
+                </Badge>
+              </div>
             </div>
             <CardDescription>
               {offer.num_gpus}x GPU • {offer.gpu_ram}GB RAM • Rank #{offer.rank}

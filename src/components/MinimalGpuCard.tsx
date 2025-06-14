@@ -27,21 +27,21 @@ const getCompanyLogo = (gpuName: string) => {
   const name = gpuName.toLowerCase();
   if (name.includes('nvidia') || name.includes('rtx') || name.includes('gtx') || name.includes('tesla') || name.includes('quadro') || name.includes('geforce')) {
     return {
-      src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&h=100&fit=crop&crop=center",
+      src: "/lovable-uploads/ea42f8a1-a209-460e-9282-59e2f86b0671.png",
       alt: "NVIDIA",
       company: "NVIDIA"
     };
   }
   if (name.includes('amd') || name.includes('radeon') || name.includes('rx ') || name.includes('vega')) {
     return {
-      src: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=100&h=100&fit=crop&crop=center",
+      src: "/lovable-uploads/41bc1768-42eb-4076-85a7-acf5a1380358.png",
       alt: "AMD",
       company: "AMD"
     };
   }
   if (name.includes('intel') || name.includes('arc') || name.includes('xe')) {
     return {
-      src: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop&crop=center",
+      src: "/lovable-uploads/6b5e8159-3d79-49b1-a1df-9265f822064a.png",
       alt: "Intel",
       company: "Intel"
     };
@@ -68,7 +68,7 @@ const MinimalGpuCard = ({ offer }: MinimalGpuCardProps) => {
               <img 
                 src={companyLogo.src}
                 alt={companyLogo.alt}
-                className="w-10 h-10 object-contain rounded flex-shrink-0"
+                className="w-8 h-8 object-contain flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-lg truncate">
