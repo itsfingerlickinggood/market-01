@@ -1,7 +1,7 @@
 
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { filterOffers, sortOffers } from "@/utils/gpuFilters";
-import GpuCard from "./GpuCard";
+import MinimalGpuCard from "./MinimalGpuCard";
 import GpuGridSkeleton from "./GpuGridSkeleton";
 
 interface VastAiGridProps {
@@ -36,9 +36,9 @@ const VastAiGrid = ({ searchTerm, sortBy }: VastAiGridProps) => {
   const filteredOffers = sortOffers(filterOffers(offers, searchTerm), sortBy);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {filteredOffers.map((offer) => (
-        <GpuCard key={offer.id} offer={offer} />
+        <MinimalGpuCard key={offer.id} offer={offer} />
       ))}
     </div>
   );
