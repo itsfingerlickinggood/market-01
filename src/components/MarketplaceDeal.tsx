@@ -14,13 +14,10 @@ interface MarketplaceDealProps {
   };
 }
 
-const generatePriceData = (basePrice: number, siteCount: number) => {
-  return Array.from({ length: siteCount }, (_, siteIndex) => ({
-    site: `Site ${siteIndex + 1}`,
-    data: Array.from({ length: 24 }, (_, i) => ({
-      time: i,
-      price: basePrice * (0.8 + Math.random() * 0.4) // ±20% variation
-    }))
+const generatePriceData = (basePrice: number) => {
+  return Array.from({ length: 24 }, (_, i) => ({
+    time: i,
+    price: basePrice * (0.8 + Math.random() * 0.4) // ±20% variation
   }));
 };
 
@@ -39,23 +36,27 @@ const getCompanyLogo = (company: string) => {
 };
 
 const MarketplaceDeal = ({ gpu }: MarketplaceDealProps) => {
-  const [priceData, setPriceData] = useState(() => generatePriceData(gpu.basePrice, gpu.sites.length));
-  const [currentPrices, setCurrentPrices] = useState(() => 
-    gpu.sites.map(() => gpu.basePrice * (0.8 + Math.random() * 0.4))
-  );
+  const [currentSiteIndex, setCurrentSiteIndex] = useState(0);
+  const [priceData, setPriceData] = useState(() => generatePriceData(gpu.basePrice));
+  const [currentPrice, setCurrentPrice] = useState(() => gpu.basePrice * (0.8 + Math.random() * 0.4));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update price data every 5 seconds
-      const newPriceData = generatePriceData(gpu.basePrice, gpu.sites.length);
-      const newCurrentPrices = gpu.sites.map(() => gpu.basePrice * (0.8 + Math.random() * 0.4));
+      // Shuffle to next site
+      setCurrentSiteIndex((prevIndex) => (prevIndex + 1) % gpu.sites.length);
+      
+      // Generate new price data for the current site
+      const newPriceData = generatePriceData(gpu.basePrice);
+      const newCurrentPrice = gpu.basePrice * (0.8 + Math.random() * 0.4);
       
       setPriceData(newPriceData);
-      setCurrentPrices(newCurrentPrices);
+      setCurrentPrice(newCurrentPrice);
     }, 5000);
 
     return () => clearInterval(interval);
   }, [gpu.basePrice, gpu.sites.length]);
+
+  const currentSite = gpu.sites[currentSiteIndex];
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -72,33 +73,29 @@ const MarketplaceDeal = ({ gpu }: MarketplaceDealProps) => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {gpu.sites.map((site, index) => (
-            <div key={`${site}-${index}`} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-xs">
-                  {site}
-                </Badge>
-                <span className="font-medium text-sm">
-                  ${currentPrices[index]?.toFixed(2)}/hr
-                </span>
-              </div>
-              <div className="h-16 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={priceData[index]?.data || []}>
-                    <Line
-                      type="monotone"
-                      dataKey="price"
-                      stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={false}
-                      animationDuration={1000}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          ))}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Badge variant="outline" className="text-sm px-3 py-1">
+              {currentSite}
+            </Badge>
+            <span className="font-medium text-lg">
+              ${currentPrice.toFixed(2)}/hr
+            </span>
+          </div>
+          <div className="h-20 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={priceData}>
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  dot={false}
+                  animationDuration={1000}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </CardContent>
     </Card>
