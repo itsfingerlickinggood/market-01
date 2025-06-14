@@ -89,7 +89,7 @@ const Header = () => {
                 </Button>
               </Link>
               <Link to="/analytics">
-                <div className="bg-black text-white text-xs px-6 py-2 rounded-full hover:bg-green-800 transition-colors duration-200 cursor-pointer shadow-lg font-medium border border-gray-700 hover:border-green-600">
+                <div className="bg-black text-white text-xs px-4 py-1 rounded-full hover:bg-green-800 transition-colors duration-200 cursor-pointer shadow-lg font-medium border border-gray-700 hover:border-green-600">
                   analytics
                 </div>
               </Link>
