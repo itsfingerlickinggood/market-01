@@ -109,7 +109,7 @@ const providers = [
   { name: "Genesis Cloud", type: "specialist" as const, specializations: ["ai-training", "general"] as const },
   { name: "CoreWeave", type: "hyperscaler" as const, specializations: ["ai-training", "gaming", "creative"] as const },
   { name: "TensorDock", type: "specialist" as const, specializations: ["ai-training", "ai-inference"] as const },
-  { name: "JarvisLabs", type: "specialist" as const, specializations: ["ai-training", "research"] as const },
+  { name: "JarvisLabs", type: "specialist" as const, specializations: ["ai-training", "hpc"] as const },
   { name: "PaperSpace", type: "specialist" as const, specializations: ["creative", "ai-training"] as const },
   { name: "FluidStack", type: "specialist" as const, specializations: ["ai-inference", "general"] as const },
 ];
