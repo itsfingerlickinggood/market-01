@@ -1,31 +1,11 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Search, Filter, Zap, Target, Github, Star, ChevronDown, SortAsc, TrendingUp } from "lucide-react";
-import VastAiGrid from "@/components/VastAiGrid";
+import { Zap, Target, Github, Star, TrendingUp, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import MarketplaceDeal from "@/components/MarketplaceDeal";
-import SmartRecommendations from "@/components/SmartRecommendations";
-import { UserProfile, GPUOffer } from "@/types/gpu-recommendation";
-import { useVastAiOffers } from "@/hooks/useVastAiOffers";
-import { recommendationEngine } from "@/utils/recommendationEngine";
-import { useMemo } from "react";
 
 const Index = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("price");
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    organization: 'startup',
-    workloadType: 'ai-training',
-    budgetRange: 'medium',
-    dataCompliance: 'none',
-    geographicRequirements: [],
-    scalabilityNeeds: 'dynamic'
-  });
-
-  const { data: offers, isLoading } = useVastAiOffers();
-
   // Realistic top deals data based on actual market prices
   const topDeals = [
     {
@@ -114,74 +94,6 @@ const Index = () => {
     }
   ];
 
-  // Generate smart recommendations with scores
-  const smartOffers = useMemo(() => {
-    if (!offers) return [];
-    
-    return offers.map(offer => {
-      // Enhance offer with mock specs and provider data for demonstration
-      const enhancedOffer: GPUOffer = {
-        ...offer,
-        specs: {
-          vramCapacity: offer.gpu_name?.includes('H100') ? 80 : 
-                       offer.gpu_name?.includes('4090') ? 24 :
-                       offer.gpu_name?.includes('4080') ? 16 :
-                       offer.gpu_name?.includes('3090') ? 24 : 12,
-          memoryBandwidth: offer.gpu_name?.includes('H100') ? 3350 : 
-                          offer.gpu_name?.includes('4090') ? 1008 : 936,
-          memoryType: offer.gpu_name?.includes('H100') ? 'HBM3' : 'GDDR6X' as const,
-          fp64Performance: offer.gpu_name?.includes('MI300X') ? 163 : 
-                          offer.gpu_name?.includes('H100') ? 67 : 19,
-          fp32Performance: offer.gpu_name?.includes('H100') ? 989 : 
-                          offer.gpu_name?.includes('4090') ? 166 : 84,
-          fp16Performance: offer.gpu_name?.includes('H100') ? 1979 : 
-                          offer.gpu_name?.includes('4090') ? 332 : 168,
-          nvlinkSupport: offer.gpu_name?.includes('H100') || offer.gpu_name?.includes('4090'),
-          rtCores: offer.gpu_name?.includes('RTX') ? 128 : 0,
-          cudaCores: offer.gpu_name?.includes('4090') ? 16384 : 10496
-        },
-        pricing: {
-          onDemand: offer.dph_total || 1.0,
-          spot: offer.dph_total ? offer.dph_total * 0.3 : 0.3,
-          reserved: offer.dph_total ? offer.dph_total * 0.7 : 0.7,
-          dataEgressFee: 0.09,
-          storageCost: 0.1
-        },
-        provider: {
-          name: 'Vast.ai',
-          type: 'specialist' as const,
-          globalScale: 7,
-          slaGuarantee: 99.5,
-          securityCertifications: ['SOC2'],
-          egressPolicy: 'paid' as const,
-          specializations: ['ai-training', 'ai-inference'] as const
-        },
-        availability: 'available' as const,
-        location: offer.datacenter || 'Unknown',
-        reliability: offer.reliability2 || 0.95
-      };
-
-      const score = recommendationEngine.calculateScore(enhancedOffer, userProfile);
-      const matchReason = recommendationEngine.getMatchReasons(enhancedOffer, userProfile);
-      
-      return {
-        ...enhancedOffer,
-        recommendationScore: score,
-        matchReason
-      };
-    });
-  }, [offers, userProfile]);
-
-  const getSortLabel = (value: string) => {
-    switch (value) {
-      case 'price': return 'Price (Low to High)';
-      case 'performance': return 'Reliability Score';
-      case 'availability': return 'Availability Status';
-      case 'recommendation': return 'Match Score';
-      default: return 'Sort by';
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -198,7 +110,7 @@ const Index = () => {
             </div>
             <nav className="hidden md:flex items-center space-x-6">
               <a href="#" className="text-foreground hover:text-primary transition-colors">Dashboard</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Marketplace</a>
+              <Link to="/marketplace" className="text-muted-foreground hover:text-primary transition-colors">Marketplace</Link>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Analytics</a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Portfolio</a>
             </nav>
@@ -221,20 +133,37 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Marketplace Hero Section */}
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
-            <TrendingUp className="h-8 w-8 text-primary" />
-            GPU Marketplace
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h2 className="text-5xl font-bold mb-6 flex items-center justify-center gap-3">
+            <TrendingUp className="h-12 w-12 text-primary" />
+            Real-Time GPU Marketplace
           </h2>
-          <p className="text-lg text-muted-foreground mb-6">
-            Real-time GPU deals across multiple platforms with live price tracking
+          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            Track live GPU prices across multiple cloud providers. Compare deals, find the best rates, and make informed decisions for your compute needs.
           </p>
+          <div className="flex gap-4 justify-center">
+            <Link to="/marketplace">
+              <Button size="lg" className="text-lg px-8 py-6">
+                <Target className="h-5 w-5 mr-2" />
+                Explore Marketplace
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </Button>
+            </Link>
+            <Button variant="outline" size="lg" className="text-lg px-8 py-6">
+              View Analytics
+            </Button>
+          </div>
         </div>
 
-        {/* Top Deals Section */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-semibold mb-6">Top GPU Deals - Live Market Data</h3>
+        {/* Live Market Data Section */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h3 className="text-3xl font-semibold mb-4">Live Market Data</h3>
+            <p className="text-lg text-muted-foreground">
+              Real-time pricing from leading cloud providers, updated every 5 seconds
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {topDeals.map((deal) => (
               <MarketplaceDeal key={deal.id} gpu={deal} />
@@ -242,100 +171,44 @@ const Index = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="recommendations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-secondary">
-            <TabsTrigger value="recommendations" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Target className="h-4 w-4" />
-              Smart Recommendations
-            </TabsTrigger>
-            <TabsTrigger value="browse" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Search className="h-4 w-4" />
-              Browse All
-            </TabsTrigger>
-          </TabsList>
+        {/* Features Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="text-center p-6 border border-border rounded-lg bg-card">
+            <TrendingUp className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h4 className="text-xl font-semibold mb-2">Live Price Tracking</h4>
+            <p className="text-muted-foreground">
+              Monitor real-time price fluctuations across multiple providers and get the best deals.
+            </p>
+          </div>
+          <div className="text-center p-6 border border-border rounded-lg bg-card">
+            <Target className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h4 className="text-xl font-semibold mb-2">Smart Recommendations</h4>
+            <p className="text-muted-foreground">
+              Get personalized GPU recommendations based on your specific use case and requirements.
+            </p>
+          </div>
+          <div className="text-center p-6 border border-border rounded-lg bg-card">
+            <Zap className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h4 className="text-xl font-semibold mb-2">Instant Deployment</h4>
+            <p className="text-muted-foreground">
+              Quick access to available GPUs with one-click deployment across trusted providers.
+            </p>
+          </div>
+        </div>
 
-          <TabsContent value="recommendations" className="space-y-6">
-            {!isLoading && smartOffers && (
-              <SmartRecommendations 
-                offers={smartOffers}
-                userProfile={userProfile}
-              />
-            )}
-          </TabsContent>
-
-          <TabsContent value="browse" className="space-y-6">
-            {/* Search and Filters */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search GPU models, hosts, or datacenters..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  <Filter className="h-3 w-3 mr-1.5" />
-                  Filters
-                </Button>
-                
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors min-w-[140px] justify-between"
-                    >
-                      <div className="flex items-center">
-                        <SortAsc className="h-3 w-3 mr-1.5" />
-                        <span>{getSortLabel(sortBy)}</span>
-                      </div>
-                      <ChevronDown className="h-3 w-3 ml-1.5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    align="end" 
-                    className="w-48 bg-popover border-border shadow-lg z-50"
-                  >
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('price')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Price (Low to High)
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('performance')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Reliability Score
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('availability')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Availability Status
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('recommendation')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Match Score
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-
-            {/* GPU Grid */}
-            <VastAiGrid searchTerm={searchTerm} sortBy={sortBy} />
-          </TabsContent>
-        </Tabs>
+        {/* CTA Section */}
+        <div className="text-center bg-secondary/30 rounded-lg p-12">
+          <h3 className="text-3xl font-bold mb-4">Ready to Find Your Perfect GPU?</h3>
+          <p className="text-xl text-muted-foreground mb-8">
+            Join thousands of developers and researchers finding the best GPU deals.
+          </p>
+          <Link to="/marketplace">
+            <Button size="lg" className="text-lg px-12 py-6">
+              Start Exploring
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+          </Link>
+        </div>
       </main>
     </div>
   );
