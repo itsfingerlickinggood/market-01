@@ -81,19 +81,19 @@ const Header = () => {
           </div>
 
           {/* Centered Logo with Analytics Tag */}
-          <div className="flex justify-center w-1/3">
-            <div className="flex flex-col items-center space-y-4">
+          <div className="flex justify-center w-1/3 relative">
+            <div className="flex items-center">
               <Link to="/">
                 <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
                   market01
                 </Button>
               </Link>
-              <Link to="/analytics">
-                <div className="bg-black text-white text-xs px-4 py-1 rounded-full hover:bg-green-800 transition-colors duration-200 cursor-pointer shadow-lg font-medium border border-gray-700 hover:border-green-600">
-                  analytics
-                </div>
-              </Link>
             </div>
+            <Link to="/analytics" className="absolute top-12 left-1/2 transform -translate-x-1/2">
+              <div className="bg-black text-white text-xs px-4 py-1 rounded-full hover:bg-green-800 transition-colors duration-200 cursor-pointer shadow-lg font-medium border border-gray-700 hover:border-green-600">
+                analytics
+              </div>
+            </Link>
           </div>
 
           {/* Right Side - Live Status and Theme Selector */}
