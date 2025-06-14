@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Filter, Zap, Target } from "lucide-react";
+import { Search, Filter, Zap, Target, Github, Star } from "lucide-react";
 import VastAiGrid from "@/components/VastAiGrid";
 import UserProfileSelector from "@/components/UserProfileSelector";
 import SmartRecommendations from "@/components/SmartRecommendations";
@@ -84,19 +85,16 @@ const Index = () => {
   }, [offers, userProfile]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
-                <img 
-                  src="/placeholder.svg" 
-                  alt="GPUTrade Logo" 
-                  className="h-10 w-10 object-contain"
-                />
-                <Zap className="h-8 w-8 text-primary" />
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                  <Zap className="h-6 w-6 text-primary-foreground" />
+                </div>
                 <h1 className="text-2xl font-bold text-foreground">GPUTrade</h1>
               </div>
             </div>
@@ -107,8 +105,17 @@ const Index = () => {
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Portfolio</a>
             </nav>
             <div className="flex items-center space-x-4">
-              <Button variant="outline">Sign In</Button>
-              <Button>Get Started</Button>
+              <div className="hidden md:flex items-center space-x-2 text-sm text-muted-foreground">
+                <Github className="h-4 w-4" />
+                <Star className="h-4 w-4" />
+                <span>2.3k</span>
+              </div>
+              <Button variant="outline" className="border-border hover:bg-accent hover:text-accent-foreground">
+                Sign In
+              </Button>
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 dark-glow-green">
+                Get Started
+              </Button>
             </div>
           </div>
         </div>
@@ -122,12 +129,12 @@ const Index = () => {
         />
 
         <Tabs defaultValue="recommendations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="recommendations" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 bg-secondary">
+            <TabsTrigger value="recommendations" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Target className="h-4 w-4" />
               Smart Recommendations
             </TabsTrigger>
-            <TabsTrigger value="browse" className="flex items-center gap-2">
+            <TabsTrigger value="browse" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
               <Search className="h-4 w-4" />
               Browse All
             </TabsTrigger>
@@ -151,18 +158,18 @@ const Index = () => {
                   placeholder="Search GPU models, hosts, or datacenters..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary"
                 />
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="border-border hover:bg-accent hover:text-accent-foreground">
                   <Filter className="h-4 w-4 mr-2" />
                   Filters
                 </Button>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-2 border border-input rounded-md text-sm"
+                  className="px-3 py-2 bg-card border border-border rounded-md text-sm text-foreground focus:ring-primary focus:border-primary"
                 >
                   <option value="price">Sort by Price</option>
                   <option value="performance">Sort by Reliability</option>
