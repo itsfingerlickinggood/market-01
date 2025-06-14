@@ -1,14 +1,31 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Clock, DollarSign, Server, MapPin, Wifi, HardDrive } from "lucide-react";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
+import MiniPriceChart from "./MiniPriceChart";
 
 interface VastAiGridProps {
   searchTerm: string;
   sortBy: string;
 }
+
+// Generate mock price trend data for each GPU
+const generatePriceTrend = (basePrice: number) => {
+  const data = [];
+  let currentPrice = basePrice;
+  
+  for (let i = 0; i < 24; i++) {
+    const variation = (Math.random() - 0.5) * 0.2; // ±10% variation
+    currentPrice = basePrice * (1 + variation);
+    data.push({
+      time: `${i}:00`,
+      price: currentPrice
+    });
+  }
+  
+  return data;
+};
 
 const VastAiGrid = ({ searchTerm, sortBy }: VastAiGridProps) => {
   const { data: offers, isLoading, error } = useVastAiOffers();
@@ -83,6 +100,9 @@ const VastAiGrid = ({ searchTerm, sortBy }: VastAiGridProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredOffers.map((offer) => {
         const status = getStatusBadge(offer);
+        const priceData = generatePriceTrend(offer.dph_total || 0);
+        const priceChange = Math.random() > 0.5 ? 1 : -1; // Random for demo
+        const priceChangePercent = (Math.random() * 5).toFixed(2);
         
         return (
           <Card key={offer.id} className="hover:shadow-lg transition-shadow">
@@ -105,6 +125,20 @@ const VastAiGrid = ({ searchTerm, sortBy }: VastAiGridProps) => {
                   <DollarSign className="h-4 w-4 text-green-600" />
                   <span className="font-semibold">${offer.dph_total?.toFixed(3) || '0'}/hour</span>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <div className="text-right">
+                    <div className={`text-xs ${priceChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {priceChange > 0 ? '+' : '-'}{priceChangePercent}%
+                    </div>
+                  </div>
+                  <MiniPriceChart 
+                    data={priceData} 
+                    isPositive={priceChange > 0}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Zap className="h-4 w-4 text-blue-600" />
                   <span className="text-sm">{Math.round((offer.reliability2 || 0) * 100)}% reliability</span>
