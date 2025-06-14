@@ -113,7 +113,7 @@ const Index = () => {
               <Button variant="outline" className="border-border hover:bg-accent hover:text-accent-foreground">
                 Sign In
               </Button>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90 dark-glow-green">
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                 Get Started
               </Button>
             </div>
