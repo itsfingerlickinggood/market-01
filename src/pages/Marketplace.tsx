@@ -52,7 +52,9 @@ const Marketplace = () => {
     
     return offers.map(offer => {
       const enhancedOffer: GPUOffer = {
+        // Preserve original Vast.ai properties
         ...offer,
+        // Enhanced properties
         specs: {
           vramCapacity: offer.gpu_name?.includes('H100') ? 80 : 
                        offer.gpu_name?.includes('4090') ? 24 :
@@ -268,7 +270,7 @@ const Marketplace = () => {
                           <div>
                             <h4 className="font-semibold">{offer.gpu_name}</h4>
                             <p className="text-sm text-muted-foreground">
-                              {offer.num_gpus}x GPU • {offer.gpu_ram}GB VRAM
+                              {offer.num_gpus || 1}x GPU • {offer.gpu_ram || offer.specs.vramCapacity}GB VRAM
                             </p>
                           </div>
                           <Badge className="bg-yellow-100 text-yellow-800">
@@ -277,16 +279,16 @@ const Marketplace = () => {
                         </div>
                         
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-lg font-bold">${offer.dph_total?.toFixed(3)}/hour</span>
+                          <span className="text-lg font-bold">${(offer.dph_total || offer.pricing.onDemand).toFixed(3)}/hour</span>
                           <div className="flex items-center gap-1 text-sm text-muted-foreground">
                             <MapPin className="h-3 w-3" />
-                            {offer.datacenter}
+                            {offer.datacenter || offer.location}
                           </div>
                         </div>
                         
                         <div className="flex items-center gap-1 text-sm">
                           <Zap className="h-3 w-3 text-yellow-500" />
-                          {Math.round((offer.reliability || 0) * 100)}% reliability
+                          {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
                         </div>
                       </CardContent>
                     </Card>

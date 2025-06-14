@@ -1,4 +1,3 @@
-
 export interface GPUSpecs {
   vramCapacity: number; // GB
   memoryBandwidth: number; // GB/s
@@ -45,6 +44,17 @@ export interface UserProfile {
 export interface GPUOffer {
   id: number;
   gpu_name: string;
+  // Keep original Vast.ai properties for compatibility
+  num_gpus?: number;
+  gpu_ram?: number;
+  dph_total?: number;
+  datacenter?: string;
+  cpu_cores?: number;
+  cpu_ram?: number;
+  disk_space?: number;
+  reliability2?: number;
+  rentable?: boolean;
+  // Enhanced properties
   specs: GPUSpecs;
   pricing: PricingModel;
   provider: Provider;
