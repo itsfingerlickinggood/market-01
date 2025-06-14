@@ -18,6 +18,7 @@ import {
   MapPin,
   Zap
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import MarketplaceHero from "@/components/MarketplaceHero";
 import VastAiGrid from "@/components/VastAiGrid";
@@ -259,40 +260,41 @@ const Marketplace = () => {
               <TabsContent value="recommendations" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {topRecommendations.map((offer) => (
-                    <Card 
-                      key={offer.id} 
-                      className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary/20"
-                      onMouseEnter={(e) => handleGpuHover(offer, e)}
-                      onMouseLeave={handleGpuLeave}
-                      onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <h4 className="font-semibold">{offer.gpu_name}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {offer.num_gpus || 1}x GPU • {offer.gpu_ram || offer.specs.vramCapacity}GB VRAM
-                            </p>
+                    <Link key={offer.id} to={`/gpu/${offer.id}`}>
+                      <Card 
+                        className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary/20"
+                        onMouseEnter={(e) => handleGpuHover(offer, e)}
+                        onMouseLeave={handleGpuLeave}
+                        onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h4 className="font-semibold">{offer.gpu_name}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {offer.num_gpus || 1}x GPU • {offer.gpu_ram || offer.specs.vramCapacity}GB VRAM
+                              </p>
+                            </div>
+                            <Badge className="bg-yellow-100 text-yellow-800">
+                              {Math.round(offer.recommendationScore || 0)}% Match
+                            </Badge>
                           </div>
-                          <Badge className="bg-yellow-100 text-yellow-800">
-                            {Math.round(offer.recommendationScore || 0)}% Match
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-lg font-bold">${(offer.dph_total || offer.pricing.onDemand).toFixed(3)}/hour</span>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <MapPin className="h-3 w-3" />
-                            {offer.datacenter || offer.location}
+                          
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-lg font-bold">${(offer.dph_total || offer.pricing.onDemand).toFixed(3)}/hour</span>
+                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                              <MapPin className="h-3 w-3" />
+                              {offer.datacenter || offer.location}
+                            </div>
                           </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-1 text-sm">
-                          <Zap className="h-3 w-3 text-yellow-500" />
-                          {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
-                        </div>
-                      </CardContent>
-                    </Card>
+                          
+                          <div className="flex items-center gap-1 text-sm">
+                            <Zap className="h-3 w-3 text-yellow-500" />
+                            {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   ))}
                 </div>
 
@@ -332,51 +334,52 @@ const Marketplace = () => {
                     ))
                   ) : (
                     sortedOffers.map((offer) => (
-                      <Card 
-                        key={offer.id} 
-                        className="hover:shadow-lg transition-all cursor-pointer"
-                        onMouseEnter={(e) => handleGpuHover(offer, e)}
-                        onMouseLeave={handleGpuLeave}
-                        onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex justify-between items-start mb-3">
-                            <div>
-                              <h4 className="font-semibold">{offer.gpu_name}</h4>
-                              <p className="text-sm text-muted-foreground">
-                                {offer.num_gpus || 1}x GPU • {offer.gpu_ram || offer.specs.vramCapacity}GB VRAM
-                              </p>
+                      <Link key={offer.id} to={`/gpu/${offer.id}`}>
+                        <Card 
+                          className="hover:shadow-lg transition-all cursor-pointer"
+                          onMouseEnter={(e) => handleGpuHover(offer, e)}
+                          onMouseLeave={handleGpuLeave}
+                          onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex justify-between items-start mb-3">
+                              <div>
+                                <h4 className="font-semibold">{offer.gpu_name}</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {offer.num_gpus || 1}x GPU • {offer.gpu_ram || offer.specs.vramCapacity}GB VRAM
+                                </p>
+                              </div>
+                              <Badge className={
+                                offer.availability === 'available' ? "bg-green-100 text-green-800" :
+                                offer.availability === 'limited' ? "bg-yellow-100 text-yellow-800" :
+                                "bg-red-100 text-red-800"
+                              }>
+                                {offer.availability}
+                              </Badge>
                             </div>
-                            <Badge className={
-                              offer.availability === 'available' ? "bg-green-100 text-green-800" :
-                              offer.availability === 'limited' ? "bg-yellow-100 text-yellow-800" :
-                              "bg-red-100 text-red-800"
-                            }>
-                              {offer.availability}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-lg font-bold">${(offer.dph_total || offer.pricing.onDemand).toFixed(3)}/hour</span>
-                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                              <MapPin className="h-3 w-3" />
-                              {(offer.datacenter || offer.location || "Unknown").split('(')[0].trim()}
+                            
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-lg font-bold">${(offer.dph_total || offer.pricing.onDemand).toFixed(3)}/hour</span>
+                              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                <MapPin className="h-3 w-3" />
+                                {(offer.datacenter || offer.location || "Unknown").split('(')[0].trim()}
+                              </div>
                             </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-1 text-sm">
-                            <Zap className="h-3 w-3 text-yellow-500" />
-                            {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
-                          </div>
-                          
-                          <div className="mt-3 pt-3 border-t border-border">
-                            <div className="flex justify-between text-xs text-muted-foreground">
-                              <span>CPU: {offer.cpu_cores || 8} cores</span>
-                              <span>RAM: {offer.cpu_ram || 32}GB</span>
+                            
+                            <div className="flex items-center gap-1 text-sm">
+                              <Zap className="h-3 w-3 text-yellow-500" />
+                              {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                            
+                            <div className="mt-3 pt-3 border-t border-border">
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>CPU: {offer.cpu_cores || 8} cores</span>
+                                <span>RAM: {offer.cpu_ram || 32}GB</span>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
                     ))
                   )}
                 </div>
