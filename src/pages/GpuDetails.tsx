@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,8 +46,8 @@ const generateProviderData = (basePrice: number): PlatformProvider[] => {
       price,
       status,
       url: provider.url,
-      x: price,
-      y: index
+      x: index,
+      y: price
     };
   });
 };
@@ -196,25 +195,28 @@ const GpuDetails = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <ScatterChart
                       data={providerData}
-                      margin={{ top: 20, right: 30, bottom: 60, left: 100 }}
+                      margin={{ top: 20, right: 30, bottom: 60, left: 60 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis 
                         type="number"
                         dataKey="x"
-                        domain={[0, 'dataMax + 0.5']}
-                        tickFormatter={(value) => `$${value.toFixed(3)}`}
-                        label={{ value: 'Price per Hour ($)', position: 'insideBottom', offset: -10 }}
+                        domain={[0, providerData.length - 1]}
+                        tickFormatter={(value) => providerData[value]?.name || ''}
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        label={{ value: 'Platform', position: 'insideBottom', offset: -40 }}
                       />
                       <YAxis 
                         type="number"
                         dataKey="y"
-                        domain={[0, providerData.length - 1]}
-                        tickFormatter={(value) => providerData[value]?.name || ''}
-                        width={80}
+                        domain={[0, 'dataMax + 0.5']}
+                        tickFormatter={(value) => `$${value.toFixed(3)}`}
+                        label={{ value: 'Price per Hour ($)', angle: -90, position: 'insideLeft' }}
                       />
                       <Tooltip content={<CustomTooltip />} />
-                      <Scatter dataKey="x" shape={<CustomScatter />} />
+                      <Scatter dataKey="y" shape={<CustomScatter />} />
                     </ScatterChart>
                   </ResponsiveContainer>
                 </div>
