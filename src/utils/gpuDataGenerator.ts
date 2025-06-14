@@ -1,4 +1,3 @@
-
 import { GPUOffer } from '@/types/gpu-recommendation';
 
 interface GPUModel {
@@ -15,6 +14,16 @@ interface GPUModel {
   fp64Performance: number;
   basePrice: number;
   category: 'Entry' | 'Mid-Range' | 'High-End' | 'Professional' | 'Data Center';
+}
+
+interface MarketData {
+  currentPrice: number;
+  priceMultiplier: number;
+  availabilityStatus: 'available' | 'limited' | 'unavailable';
+  reliabilityScore: number;
+  marketTrend: 'up' | 'down' | 'stable';
+  demandLevel: 'low' | 'medium' | 'high';
+  reasoningFactors: string[];
 }
 
 const gpuModels: GPUModel[] = [
@@ -92,42 +101,83 @@ const providers = [
   { name: "CoreWeave", type: "hyperscaler" as const, specializations: ["ai-training", "gaming", "creative"] as const },
 ];
 
-export const generateGPUData = (): GPUOffer[] => {
+// Enhanced function to get market data from Gemini API
+const getMarketData = async (gpuModel: string, basePrice: number, datacenter: string): Promise<MarketData> => {
+  try {
+    const response = await fetch('/functions/v1/generate-gpu-market-data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        gpuModel,
+        basePrice,
+        datacenter
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch market data');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn('Falling back to simulated data:', error);
+    // Fallback to simulated data if Gemini API fails
+    return {
+      currentPrice: basePrice * (0.8 + Math.random() * 0.6),
+      priceMultiplier: 0.8 + Math.random() * 0.6,
+      availabilityStatus: Math.random() > 0.1 ? 'available' : 'limited',
+      reliabilityScore: 0.85 + Math.random() * 0.14,
+      marketTrend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'stable',
+      demandLevel: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as 'low' | 'medium' | 'high',
+      reasoningFactors: ['Standard market conditions']
+    };
+  }
+};
+
+export const generateGPUData = async (): Promise<GPUOffer[]> => {
   const offers: GPUOffer[] = [];
   let id = 1;
 
   // Generate multiple instances of each GPU model across different providers and datacenters
-  gpuModels.forEach((model) => {
+  for (const model of gpuModels) {
     const instancesPerModel = Math.floor(Math.random() * 8) + 3; // 3-10 instances per model
     
     for (let i = 0; i < instancesPerModel; i++) {
       const datacenter = datacenters[Math.floor(Math.random() * datacenters.length)];
       const provider = providers[Math.floor(Math.random() * providers.length)];
       
-      // Add price variation based on demand, location, and provider
-      const demandMultiplier = 0.8 + Math.random() * 0.6; // 0.8x to 1.4x
+      // Get enhanced market data from Gemini API
+      const marketData = await getMarketData(
+        model.name, 
+        model.basePrice, 
+        `${datacenter.name} (${datacenter.city})`
+      );
+      
+      // Apply provider and location multipliers to the AI-generated price
       const locationMultiplier = datacenter.region === "North America" ? 1.0 : 
                                 datacenter.region === "Europe" ? 1.1 : 
                                 datacenter.region === "Asia Pacific" ? 0.9 : 1.0;
       const providerMultiplier = provider.type === "hyperscaler" ? 1.2 : 
                                 provider.type === "specialist" ? 1.0 : 0.8;
       
-      const finalPrice = model.basePrice * demandMultiplier * locationMultiplier * providerMultiplier;
-      const reliability = 0.85 + Math.random() * 0.14; // 85-99% reliability
-      const rentable = Math.random() > 0.1; // 90% availability
+      const finalPrice = marketData.currentPrice * locationMultiplier * providerMultiplier;
+      const availability = marketData.availabilityStatus === 'unavailable' ? 'unavailable' as const :
+                          marketData.availabilityStatus === 'limited' ? 'limited' as const : 'available' as const;
       
       const offer: GPUOffer = {
         id: id++,
         gpu_name: model.name,
-        num_gpus: Math.random() > 0.7 ? Math.floor(Math.random() * 4) + 2 : 1, // Mostly single GPU, some multi-GPU
+        num_gpus: Math.random() > 0.7 ? Math.floor(Math.random() * 4) + 2 : 1,
         gpu_ram: model.vram,
         dph_total: Number(finalPrice.toFixed(3)),
         datacenter: `${datacenter.name} (${datacenter.city})`,
         cpu_cores: Math.floor(Math.random() * 32) + 8,
         cpu_ram: Math.floor(Math.random() * 128) + 32,
         disk_space: [100, 250, 500, 1000, 2000][Math.floor(Math.random() * 5)],
-        reliability2: reliability,
-        rentable: rentable,
+        reliability2: marketData.reliabilityScore,
+        rentable: availability !== 'unavailable',
         specs: {
           vramCapacity: model.vram,
           memoryBandwidth: model.memoryBandwidth,
@@ -156,14 +206,19 @@ export const generateGPUData = (): GPUOffer[] => {
           egressPolicy: Math.random() > 0.5 ? 'free' as const : 'paid' as const,
           specializations: [...provider.specializations]
         },
-        availability: rentable ? (Math.random() > 0.8 ? 'limited' as const : 'available' as const) : 'unavailable' as const,
+        availability,
         location: `${datacenter.city}, ${datacenter.country}`,
-        reliability: reliability
+        reliability: marketData.reliabilityScore,
+        marketData: {
+          trend: marketData.marketTrend,
+          demandLevel: marketData.demandLevel,
+          reasoningFactors: marketData.reasoningFactors
+        }
       };
       
       offers.push(offer);
     }
-  });
+  }
   
   return offers.sort((a, b) => b.specs.fp32Performance - a.specs.fp32Performance);
 };

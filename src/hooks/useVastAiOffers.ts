@@ -1,21 +1,16 @@
 
-import { useQuery } from '@tanstack/react-query';
-import { generateGPUData } from '@/utils/gpuDataGenerator';
-
-// Simulate API call with generated data
-const fetchVastAiOffers = async () => {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Return our generated GPU data
-  return generateGPUData();
-};
+import { useQuery } from "@tanstack/react-query";
+import { generateGPUData } from "@/utils/gpuDataGenerator";
 
 export const useVastAiOffers = () => {
   return useQuery({
-    queryKey: ['vast-ai-offers'],
-    queryFn: fetchVastAiOffers,
-    refetchInterval: 30000, // Refetch every 30 seconds for real-time updates
-    staleTime: 5000, // Consider data stale after 5 seconds
+    queryKey: ["vastai-offers"],
+    queryFn: async () => {
+      // Use the enhanced GPU data generator with Gemini API integration
+      return await generateGPUData();
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    cacheTime: 10 * 60 * 1000, // 10 minutes
+    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes for real-time market data
   });
 };
