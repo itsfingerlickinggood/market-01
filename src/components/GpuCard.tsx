@@ -26,6 +26,32 @@ const getModelTypeBadge = (modelType: string) => {
   return colors[modelType as keyof typeof colors] || 'bg-gray-100 text-gray-800';
 };
 
+const getManufacturerLogo = (gpuName: string) => {
+  const name = gpuName?.toLowerCase() || '';
+  if (name.includes('nvidia') || name.includes('rtx') || name.includes('gtx') || name.includes('tesla') || name.includes('quadro') || name.includes('geforce') || name.includes('h100') || name.includes('a100')) {
+    return {
+      src: "https://upload.wikimedia.org/wikipedia/skins/common/images/NVIDIA_logo.svg",
+      alt: "NVIDIA",
+      company: "NVIDIA"
+    };
+  }
+  if (name.includes('amd') || name.includes('radeon') || name.includes('rx ') || name.includes('vega') || name.includes('mi300')) {
+    return {
+      src: "https://upload.wikimedia.org/wikipedia/commons/7/7c/AMD_Logo.svg",
+      alt: "AMD", 
+      company: "AMD"
+    };
+  }
+  if (name.includes('intel') || name.includes('arc') || name.includes('xe')) {
+    return {
+      src: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Intel-logo.svg",
+      alt: "Intel",
+      company: "Intel"
+    };
+  }
+  return null;
+};
+
 const generatePriceTrend = (basePrice: number) => {
   const data = [];
   let currentPrice = basePrice;
@@ -47,6 +73,7 @@ const GpuCard = ({ offer }: GpuCardProps) => {
   const priceData = generatePriceTrend(offer.dph_total || 0);
   const priceChange = Math.random() > 0.5 ? 1 : -1; // Random for demo
   const priceChangePercent = (Math.random() * 5).toFixed(2);
+  const manufacturerLogo = getManufacturerLogo(offer.gpu_name || '');
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -54,6 +81,17 @@ const GpuCard = ({ offer }: GpuCardProps) => {
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
+              {manufacturerLogo && (
+                <img 
+                  src={manufacturerLogo.src}
+                  alt={manufacturerLogo.alt}
+                  className="w-6 h-6 object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+              )}
               <CardTitle className="text-lg">{offer.gpu_name || 'GPU'}</CardTitle>
               <Badge className={getModelTypeBadge(offer.model_type)}>
                 {offer.model_type}

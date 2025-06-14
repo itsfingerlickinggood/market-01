@@ -23,41 +23,36 @@ const generatePriceTrend = (basePrice: number) => {
   return data;
 };
 
-const getCompanyLogo = (gpuName: string) => {
-  const name = gpuName.toLowerCase();
-  if (name.includes('nvidia') || name.includes('rtx') || name.includes('gtx') || name.includes('tesla') || name.includes('quadro') || name.includes('geforce')) {
+const getManufacturerLogo = (gpuName: string) => {
+  const name = gpuName?.toLowerCase() || '';
+  if (name.includes('nvidia') || name.includes('rtx') || name.includes('gtx') || name.includes('tesla') || name.includes('quadro') || name.includes('geforce') || name.includes('h100') || name.includes('a100')) {
     return {
-      src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=100&h=100&fit=crop&crop=center",
+      src: "https://upload.wikimedia.org/wikipedia/skins/common/images/NVIDIA_logo.svg",
       alt: "NVIDIA",
       company: "NVIDIA"
     };
   }
-  if (name.includes('amd') || name.includes('radeon') || name.includes('rx ') || name.includes('vega')) {
+  if (name.includes('amd') || name.includes('radeon') || name.includes('rx ') || name.includes('vega') || name.includes('mi300')) {
     return {
-      src: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=100&h=100&fit=crop&crop=center",
+      src: "https://upload.wikimedia.org/wikipedia/commons/7/7c/AMD_Logo.svg",
       alt: "AMD",
       company: "AMD"
     };
   }
   if (name.includes('intel') || name.includes('arc') || name.includes('xe')) {
     return {
-      src: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=100&h=100&fit=crop&crop=center",
+      src: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Intel-logo.svg",
       alt: "Intel",
       company: "Intel"
     };
   }
-  // Default fallback
-  return {
-    src: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=100&h=100&fit=crop&crop=center",
-    alt: "GPU",
-    company: "GPU"
-  };
+  return null;
 };
 
 const MinimalGpuCard = ({ offer }: MinimalGpuCardProps) => {
   const priceData = generatePriceTrend(offer.dph_total || 1.0);
   const priceChange = Math.random() > 0.5 ? 1 : -1; // Random for demo
-  const companyLogo = getCompanyLogo(offer.gpu_name || '');
+  const manufacturerLogo = getManufacturerLogo(offer.gpu_name || '');
 
   return (
     <Link to={`/gpu/${offer.id}`}>
@@ -65,11 +60,17 @@ const MinimalGpuCard = ({ offer }: MinimalGpuCardProps) => {
         <CardContent className="p-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <img 
-                src={companyLogo.src}
-                alt={companyLogo.alt}
-                className="w-10 h-10 object-contain rounded flex-shrink-0"
-              />
+              {manufacturerLogo && (
+                <img 
+                  src={manufacturerLogo.src}
+                  alt={manufacturerLogo.alt}
+                  className="w-8 h-8 object-contain flex-shrink-0"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+              )}
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-lg truncate">
                   {offer.gpu_name || 'GPU'}
