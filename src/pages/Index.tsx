@@ -2,10 +2,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Search, Filter, TrendingUp, Zap, DollarSign, Clock } from "lucide-react";
-import GPUGrid from "@/components/GPUGrid";
+import { Search, Filter, Zap } from "lucide-react";
+import VastAiGrid from "@/components/VastAiGrid";
 import PricingChart from "@/components/PricingChart";
 import PerformanceChart from "@/components/PerformanceChart";
 import RentalStats from "@/components/RentalStats";
@@ -56,7 +54,7 @@ const Index = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search GPU models..."
+              placeholder="Search GPU models, hosts, or datacenters..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -73,14 +71,14 @@ const Index = () => {
               className="px-3 py-2 border border-input rounded-md text-sm"
             >
               <option value="price">Sort by Price</option>
-              <option value="performance">Sort by Performance</option>
+              <option value="performance">Sort by Reliability</option>
               <option value="availability">Sort by Availability</option>
             </select>
           </div>
         </div>
 
-        {/* GPU Grid */}
-        <GPUGrid searchTerm={searchTerm} sortBy={sortBy} />
+        {/* Vast.ai GPU Grid */}
+        <VastAiGrid searchTerm={searchTerm} sortBy={sortBy} />
       </main>
     </div>
   );
