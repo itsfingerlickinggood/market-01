@@ -60,15 +60,28 @@ const Header = () => {
             </DropdownMenu>
           </div>
 
-          {/* Centered Logo with Theme Switcher */}
+          {/* Centered Logo */}
           <div className="flex justify-center w-1/3">
+            <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
+              market01
+            </Button>
+          </div>
+
+          {/* Right Side - Live Status and Theme Selector */}
+          <div className="flex items-center justify-end space-x-4 w-1/3">
+            <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 px-3 py-1 text-xs font-medium animate-pulse">
+              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+              LIVE
+            </Badge>
+
+            {/* Theme Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
-                  market01
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
+                  <Sun className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-48 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
+              <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
                 <DropdownMenuItem 
                   onClick={() => setTheme("light")}
                   className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200"
@@ -95,14 +108,6 @@ const Header = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-
-          {/* Right Side - Live Status */}
-          <div className="flex items-center justify-end space-x-6 w-1/3">
-            <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 px-3 py-1 text-xs font-medium animate-pulse">
-              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-              LIVE
-            </Badge>
 
             {/* Mobile Menu Button */}
             <Button
