@@ -45,18 +45,6 @@
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 16%;
     --sidebar-ring: 142 45% 35%;
-
-    /* Zen color variables */
-    --zen-white: #fefefe;
-    --zen-gray-50: #f8fafc;
-    --zen-gray-100: #f1f5f9;
-    --zen-gray-200: #e2e8f0;
-    --zen-gray-500: #64748b;
-    --zen-gray-900: #0f172a;
-    --zen-green: #10b981;
-    --zen-green-light: #d1fae5;
-    --zen-blue: #3b82f6;
-    --zen-blue-light: #dbeafe;
   }
 
   .dark {
@@ -111,42 +99,5 @@
 
   .gradient-dark {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-  }
-}
-
-@layer components {
-  /* Zen Typography System */
-  .zen-heading-1 { 
-    @apply text-5xl font-bold tracking-tight; 
-  }
-  .zen-heading-2 { 
-    @apply text-3xl font-semibold tracking-tight; 
-  }
-  .zen-heading-3 { 
-    @apply text-xl font-semibold; 
-  }
-  .zen-body-large { 
-    @apply text-lg text-slate-600; 
-  }
-  .zen-body { 
-    @apply text-base text-slate-700; 
-  }
-  .zen-caption { 
-    @apply text-sm text-slate-500; 
-  }
-
-  /* Grid Pattern */
-  .bg-grid-slate-100 {
-    background-image: 
-      linear-gradient(to right, theme(colors.slate.100) 1px, transparent 1px),
-      linear-gradient(to bottom, theme(colors.slate.100) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-
-  .bg-grid-slate-100\/50 {
-    background-image: 
-      linear-gradient(to right, theme(colors.slate.100 / 0.5) 1px, transparent 1px),
-      linear-gradient(to bottom, theme(colors.slate.100 / 0.5) 1px, transparent 1px);
-    background-size: 20px 20px;
   }
 }
