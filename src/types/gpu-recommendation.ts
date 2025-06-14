@@ -1,4 +1,3 @@
-
 export interface GPUOffer {
   id: number;
   gpu_name: string;
@@ -77,10 +76,32 @@ export interface RecommendationScore {
   location: number;
 }
 
-export interface SmartRecommendation extends GPUOffer {
+export interface SmartRecommendation {
+  id: number;
+  gpu_name: string;
+  num_gpus: number;
+  gpu_ram: number;
+  dph_total: number;
+  datacenter: string;
+  cpu_cores: number;
+  cpu_ram: number;
+  disk_space: number;
+  reliability2: number;
+  rentable: boolean;
+  specs: GPUSpecs;
+  pricing: PricingTiers;
+  provider: ProviderInfo;
+  availability: 'available' | 'limited' | 'unavailable';
+  location: string;
+  reliability: number;
   recommendationScore: RecommendationScore;
   matchReasons: string[];
   alternatives: number[];
+  marketData?: {
+    trend: 'up' | 'down' | 'stable';
+    demandLevel: 'low' | 'medium' | 'high';
+    reasoningFactors: string[];
+  };
 }
 
 export interface RecommendationEngine {
