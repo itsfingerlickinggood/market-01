@@ -26,11 +26,7 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { name: "Browse GPUs", href: "/marketplace" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "Documentation", href: "/docs" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" }
+    { name: "Browse GPUs", href: "/marketplace" }
   ];
 
   return (
