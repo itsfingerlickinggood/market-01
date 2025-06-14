@@ -1,43 +1,45 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, DollarSign, Zap, Wifi, ExternalLink } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import {
   Breadcrumb,
-  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import GpuHeroSection from "@/components/GpuHeroSection";
+import InteractivePricingDashboard from "@/components/InteractivePricingDashboard";
+import EnhancedSpecsSection from "@/components/EnhancedSpecsSection";
 
 interface PlatformProvider {
   name: string;
   price: number;
   status: 'available' | 'limited' | 'unavailable';
   url: string;
-  x: number;
-  y: number;
+  logo: string;
+  setupTime: string;
+  reliability: number;
+  features: string[];
 }
 
 const generateProviderData = (basePrice: number): PlatformProvider[] => {
   const providers = [
-    { name: 'Genesis Cloud', multiplier: 0.95, url: 'https://genesiscloud.com' },
-    { name: 'Vast.ai', multiplier: 1.0, url: 'https://vast.ai' },
-    { name: 'RunPod', multiplier: 1.1, url: 'https://runpod.io' },
-    { name: 'Paperspace', multiplier: 1.15, url: 'https://paperspace.com' },
-    { name: 'Lambda Labs', multiplier: 1.2, url: 'https://lambdalabs.com' },
-    { name: 'CoreWeave', multiplier: 0.9, url: 'https://coreweave.com' },
-    { name: 'AWS EC2', multiplier: 1.5, url: 'https://aws.amazon.com' },
-    { name: 'Google Cloud', multiplier: 1.4, url: 'https://cloud.google.com' }
+    { name: 'Vast.ai', multiplier: 1.0, url: 'https://vast.ai', logo: '🟢', setupTime: '2-5 min', reliability: 85 },
+    { name: 'RunPod', multiplier: 1.1, url: 'https://runpod.io', logo: '🟣', setupTime: '1-3 min', reliability: 92 },
+    { name: 'Lambda Labs', multiplier: 1.2, url: 'https://lambdalabs.com', logo: '🟡', setupTime: '2-4 min', reliability: 88 },
+    { name: 'Paperspace', multiplier: 1.15, url: 'https://paperspace.com', logo: '🔴', setupTime: '1-2 min', reliability: 80 },
+    { name: 'CoreWeave', multiplier: 0.9, url: 'https://coreweave.com', logo: '⚫', setupTime: '10-20 min', reliability: 95 },
+    { name: 'Genesis Cloud', multiplier: 0.95, url: 'https://genesiscloud.com', logo: '🔵', setupTime: '5-10 min', reliability: 87 },
+    { name: 'AWS EC2', multiplier: 1.5, url: 'https://aws.amazon.com', logo: '🟧', setupTime: '5-10 min', reliability: 99 },
+    { name: 'Google Cloud', multiplier: 1.4, url: 'https://cloud.google.com', logo: '🔵', setupTime: '3-8 min', reliability: 98 }
   ];
 
-  return providers.map((provider, index) => {
+  return providers.map((provider) => {
     const price = Number((basePrice * provider.multiplier * (0.85 + Math.random() * 0.3)).toFixed(3));
     const status = Math.random() > 0.7 ? 'unavailable' : Math.random() > 0.5 ? 'limited' : 'available';
     
@@ -46,8 +48,10 @@ const generateProviderData = (basePrice: number): PlatformProvider[] => {
       price,
       status,
       url: provider.url,
-      x: index,
-      y: price
+      logo: provider.logo,
+      setupTime: provider.setupTime,
+      reliability: provider.reliability,
+      features: ['GPU Optimization', 'Auto-scaling', 'API Access']
     };
   });
 };
@@ -88,60 +92,10 @@ const GpuDetails = () => {
     );
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available': return '#10B981';
-      case 'limited': return '#F59E0B';
-      case 'unavailable': return '#EF4444';
-      default: return '#6B7280';
-    }
-  };
-
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'available': return 'bg-green-100 text-green-800';
-      case 'limited': return 'bg-yellow-100 text-yellow-800';
-      case 'unavailable': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
-          <p className="font-medium">Platform: {data.name}</p>
-          <p className="text-primary font-bold">Price: ${data.price}/hour</p>
-          <p className={`text-sm capitalize`} style={{ color: getStatusColor(data.status) }}>
-            Status: {data.status}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const CustomScatter = (props: any) => {
-    const { cx, cy, payload } = props;
-    return (
-      <circle 
-        cx={cx} 
-        cy={cy} 
-        r={6} 
-        fill={getStatusColor(payload.status)}
-        stroke="#fff"
-        strokeWidth={2}
-      />
-    );
-  };
-
-  const isRented = !gpu.rentable || gpu.rented;
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur">
+      <header className="border-b border-border bg-background/95 backdrop-blur sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <Link to="/marketplace">
@@ -150,8 +104,14 @@ const GpuDetails = () => {
                 Back to Marketplace
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold">{gpu.gpu_name} Details</h1>
-            <div></div>
+            <div className="text-right">
+              <div className="text-sm text-muted-foreground">Compare with</div>
+              <Link to={`/gpu/${id}/compare`}>
+                <Button variant="outline" size="sm">
+                  View Comparison
+                </Button>
+              </Link>
+            </div>
           </div>
           
           {/* Breadcrumb */}
@@ -165,7 +125,7 @@ const GpuDetails = () => {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to="/marketplace">GPU Catalog</Link>
+                  <Link to="/marketplace">GPU Marketplace</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -177,175 +137,20 @@ const GpuDetails = () => {
         </div>
       </header>
 
+      {/* Hero Section */}
+      <GpuHeroSection gpu={gpu} />
+
+      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Left Column (60% width) */}
-          <div className="lg:col-span-3">
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  💰 Price Comparison Across Platforms
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Compare {gpu.gpu_name} pricing across different cloud providers
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="h-96 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <ScatterChart
-                      data={providerData}
-                      margin={{ top: 20, right: 30, bottom: 60, left: 60 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis 
-                        type="number"
-                        dataKey="x"
-                        domain={[0, providerData.length - 1]}
-                        tickFormatter={(value) => providerData[value]?.name || ''}
-                        angle={-45}
-                        textAnchor="end"
-                        height={80}
-                        label={{ value: 'Platform', position: 'insideBottom', offset: -40 }}
-                      />
-                      <YAxis 
-                        type="number"
-                        dataKey="y"
-                        domain={[0, 'dataMax + 0.5']}
-                        tickFormatter={(value) => `$${value.toFixed(3)}`}
-                        label={{ value: 'Price per Hour ($)', angle: -90, position: 'insideLeft' }}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Scatter dataKey="y" shape={<CustomScatter />} />
-                    </ScatterChart>
-                  </ResponsiveContainer>
-                </div>
-                
-                {/* Legend */}
-                <div className="flex items-center justify-center gap-6 mt-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span>Available</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <span>Limited</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <span>Unavailable</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Column - Pricing Dashboard */}
+          <div className="lg:col-span-2">
+            <InteractivePricingDashboard gpu={gpu} providerData={providerData} />
           </div>
 
-          {/* Right Column (40% width) */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* GPU Information Card */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <h2 className="text-lg font-semibold">{gpu.gpu_name}</h2>
-                      <Badge className="bg-blue-100 text-blue-800">
-                        {gpu.model_type || 'Consumer'}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {gpu.num_gpus}x GPU • {gpu.gpu_ram}GB RAM
-                    </p>
-                  </div>
-                  <Badge className={isRented ? 'bg-gray-100 text-gray-800' : 'bg-green-100 text-green-800'}>
-                    {isRented ? 'rented' : 'available'}
-                  </Badge>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="space-y-4">
-                {/* Detailed Specifications */}
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Host:</span>
-                    <span>{gpu.hostname || 'gpu-server-01-4'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Location:</span>
-                    <span>{gpu.datacenter || gpu.country || 'UK South'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">CPU:</span>
-                    <span>{gpu.cpu_cores} cores</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">RAM:</span>
-                    <span>{gpu.cpu_ram}GB</span>
-                  </div>
-                </div>
-
-                {/* Reliability & Network */}
-                <div className="flex items-center justify-between pt-2 border-t">
-                  <div className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-primary" />
-                    <span className="text-sm">{Math.round((gpu.reliability2 || 0.75) * 100)}% reliability</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Wifi className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground">
-                      ↓{gpu.inet_down || '1Gbps'} ↑{gpu.inet_up || '1Gbps'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Action Button */}
-                <Button 
-                  className="w-full mt-4" 
-                  disabled={isRented}
-                  variant={isRented ? "secondary" : "default"}
-                >
-                  {isRented ? "Rented" : "Rent Now"}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Platform Pricing List */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Platform Pricing</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {providerData
-                    .sort((a, b) => a.price - b.price)
-                    .map((provider, index) => (
-                    <div 
-                      key={index} 
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-secondary/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-base font-medium">{provider.name}</span>
-                        <Badge className={getStatusBadgeClass(provider.status)}>
-                          {provider.status}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">${provider.price}/hr</span>
-                        <Button size="sm" variant="outline" asChild className="h-8 w-8 p-0">
-                          <a href={provider.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-4 p-3 bg-secondary/30 rounded-lg text-xs text-muted-foreground">
-                  <p><strong>Note:</strong> Prices are updated in real-time. Click external links for current availability and booking.</p>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Right Column - Quick Info */}
+          <div className="space-y-6">
+            <EnhancedSpecsSection gpu={gpu} />
           </div>
         </div>
       </main>
