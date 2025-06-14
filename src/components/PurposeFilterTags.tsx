@@ -146,7 +146,7 @@ const PurposeFilterTags = ({ selectedPurpose, onPurposeChange }: PurposeFilterTa
           </p>
         </div>
         
-        <div className="flex flex-wrap gap-3 mb-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           {purposeTags.map((tag) => {
             const Icon = tag.icon;
             const isSelected = selectedPurpose === tag.id;
@@ -154,10 +154,10 @@ const PurposeFilterTags = ({ selectedPurpose, onPurposeChange }: PurposeFilterTa
             return (
               <Badge
                 key={tag.id}
-                className={`${isSelected ? 'bg-primary text-primary-foreground' : tag.color} cursor-pointer transition-all px-4 py-2 text-sm font-medium border-2 ${isSelected ? 'border-primary' : 'border-transparent hover:border-primary/30'}`}
+                className={`${isSelected ? 'bg-primary text-primary-foreground' : tag.color} cursor-pointer transition-all px-3 py-1 text-xs font-medium border-2 ${isSelected ? 'border-primary' : 'border-transparent hover:border-primary/30'}`}
                 onClick={() => onPurposeChange(isSelected ? null : tag.id)}
               >
-                <Icon className="h-4 w-4 mr-2" />
+                <Icon className="h-3 w-3 mr-1.5" />
                 {tag.label}
               </Badge>
             );

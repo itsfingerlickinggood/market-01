@@ -84,8 +84,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    @apply bg-background text-foreground font-inter;
   }
 
   /* Dark theme specific enhancements - minimal glow effects */

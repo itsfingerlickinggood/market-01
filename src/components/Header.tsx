@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +64,7 @@ const Header = () => {
           <div className="flex justify-center w-1/3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-2xl font-semibold tracking-tight text-foreground hover:opacity-80 transition-all duration-300">
+                <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
                   market01
                 </Button>
               </DropdownMenuTrigger>
@@ -133,4 +132,3 @@ const Header = () => {
 };
 
 export default Header;
-
