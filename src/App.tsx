@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
+import GPUComparison from "./pages/GPUComparison";
 import GpuDetails from "./pages/GpuDetails";
 import GpuSelection from "./pages/GpuSelection";
 import NotFound from "./pages/NotFound";
@@ -21,8 +22,10 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/comparison" element={<GPUComparison />} />
           <Route path="/gpu/:id" element={<GpuDetails />} />
           <Route path="/gpu/:id/select" element={<GpuSelection />} />
+          <Route path="/gpu/:id/compare" element={<GPUComparison />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
