@@ -10,6 +10,7 @@ import GpuDetails from "./pages/GpuDetails";
 import GpuComparison from "./pages/GpuComparison";
 import GpuSelection from "./pages/GpuSelection";
 import Contact from "./pages/Contact";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ function App() {
               <Route path="/gpu/:id/compare" element={<GpuComparison />} />
               <Route path="/selection" element={<GpuSelection />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/analytics" element={<Analytics />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
