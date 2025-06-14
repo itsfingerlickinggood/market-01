@@ -15,8 +15,13 @@ import { useTheme } from "next-themes";
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const location = useLocation();
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +31,21 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const getThemeIcon = () => {
+    if (!mounted) return <Sun className="h-5 w-5" />;
+    
+    switch (theme) {
+      case 'light':
+        return <Sun className="h-5 w-5" />;
+      case 'dark':
+        return <Moon className="h-5 w-5" />;
+      case 'system':
+        return <Monitor className="h-5 w-5" />;
+      default:
+        return <Sun className="h-5 w-5" />;
+    }
+  };
 
   return (
     <header 
@@ -60,11 +80,16 @@ const Header = () => {
             </DropdownMenu>
           </div>
 
-          {/* Centered Logo */}
+          {/* Centered Logo with Analytics Tag */}
           <div className="flex justify-center w-1/3">
-            <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
-              market01
-            </Button>
+            <div className="relative">
+              <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
+                market01
+              </Button>
+              <div className="absolute -bottom-1 -right-2 bg-black text-white text-xs px-2 py-0.5 rounded-md hover:bg-green-800 transition-colors duration-200 cursor-default">
+                analytics
+              </div>
+            </div>
           </div>
 
           {/* Right Side - Live Status and Theme Selector */}
@@ -78,7 +103,7 @@ const Header = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
-                  <Sun className="h-5 w-5" />
+                  {getThemeIcon()}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
