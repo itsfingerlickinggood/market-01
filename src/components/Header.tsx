@@ -1,14 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { Search, User, Menu, X } from "lucide-react";
+import { User, Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
@@ -35,37 +35,15 @@ const Header = () => {
     >
       <div className="container mx-auto px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Left spacer for perfect centering */}
-          <div className="flex items-center space-x-6 w-1/3">
-            {/* Search Bar */}
-            <div className="hidden lg:flex relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search GPUs..."
-                className="pl-12 w-80 h-12 bg-muted/40 border-border/30 focus:bg-background/80 focus:border-primary/50 rounded-2xl transition-all duration-300 shadow-lg"
-              />
-            </div>
-          </div>
-
-          {/* Centered Logo */}
-          <div className="flex justify-center w-1/3">
-            <Link to="/" className="flex items-center hover:opacity-80 transition-all duration-300">
-              <span className="text-xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-                market01
-              </span>
-            </Link>
-          </div>
-
-          {/* Right Side - User Dropdown */}
-          <div className="flex items-center justify-end space-x-6 w-1/3">
-            {/* User Dropdown */}
+          {/* Left Side - User Dropdown */}
+          <div className="flex items-center justify-start w-1/3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-2xl hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
+              <DropdownMenuContent align="start" className="w-56 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
                 <DropdownMenuItem className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200">
                   <User className="h-4 w-4 mr-3" />
                   Profile
@@ -78,6 +56,23 @@ const Header = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          </div>
+
+          {/* Centered Logo */}
+          <div className="flex justify-center w-1/3">
+            <Link to="/" className="flex items-center hover:opacity-80 transition-all duration-300">
+              <span className="text-base font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+                market01
+              </span>
+            </Link>
+          </div>
+
+          {/* Right Side - Live Status */}
+          <div className="flex items-center justify-end space-x-6 w-1/3">
+            <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 px-3 py-1 text-xs font-medium animate-pulse">
+              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+              LIVE
+            </Badge>
 
             {/* Mobile Menu Button */}
             <Button
@@ -96,13 +91,7 @@ const Header = () => {
           <div className="md:hidden border-t border-border/30 bg-background/95 backdrop-blur-xl rounded-b-2xl mt-2 shadow-xl">
             <nav className="py-8 space-y-4">
               <div className="px-8">
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search GPUs..."
-                    className="pl-12 w-full h-12 bg-muted/40 border-border/30 focus:bg-background/80 focus:border-primary/50 rounded-2xl transition-all duration-300 shadow-lg"
-                  />
-                </div>
+                <p className="text-sm text-muted-foreground">Mobile menu</p>
               </div>
             </nav>
           </div>
