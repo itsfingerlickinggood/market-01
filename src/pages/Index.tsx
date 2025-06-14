@@ -1,181 +1,239 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Filter, Zap, Target } from "lucide-react";
-import VastAiGrid from "@/components/VastAiGrid";
-import UserProfileSelector from "@/components/UserProfileSelector";
-import SmartRecommendations from "@/components/SmartRecommendations";
-import { UserProfile, GPUOffer } from "@/types/gpu-recommendation";
-import { useVastAiOffers } from "@/hooks/useVastAiOffers";
-import { recommendationEngine } from "@/utils/recommendationEngine";
-import { useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Database, 
+  Shield, 
+  Code, 
+  FolderOpen, 
+  Zap, 
+  Network,
+  Brain,
+  GitBranch,
+  Star,
+  Github,
+  ChevronDown,
+  Check
+} from "lucide-react";
 
 const Index = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("price");
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    organization: 'startup',
-    workloadType: 'ai-training',
-    budgetRange: 'medium',
-    dataCompliance: 'none',
-    geographicRequirements: [],
-    scalabilityNeeds: 'dynamic'
-  });
-
-  const { data: offers, isLoading } = useVastAiOffers();
-
-  // Generate smart recommendations with scores
-  const smartOffers = useMemo(() => {
-    if (!offers) return [];
-    
-    return offers.map(offer => {
-      // Enhance offer with mock specs and provider data for demonstration
-      const enhancedOffer: GPUOffer = {
-        ...offer,
-        specs: {
-          vramCapacity: offer.gpu_name?.includes('H100') ? 80 : 
-                       offer.gpu_name?.includes('4090') ? 24 :
-                       offer.gpu_name?.includes('4080') ? 16 :
-                       offer.gpu_name?.includes('3090') ? 24 : 12,
-          memoryBandwidth: offer.gpu_name?.includes('H100') ? 3350 : 
-                          offer.gpu_name?.includes('4090') ? 1008 : 936,
-          memoryType: offer.gpu_name?.includes('H100') ? 'HBM3' : 'GDDR6X' as const,
-          fp64Performance: offer.gpu_name?.includes('MI300X') ? 163 : 
-                          offer.gpu_name?.includes('H100') ? 67 : 19,
-          fp32Performance: offer.gpu_name?.includes('H100') ? 989 : 
-                          offer.gpu_name?.includes('4090') ? 166 : 84,
-          fp16Performance: offer.gpu_name?.includes('H100') ? 1979 : 
-                          offer.gpu_name?.includes('4090') ? 332 : 168,
-          nvlinkSupport: offer.gpu_name?.includes('H100') || offer.gpu_name?.includes('4090'),
-          rtCores: offer.gpu_name?.includes('RTX') ? 128 : 0,
-          cudaCores: offer.gpu_name?.includes('4090') ? 16384 : 10496
-        },
-        pricing: {
-          onDemand: offer.dph_total || 1.0,
-          spot: offer.dph_total ? offer.dph_total * 0.3 : 0.3,
-          reserved: offer.dph_total ? offer.dph_total * 0.7 : 0.7,
-          dataEgressFee: 0.09,
-          storageCost: 0.1
-        },
-        provider: {
-          name: 'Vast.ai',
-          type: 'specialist' as const,
-          globalScale: 7,
-          slaGuarantee: 99.5,
-          securityCertifications: ['SOC2'],
-          egressPolicy: 'paid' as const,
-          specializations: ['ai-training', 'ai-inference'] as const
-        },
-        availability: 'available' as const,
-        location: offer.datacenter || 'Unknown',
-        reliability: offer.reliability2 || 0.95
-      };
-
-      const score = recommendationEngine.calculateScore(enhancedOffer, userProfile);
-      const matchReason = recommendationEngine.getMatchReasons(enhancedOffer, userProfile);
-      
-      return {
-        ...enhancedOffer,
-        recommendationScore: score,
-        matchReason
-      };
-    });
-  }, [offers, userProfile]);
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="border-b border-gray-800 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-8">
               <div className="flex items-center space-x-3">
-                <img 
-                  src="/placeholder.svg" 
-                  alt="GPUTrade Logo" 
-                  className="h-10 w-10 object-contain"
-                />
-                <Zap className="h-8 w-8 text-primary" />
-                <h1 className="text-2xl font-bold text-foreground">GPUTrade</h1>
+                <Zap className="h-8 w-8 text-green-400" />
+                <h1 className="text-2xl font-bold text-white">GPUTrade</h1>
               </div>
+              <nav className="hidden md:flex items-center space-x-6">
+                <div className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors cursor-pointer">
+                  <span>Product</span>
+                  <ChevronDown className="h-4 w-4" />
+                </div>
+                <div className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors cursor-pointer">
+                  <span>Developers</span>
+                  <ChevronDown className="h-4 w-4" />
+                </div>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Enterprise</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Docs</a>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">Blog</a>
+              </nav>
             </div>
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-foreground hover:text-primary transition-colors">Dashboard</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Marketplace</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Analytics</a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Portfolio</a>
-            </nav>
             <div className="flex items-center space-x-4">
-              <Button variant="outline">Sign In</Button>
-              <Button>Get Started</Button>
+              <div className="flex items-center space-x-2 text-gray-300">
+                <Github className="h-4 w-4" />
+                <Star className="h-4 w-4" />
+                <span className="text-sm">12.5k</span>
+              </div>
+              <Button variant="outline" className="border-gray-700 text-gray-300 hover:text-white">
+                Dashboard
+              </Button>
+              <Button className="bg-green-500 hover:bg-green-600 text-black font-semibold">
+                Get Started
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <UserProfileSelector 
-          onProfileUpdate={setUserProfile}
-          currentProfile={userProfile}
-        />
+      {/* Hero Section */}
+      <main className="container mx-auto px-4 py-16">
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+            The Open Source<br />GPU Trading Platform
+          </h1>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Build your next GPU-powered application with our comprehensive backend platform. 
+            From database to deployment, we've got you covered.
+          </p>
+          <div className="flex items-center justify-center space-x-4">
+            <Button className="bg-green-500 hover:bg-green-600 text-black font-semibold px-8 py-3">
+              Start Building
+            </Button>
+            <Button variant="outline" className="border-gray-700 text-gray-300 hover:text-white px-8 py-3">
+              View Documentation
+            </Button>
+          </div>
+        </div>
 
-        <Tabs defaultValue="recommendations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="recommendations" className="flex items-center gap-2">
-              <Target className="h-4 w-4" />
-              Smart Recommendations
-            </TabsTrigger>
-            <TabsTrigger value="browse" className="flex items-center gap-2">
-              <Search className="h-4 w-4" />
-              Browse All
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="recommendations" className="space-y-6">
-            {!isLoading && smartOffers && (
-              <SmartRecommendations 
-                offers={smartOffers}
-                userProfile={userProfile}
-              />
-            )}
-          </TabsContent>
-
-          <TabsContent value="browse" className="space-y-6">
-            {/* Search and Filters */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search GPU models, hosts, or datacenters..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+        {/* 4-Card Grid Hero Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+          {/* Database Card */}
+          <Card className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 group">
+            <CardContent className="p-8">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="p-3 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition-colors">
+                  <Database className="h-8 w-8 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold">GPU Database</h3>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filters
-                </Button>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-2 border border-input rounded-md text-sm"
-                >
-                  <option value="price">Sort by Price</option>
-                  <option value="performance">Sort by Reliability</option>
-                  <option value="availability">Sort by Availability</option>
-                  <option value="recommendation">Sort by Match Score</option>
-                </select>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Every project connects to our comprehensive GPU database, the world's most trusted hardware marketplace.
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3">
+                  <Check className="h-4 w-4 text-green-400" />
+                  <span className="text-sm text-gray-300">100% verified hardware</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Check className="h-4 w-4 text-green-400" />
+                  <span className="text-sm text-gray-300">Real-time availability</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Check className="h-4 w-4 text-green-400" />
+                  <span className="text-sm text-gray-300">Easy to integrate</span>
+                </div>
               </div>
-            </div>
+              {/* PostgreSQL Logo Placeholder */}
+              <div className="mt-8 opacity-20">
+                <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center">
+                  <Database className="h-8 w-8 text-gray-500" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* GPU Grid */}
-            <VastAiGrid searchTerm={searchTerm} sortBy={sortBy} />
-          </TabsContent>
-        </Tabs>
+          {/* Authentication Card */}
+          <Card className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 group">
+            <CardContent className="p-8">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="p-3 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition-colors">
+                  <Shield className="h-8 w-8 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold">Authentication</h3>
+              </div>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Add user sign ups and logins, securing your data with enterprise-grade security.
+              </p>
+              {/* Mock Login Form */}
+              <div className="space-y-3 bg-black/30 p-4 rounded-lg border border-gray-800">
+                <div className="space-y-2">
+                  <div className="text-xs text-gray-500">Email</div>
+                  <div className="bg-gray-800 rounded px-3 py-2 text-sm text-gray-400">user@example.com</div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-xs text-gray-500">Password</div>
+                  <div className="bg-gray-800 rounded px-3 py-2 text-sm text-gray-400">••••••••</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Edge Functions Card */}
+          <Card className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 group">
+            <CardContent className="p-8">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="p-3 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition-colors">
+                  <Code className="h-8 w-8 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold">Edge Functions</h3>
+              </div>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Easily write custom code without deploying or scaling servers.
+              </p>
+              {/* Terminal Example */}
+              <div className="bg-black/50 p-4 rounded-lg border border-gray-800 font-mono">
+                <div className="text-green-400 text-sm mb-2">$ gputrade functions deploy</div>
+                <div className="text-gray-500 text-xs space-y-1">
+                  <div>✓ Deploying function...</div>
+                  <div>✓ Function deployed successfully</div>
+                  <div className="text-green-400">→ https://api.gputrade.dev/gpu-optimizer</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Storage Card */}
+          <Card className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10 group">
+            <CardContent className="p-8">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="p-3 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition-colors">
+                  <FolderOpen className="h-8 w-8 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold">Storage</h3>
+              </div>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Store, organize, and serve large files, from model weights to training datasets.
+              </p>
+              {/* File Grid */}
+              <div className="grid grid-cols-4 gap-2">
+                {['JSON', 'CSV', 'PNG', 'PDF', 'ZIP', 'H5', 'PY', 'MD'].map((type) => (
+                  <div key={type} className="bg-gray-800 rounded p-2 text-center">
+                    <div className="text-xs text-gray-400">{type}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Secondary Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Realtime Card */}
+          <Card className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <Network className="h-6 w-6 text-green-400" />
+                <h3 className="text-xl font-bold">Realtime</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Build multiplayer experiences with real-time GPU availability and pricing updates.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Vector/AI Card */}
+          <Card className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <Brain className="h-6 w-6 text-green-400" />
+                <h3 className="text-xl font-bold">AI/ML Vector</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Integrate your favorite ML models to store, index and search GPU performance vectors.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Data APIs Card */}
+          <Card className="bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/10">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <GitBranch className="h-6 w-6 text-green-400" />
+                <h3 className="text-xl font-bold">Data APIs</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Instant ready-to-use RESTful APIs for GPU data, pricing, and marketplace operations.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );
