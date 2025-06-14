@@ -1,3 +1,4 @@
+
 export interface GPUOffer {
   id: number;
   gpu_name: string;
@@ -16,6 +17,8 @@ export interface GPUOffer {
   availability: 'available' | 'limited' | 'unavailable';
   location: string;
   reliability: number;
+  recommendationScore?: number;
+  matchReason?: string[];
   marketData?: {
     trend: 'up' | 'down' | 'stable';
     demandLevel: 'low' | 'medium' | 'high';
@@ -78,4 +81,10 @@ export interface SmartRecommendation extends GPUOffer {
   recommendationScore: RecommendationScore;
   matchReasons: string[];
   alternatives: number[];
+}
+
+export interface RecommendationEngine {
+  calculateScore(offer: GPUOffer, profile: UserProfile): number;
+  getMatchReasons(offer: GPUOffer, profile: UserProfile): string[];
+  filterByWorkload(offers: GPUOffer[], workload: WorkloadType): GPUOffer[];
 }
