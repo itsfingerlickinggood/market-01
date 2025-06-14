@@ -171,57 +171,55 @@ const Index = () => {
                   className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary"
                 />
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <Button 
                   variant="outline" 
-                  size="sm" 
-                  className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-4 py-2 h-10"
+                  className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-3 py-1.5 h-8 text-xs"
                 >
-                  <Filter className="h-4 w-4 mr-2" />
-                  Advanced Filters
+                  <Filter className="h-3 w-3 mr-1.5" />
+                  Filters
                 </Button>
                 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
                       variant="outline" 
-                      size="sm" 
-                      className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-4 py-2 h-10 min-w-[160px] justify-between"
+                      className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-3 py-1.5 h-8 min-w-[140px] justify-between text-xs"
                     >
                       <div className="flex items-center">
-                        <SortAsc className="h-4 w-4 mr-2" />
-                        <span className="text-sm">{getSortLabel(sortBy)}</span>
+                        <SortAsc className="h-3 w-3 mr-1.5" />
+                        <span className="text-xs">{getSortLabel(sortBy)}</span>
                       </div>
-                      <ChevronDown className="h-4 w-4 ml-2" />
+                      <ChevronDown className="h-3 w-3 ml-1.5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent 
                     align="end" 
-                    className="w-56 bg-popover border-border shadow-lg"
+                    className="w-48 bg-popover border-border shadow-lg z-50"
                   >
                     <DropdownMenuItem 
                       onClick={() => setSortBy('price')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
                     >
-                      <span className="text-sm">Price (Low to High)</span>
+                      <span className="text-xs">Price (Low to High)</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => setSortBy('performance')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
                     >
-                      <span className="text-sm">Reliability Score</span>
+                      <span className="text-xs">Reliability Score</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => setSortBy('availability')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
                     >
-                      <span className="text-sm">Availability Status</span>
+                      <span className="text-xs">Availability Status</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => setSortBy('recommendation')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
                     >
-                      <span className="text-sm">Match Score</span>
+                      <span className="text-xs">Match Score</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
