@@ -113,6 +113,8 @@ export const generateGPUData = (): GPUOffer[] => {
                                 provider.type === "specialist" ? 1.0 : 0.8;
       
       const finalPrice = model.basePrice * demandMultiplier * locationMultiplier * providerMultiplier;
+      const reliability = 0.85 + Math.random() * 0.14; // 85-99% reliability
+      const rentable = Math.random() > 0.1; // 90% availability
       
       const offer: GPUOffer = {
         id: id++,
@@ -124,8 +126,8 @@ export const generateGPUData = (): GPUOffer[] => {
         cpu_cores: Math.floor(Math.random() * 32) + 8,
         cpu_ram: Math.floor(Math.random() * 128) + 32,
         disk_space: [100, 250, 500, 1000, 2000][Math.floor(Math.random() * 5)],
-        reliability2: 0.85 + Math.random() * 0.14, // 85-99% reliability
-        rentable: Math.random() > 0.1, // 90% availability
+        reliability2: reliability,
+        rentable: rentable,
         specs: {
           vramCapacity: model.vram,
           memoryBandwidth: model.memoryBandwidth,
@@ -154,9 +156,9 @@ export const generateGPUData = (): GPUOffer[] => {
           egressPolicy: Math.random() > 0.5 ? 'free' as const : 'paid' as const,
           specializations: [...provider.specializations]
         },
-        availability: offer.rentable ? (Math.random() > 0.8 ? 'limited' as const : 'available' as const) : 'unavailable' as const,
+        availability: rentable ? (Math.random() > 0.8 ? 'limited' as const : 'available' as const) : 'unavailable' as const,
         location: `${datacenter.city}, ${datacenter.country}`,
-        reliability: offer.reliability2
+        reliability: reliability
       };
       
       offers.push(offer);
