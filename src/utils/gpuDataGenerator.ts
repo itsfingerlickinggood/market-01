@@ -152,7 +152,7 @@ export const generateGPUData = (): GPUOffer[] => {
           slaGuarantee: provider.type === "hyperscaler" ? 99.9 : 99.5,
           securityCertifications: provider.type === "hyperscaler" ? ['SOC2', 'ISO27001', 'HIPAA'] : ['SOC2'],
           egressPolicy: Math.random() > 0.5 ? 'free' as const : 'paid' as const,
-          specializations: provider.specializations
+          specializations: [...provider.specializations]
         },
         availability: offer.rentable ? (Math.random() > 0.8 ? 'limited' as const : 'available' as const) : 'unavailable' as const,
         location: `${datacenter.city}, ${datacenter.country}`,
