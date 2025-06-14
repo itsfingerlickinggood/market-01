@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +22,6 @@ import Header from "@/components/Header";
 import MarketplaceHero from "@/components/MarketplaceHero";
 import VastAiGrid from "@/components/VastAiGrid";
 import SmartRecommendations from "@/components/SmartRecommendations";
-import GpuHoverDialog from "@/components/GpuHoverDialog";
 import { UserProfile, GPUOffer } from "@/types/gpu-recommendation";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { recommendationEngine } from "@/utils/recommendationEngine";
@@ -32,8 +32,6 @@ const Marketplace = () => {
   const [priceRange, setPriceRange] = useState([0, 10]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [hoveredGpu, setHoveredGpu] = useState<any>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   const [userProfile, setUserProfile] = useState<UserProfile>({
     organization: 'startup',
@@ -63,15 +61,6 @@ const Marketplace = () => {
 
   const brands = ['NVIDIA', 'AMD', 'Intel'];
   const locations = ['US East', 'US West', 'Europe', 'Asia'];
-
-  const handleGpuHover = (gpu: any, event: React.MouseEvent) => {
-    setHoveredGpu(gpu);
-    setMousePosition({ x: event.clientX, y: event.clientY });
-  };
-
-  const handleGpuLeave = () => {
-    setHoveredGpu(null);
-  };
 
   const getSortLabel = (value: string) => {
     switch (value) {
@@ -260,8 +249,6 @@ const Marketplace = () => {
                     <Card 
                       key={offer.id} 
                       className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary/20"
-                      onMouseEnter={(e) => handleGpuHover(offer, e)}
-                      onMouseLeave={handleGpuLeave}
                     >
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-3">
@@ -332,8 +319,6 @@ const Marketplace = () => {
                       <Card 
                         key={offer.id} 
                         className="hover:shadow-lg transition-all cursor-pointer"
-                        onMouseEnter={(e) => handleGpuHover(offer, e)}
-                        onMouseLeave={handleGpuLeave}
                       >
                         <CardContent className="p-4">
                           <div className="flex justify-between items-start mb-3">
@@ -381,15 +366,6 @@ const Marketplace = () => {
           </div>
         </div>
       </main>
-
-      {/* Hover Dialog */}
-      {hoveredGpu && (
-        <GpuHoverDialog
-          gpu={hoveredGpu}
-          position={mousePosition}
-          onClose={() => setHoveredGpu(null)}
-        />
-      )}
     </div>
   );
 };
