@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -78,41 +77,38 @@ const MinimalGpuCard = ({ offer }: MinimalGpuCardProps) => {
   };
 
   return (
-    <>
-      <Link to={`/gpu/${offer.id}`}>
-        <Card 
-          className="hover:shadow-md transition-shadow cursor-pointer p-4"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onMouseMove={handleMouseMove}
-        >
-          <CardContent className="p-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3 flex-1 min-w-0">
-                <img 
-                  src={companyLogo.src}
-                  alt={companyLogo.alt}
-                  className="w-8 h-8 object-contain flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-lg truncate">
-                    {offer.gpu_name || 'GPU'}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    ${offer.dph_total?.toFixed(3) || '0'}/hour
-                  </p>
-                </div>
-              </div>
-              <div className="ml-4 flex-shrink-0">
-                <MiniPriceChart 
-                  data={priceData} 
-                  isPositive={priceChange > 0}
-                />
+    <Link to={`/gpu/${offer.id}`}>
+      <Card 
+        className="group relative transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 border-border/50 hover:border-primary/30 cursor-pointer bg-card"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <CardContent className="p-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
+              <img 
+                src={companyLogo.src}
+                alt={companyLogo.alt}
+                className="w-8 h-8 object-contain flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-lg truncate">
+                  {offer.gpu_name || 'GPU'}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  ${offer.dph_total?.toFixed(3) || '0'}/hour
+                </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </Link>
+            <div className="ml-4 flex-shrink-0">
+              <MiniPriceChart 
+                data={priceData} 
+                isPositive={priceChange > 0}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {showHover && (
         <CompactGpuHoverDialog
@@ -121,7 +117,7 @@ const MinimalGpuCard = ({ offer }: MinimalGpuCardProps) => {
           onClose={() => setShowHover(false)}
         />
       )}
-    </>
+    </Link>
   );
 };
 
