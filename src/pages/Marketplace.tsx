@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +40,9 @@ const Marketplace = () => {
     geographicRequirements: [],
     scalabilityNeeds: 'dynamic'
   });
+
+  const [hoveredGpu, setHoveredGpu] = useState<any>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const { data: offers, isLoading } = useVastAiOffers();
 
@@ -114,6 +116,15 @@ const Marketplace = () => {
         return 0;
     }
   });
+
+  const handleGpuHover = (offer: any, e: React.MouseEvent) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+    setHoveredGpu(offer);
+  };
+
+  const handleGpuLeave = () => {
+    setHoveredGpu(null);
+  };
 
   return (
     <div className="min-h-screen bg-background pt-16">
@@ -249,6 +260,9 @@ const Marketplace = () => {
                     <Card 
                       key={offer.id} 
                       className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary/20"
+                      onMouseEnter={(e) => handleGpuHover(offer, e)}
+                      onMouseLeave={handleGpuLeave}
+                      onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
                     >
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-3">
@@ -319,6 +333,9 @@ const Marketplace = () => {
                       <Card 
                         key={offer.id} 
                         className="hover:shadow-lg transition-all cursor-pointer"
+                        onMouseEnter={(e) => handleGpuHover(offer, e)}
+                        onMouseLeave={handleGpuLeave}
+                        onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
                       >
                         <CardContent className="p-4">
                           <div className="flex justify-between items-start mb-3">
@@ -366,6 +383,15 @@ const Marketplace = () => {
           </div>
         </div>
       </main>
+
+      {/* Hover Dialog */}
+      {hoveredGpu && (
+        <CompactGpuHoverDialog
+          gpu={hoveredGpu}
+          position={mousePosition}
+          onClose={() => setHoveredGpu(null)}
+        />
+      )}
     </div>
   );
 };

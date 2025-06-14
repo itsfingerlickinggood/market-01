@@ -1,5 +1,5 @@
-
 import { GPUOffer } from '@/types/gpu-recommendation';
+import { generateEnhancedGPUData } from './enhancedGpuDataGenerator';
 
 interface GPUModel {
   name: string;
@@ -203,7 +203,18 @@ const generateMarketData = (gpuModel: string, basePrice: number, datacenter: str
   };
 };
 
-export const generateGPUData = async (): Promise<GPUOffer[]> => {
+export const generateGPUData = async () => {
+  try {
+    // Use enhanced data generation with potential Gemini integration
+    return await generateEnhancedGPUData();
+  } catch (error) {
+    console.error('Error generating GPU data:', error);
+    // Fallback to existing dummy data
+    return generateDummyGPUData();
+  }
+};
+
+const generateDummyGPUData = () => {
   const offers: GPUOffer[] = [];
   let id = 1;
 
