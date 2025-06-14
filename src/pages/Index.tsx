@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Filter, Zap, Target, Github, Star } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Search, Filter, Zap, Target, Github, Star, ChevronDown, SortAsc } from "lucide-react";
 import VastAiGrid from "@/components/VastAiGrid";
 import UserProfileSelector from "@/components/UserProfileSelector";
 import SmartRecommendations from "@/components/SmartRecommendations";
@@ -84,6 +84,16 @@ const Index = () => {
     });
   }, [offers, userProfile]);
 
+  const getSortLabel = (value: string) => {
+    switch (value) {
+      case 'price': return 'Price (Low to High)';
+      case 'performance': return 'Reliability Score';
+      case 'availability': return 'Availability Status';
+      case 'recommendation': return 'Match Score';
+      default: return 'Sort by';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -161,21 +171,60 @@ const Index = () => {
                   className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary"
                 />
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="border-border hover:bg-accent hover:text-accent-foreground">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filters
-                </Button>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-2 bg-card border border-border rounded-md text-sm text-foreground focus:ring-primary focus:border-primary"
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-4 py-2 h-10"
                 >
-                  <option value="price">Sort by Price</option>
-                  <option value="performance">Sort by Reliability</option>
-                  <option value="availability">Sort by Availability</option>
-                  <option value="recommendation">Sort by Match Score</option>
-                </select>
+                  <Filter className="h-4 w-4 mr-2" />
+                  Advanced Filters
+                </Button>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-4 py-2 h-10 min-w-[160px] justify-between"
+                    >
+                      <div className="flex items-center">
+                        <SortAsc className="h-4 w-4 mr-2" />
+                        <span className="text-sm">{getSortLabel(sortBy)}</span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent 
+                    align="end" 
+                    className="w-56 bg-popover border-border shadow-lg"
+                  >
+                    <DropdownMenuItem 
+                      onClick={() => setSortBy('price')}
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <span className="text-sm">Price (Low to High)</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setSortBy('performance')}
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <span className="text-sm">Reliability Score</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setSortBy('availability')}
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <span className="text-sm">Availability Status</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setSortBy('recommendation')}
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
+                    >
+                      <span className="text-sm">Match Score</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
 
