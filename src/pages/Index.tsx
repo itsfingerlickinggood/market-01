@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Search, Filter, Zap, Target, Github, Star, ChevronDown, SortAsc } from "lucide-react";
+import { Search, Filter, Zap, Target, Github, Star, ChevronDown, SortAsc, TrendingUp } from "lucide-react";
 import VastAiGrid from "@/components/VastAiGrid";
-import UserProfileSelector from "@/components/UserProfileSelector";
+import MarketplaceDeal from "@/components/MarketplaceDeal";
 import SmartRecommendations from "@/components/SmartRecommendations";
 import { UserProfile, GPUOffer } from "@/types/gpu-recommendation";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
@@ -25,6 +25,52 @@ const Index = () => {
   });
 
   const { data: offers, isLoading } = useVastAiOffers();
+
+  // Mock top deals data
+  const topDeals = [
+    {
+      id: '1',
+      company: 'NVIDIA',
+      model: 'RTX 4090',
+      basePrice: 2.45,
+      sites: ['Vast.ai', 'RunPod', 'Lambda Labs']
+    },
+    {
+      id: '2',
+      company: 'NVIDIA',
+      model: 'H100 SXM',
+      basePrice: 4.89,
+      sites: ['Vast.ai', 'CoreWeave', 'Lambda Labs']
+    },
+    {
+      id: '3',
+      company: 'AMD',
+      model: 'MI300X',
+      basePrice: 3.21,
+      sites: ['Vast.ai', 'RunPod']
+    },
+    {
+      id: '4',
+      company: 'NVIDIA',
+      model: 'RTX 4080',
+      basePrice: 1.89,
+      sites: ['Vast.ai', 'RunPod', 'Paperspace']
+    },
+    {
+      id: '5',
+      company: 'NVIDIA',
+      model: 'A100 80GB',
+      basePrice: 3.67,
+      sites: ['Vast.ai', 'CoreWeave', 'Lambda Labs']
+    },
+    {
+      id: '6',
+      company: 'NVIDIA',
+      model: 'RTX 3090',
+      basePrice: 1.23,
+      sites: ['Vast.ai', 'RunPod']
+    }
+  ];
 
   // Generate smart recommendations with scores
   const smartOffers = useMemo(() => {
@@ -133,10 +179,26 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <UserProfileSelector 
-          onProfileUpdate={setUserProfile}
-          currentProfile={userProfile}
-        />
+        {/* Marketplace Hero Section */}
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold mb-4 flex items-center justify-center gap-3">
+            <TrendingUp className="h-8 w-8 text-primary" />
+            GPU Marketplace
+          </h2>
+          <p className="text-lg text-muted-foreground mb-6">
+            Real-time GPU deals across multiple platforms with live price tracking
+          </p>
+        </div>
+
+        {/* Top Deals Section */}
+        <div className="mb-8">
+          <h3 className="text-2xl font-semibold mb-6">Top GPU Deals</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {topDeals.map((deal) => (
+              <MarketplaceDeal key={deal.id} gpu={deal} />
+            ))}
+          </div>
+        </div>
 
         <Tabs defaultValue="recommendations" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 bg-secondary">
@@ -174,7 +236,8 @@ const Index = () => {
               <div className="flex gap-2">
                 <Button 
                   variant="outline" 
-                  className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-3 py-1.5 h-8 text-xs"
+                  size="sm"
+                  className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
                   <Filter className="h-3 w-3 mr-1.5" />
                   Filters
@@ -184,11 +247,12 @@ const Index = () => {
                   <DropdownMenuTrigger asChild>
                     <Button 
                       variant="outline" 
-                      className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors px-3 py-1.5 h-8 min-w-[140px] justify-between text-xs"
+                      size="sm"
+                      className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors min-w-[140px] justify-between"
                     >
                       <div className="flex items-center">
                         <SortAsc className="h-3 w-3 mr-1.5" />
-                        <span className="text-xs">{getSortLabel(sortBy)}</span>
+                        <span>{getSortLabel(sortBy)}</span>
                       </div>
                       <ChevronDown className="h-3 w-3 ml-1.5" />
                     </Button>
@@ -199,27 +263,27 @@ const Index = () => {
                   >
                     <DropdownMenuItem 
                       onClick={() => setSortBy('price')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
                     >
-                      <span className="text-xs">Price (Low to High)</span>
+                      Price (Low to High)
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => setSortBy('performance')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
                     >
-                      <span className="text-xs">Reliability Score</span>
+                      Reliability Score
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => setSortBy('availability')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
                     >
-                      <span className="text-xs">Availability Status</span>
+                      Availability Status
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => setSortBy('recommendation')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground text-xs"
+                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
                     >
-                      <span className="text-xs">Match Score</span>
+                      Match Score
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
