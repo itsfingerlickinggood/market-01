@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Zap } from "lucide-react";
 import VastAiGrid from "@/components/VastAiGrid";
-import PricingChart from "@/components/PricingChart";
-import PerformanceChart from "@/components/PerformanceChart";
-import RentalStats from "@/components/RentalStats";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,15 +37,6 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Stats Overview */}
-        <RentalStats />
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <PricingChart />
-          <PerformanceChart />
-        </div>
-
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="relative flex-1">
@@ -77,7 +65,7 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Vast.ai GPU Grid */}
+        {/* GPU Grid */}
         <VastAiGrid searchTerm={searchTerm} sortBy={sortBy} />
       </main>
     </div>
