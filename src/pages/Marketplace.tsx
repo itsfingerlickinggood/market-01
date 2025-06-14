@@ -2,12 +2,27 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Search, Filter, Target, ChevronDown, SortAsc, ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Search, 
+  Filter, 
+  Target, 
+  ChevronDown, 
+  SortAsc, 
+  Settings,
+  Star,
+  MapPin,
+  Zap
+} from "lucide-react";
+import Header from "@/components/Header";
+import MarketplaceHero from "@/components/MarketplaceHero";
 import VastAiGrid from "@/components/VastAiGrid";
 import SmartRecommendations from "@/components/SmartRecommendations";
+import GpuHoverDialog from "@/components/GpuHoverDialog";
 import { UserProfile, GPUOffer } from "@/types/gpu-recommendation";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { recommendationEngine } from "@/utils/recommendationEngine";
@@ -15,6 +30,12 @@ import { recommendationEngine } from "@/utils/recommendationEngine";
 const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("price");
+  const [priceRange, setPriceRange] = useState([0, 10]);
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [hoveredGpu, setHoveredGpu] = useState<any>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  
   const [userProfile, setUserProfile] = useState<UserProfile>({
     organization: 'startup',
     workloadType: 'ai-training',
@@ -26,12 +47,10 @@ const Marketplace = () => {
 
   const { data: offers, isLoading } = useVastAiOffers();
 
-  // Generate smart recommendations with scores
   const smartOffers = useMemo(() => {
     if (!offers) return [];
     
     return offers.map(offer => {
-      // Enhance offer with mock specs and provider data for demonstration
       const enhancedOffer: GPUOffer = {
         ...offer,
         specs: {
@@ -84,6 +103,14 @@ const Marketplace = () => {
     });
   }, [offers, userProfile]);
 
+  const brands = ['NVIDIA', 'AMD', 'Intel'];
+  const locations = ['US East', 'US West', 'Europe', 'Asia'];
+
+  const handleGpuHover = (gpu: any, event: React.MouseEvent) => {
+    setHoveredGpu(gpu);
+    setMousePosition({ x: event.clientX, y: event.clientY });
+  };
+
   const getSortLabel = (value: string) => {
     switch (value) {
       case 'price': return 'Price (Low to High)';
@@ -94,121 +121,214 @@ const Marketplace = () => {
     }
   };
 
+  const topRecommendations = [...smartOffers]
+    .sort((a, b) => (b.recommendationScore || 0) - (a.recommendationScore || 0))
+    .slice(0, 4);
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/">
-              <Button variant="outline">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-            <h1 className="text-2xl font-bold text-foreground">GPU Marketplace</h1>
-            <div></div>
+    <div className="min-h-screen bg-background">
+      <Header />
+      <MarketplaceHero />
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex gap-8">
+          {/* Filter Sidebar */}
+          <div className="w-80 space-y-6">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Filter className="h-4 w-4" />
+                Filters
+              </h3>
+              
+              {/* Price Range */}
+              <div className="space-y-3 mb-6">
+                <label className="text-sm font-medium">Price Range ($/hour)</label>
+                <Slider
+                  value={priceRange}
+                  onValueChange={setPriceRange}
+                  max={20}
+                  min={0}
+                  step={0.1}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>${priceRange[0]}</span>
+                  <span>${priceRange[1]}</span>
+                </div>
+              </div>
+
+              {/* GPU Brand */}
+              <div className="space-y-3 mb-6">
+                <label className="text-sm font-medium">GPU Brand</label>
+                <div className="space-y-2">
+                  {brands.map(brand => (
+                    <label key={brand} className="flex items-center space-x-2">
+                      <input 
+                        type="checkbox" 
+                        className="rounded"
+                        checked={selectedBrands.includes(brand)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedBrands([...selectedBrands, brand]);
+                          } else {
+                            setSelectedBrands(selectedBrands.filter(b => b !== brand));
+                          }
+                        }}
+                      />
+                      <span className="text-sm">{brand}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Performance Tier */}
+              <div className="space-y-3 mb-6">
+                <label className="text-sm font-medium">Performance Tier</label>
+                <div className="space-y-2">
+                  {['Entry', 'Mid-Range', 'High-End', 'Enthusiast'].map(tier => (
+                    <label key={tier} className="flex items-center space-x-2">
+                      <input type="radio" name="performance" className="rounded" />
+                      <span className="text-sm">{tier}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Server Location */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium">Server Location</label>
+                <div className="space-y-2">
+                  {locations.map(location => (
+                    <label key={location} className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded" />
+                      <span className="text-sm">{location}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 space-y-6">
+            <Tabs defaultValue="recommendations" className="space-y-6">
+              <div className="flex justify-between items-center">
+                <TabsList className="grid w-fit grid-cols-2 bg-secondary">
+                  <TabsTrigger value="recommendations" className="flex items-center gap-2">
+                    <Star className="h-4 w-4" />
+                    Recommended for You
+                  </TabsTrigger>
+                  <TabsTrigger value="browse" className="flex items-center gap-2">
+                    <Search className="h-4 w-4" />
+                    Browse All
+                  </TabsTrigger>
+                </TabsList>
+
+                <div className="flex gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="min-w-[160px] justify-between">
+                        <div className="flex items-center">
+                          <SortAsc className="h-3 w-3 mr-1.5" />
+                          <span>{getSortLabel(sortBy)}</span>
+                        </div>
+                        <ChevronDown className="h-3 w-3 ml-1.5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => setSortBy('price')}>
+                        Price (Low to High)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy('performance')}>
+                        Reliability Score
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy('availability')}>
+                        Availability Status
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setSortBy('recommendation')}>
+                        Match Score
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              <TabsContent value="recommendations" className="space-y-6">
+                {/* Smart Recommendations Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {topRecommendations.map((offer) => (
+                    <Card 
+                      key={offer.id} 
+                      className="hover:shadow-lg transition-all cursor-pointer border-2 hover:border-primary/20"
+                      onMouseEnter={(e) => handleGpuHover(offer, e)}
+                      onMouseLeave={() => setHoveredGpu(null)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <h4 className="font-semibold">{offer.gpu_name}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              {offer.num_gpus}x GPU • {offer.gpu_ram}GB VRAM
+                            </p>
+                          </div>
+                          <Badge className="bg-yellow-100 text-yellow-800">
+                            {Math.round(offer.recommendationScore || 0)}% Match
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-lg font-bold">${offer.dph_total?.toFixed(3)}/hour</span>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <MapPin className="h-3 w-3" />
+                            {offer.datacenter}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-1 text-sm">
+                          <Zap className="h-3 w-3 text-yellow-500" />
+                          {Math.round((offer.reliability || 0) * 100)}% reliability
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {!isLoading && smartOffers && (
+                  <SmartRecommendations 
+                    offers={smartOffers}
+                    userProfile={userProfile}
+                  />
+                )}
+              </TabsContent>
+
+              <TabsContent value="browse" className="space-y-6">
+                {/* Search Bar */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search GPU models, hosts, or datacenters..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+
+                {/* GPU Grid */}
+                <VastAiGrid searchTerm={searchTerm} sortBy={sortBy} />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="recommendations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 bg-secondary">
-            <TabsTrigger value="recommendations" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Target className="h-4 w-4" />
-              Smart Recommendations
-            </TabsTrigger>
-            <TabsTrigger value="browse" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-              <Search className="h-4 w-4" />
-              Browse All
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="recommendations" className="space-y-6">
-            {!isLoading && smartOffers && (
-              <SmartRecommendations 
-                offers={smartOffers}
-                userProfile={userProfile}
-              />
-            )}
-          </TabsContent>
-
-          <TabsContent value="browse" className="space-y-6">
-            {/* Search and Filters */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search GPU models, hosts, or datacenters..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  <Filter className="h-3 w-3 mr-1.5" />
-                  Filters
-                </Button>
-                
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="border-border bg-card hover:bg-accent hover:text-accent-foreground transition-colors min-w-[140px] justify-between"
-                    >
-                      <div className="flex items-center">
-                        <SortAsc className="h-3 w-3 mr-1.5" />
-                        <span>{getSortLabel(sortBy)}</span>
-                      </div>
-                      <ChevronDown className="h-3 w-3 ml-1.5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    align="end" 
-                    className="w-48 bg-popover border-border shadow-lg z-50"
-                  >
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('price')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Price (Low to High)
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('performance')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Reliability Score
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('availability')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Availability Status
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setSortBy('recommendation')}
-                      className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                    >
-                      Match Score
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-
-            {/* GPU Grid */}
-            <VastAiGrid searchTerm={searchTerm} sortBy={sortBy} />
-          </TabsContent>
-        </Tabs>
       </main>
+
+      {/* Hover Dialog */}
+      {hoveredGpu && (
+        <GpuHoverDialog
+          gpu={hoveredGpu}
+          position={mousePosition}
+          onClose={() => setHoveredGpu(null)}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import LiveMarketSection from "@/components/LiveMarketSection";
@@ -7,7 +6,7 @@ import CTASection from "@/components/CTASection";
 
 const Index = () => {
   // Realistic top deals data based on actual market prices
-  const topDeals = [
+  const deals = [
     {
       id: '1',
       company: 'NVIDIA',
@@ -98,9 +97,9 @@ const Index = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pt-32">
         <HeroSection />
-        <LiveMarketSection deals={topDeals} />
+        <LiveMarketSection deals={deals} />
         <FeaturesSection />
         <CTASection />
       </main>
