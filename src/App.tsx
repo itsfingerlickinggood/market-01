@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import Marketplace from "./pages/Marketplace";
 import GpuDetails from "./pages/GpuDetails";
 import GpuComparison from "./pages/GpuComparison";
-import GPUComparison from "./pages/GPUComparison";
 import GpuSelection from "./pages/GpuSelection";
 import NotFound from "./pages/NotFound";
 
@@ -26,7 +25,6 @@ function App() {
               <Route path="/marketplace" element={<Marketplace />} />
               <Route path="/gpu/:id" element={<GpuDetails />} />
               <Route path="/gpu/:id/compare" element={<GpuComparison />} />
-              <Route path="/comparison" element={<GPUComparison />} />
               <Route path="/selection" element={<GpuSelection />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
