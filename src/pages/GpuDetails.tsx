@@ -141,15 +141,15 @@ const GpuDetails = () => {
       <GpuHeroSection gpu={gpu} />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <main className="container mx-auto px-4 py-12">
+        <div className="grid xl:grid-cols-3 gap-8">
           {/* Left Column - Pricing Dashboard */}
-          <div className="lg:col-span-2">
+          <div className="xl:col-span-2">
             <InteractivePricingDashboard gpu={gpu} providerData={providerData} />
           </div>
 
-          {/* Right Column - Quick Info */}
-          <div className="space-y-6">
+          {/* Right Column - Specs */}
+          <div className="space-y-8">
             <EnhancedSpecsSection gpu={gpu} />
           </div>
         </div>
