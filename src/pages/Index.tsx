@@ -7,7 +7,7 @@ import { Search, Filter, Zap, Target } from "lucide-react";
 import VastAiGrid from "@/components/VastAiGrid";
 import UserProfileSelector from "@/components/UserProfileSelector";
 import SmartRecommendations from "@/components/SmartRecommendations";
-import { UserProfile } from "@/types/gpu-recommendation";
+import { UserProfile, GPUOffer } from "@/types/gpu-recommendation";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { recommendationEngine } from "@/utils/recommendationEngine";
 import { useMemo } from "react";
@@ -32,7 +32,7 @@ const Index = () => {
     
     return offers.map(offer => {
       // Enhance offer with mock specs and provider data for demonstration
-      const enhancedOffer = {
+      const enhancedOffer: GPUOffer = {
         ...offer,
         specs: {
           vramCapacity: offer.gpu_name?.includes('H100') ? 80 : 
@@ -67,7 +67,10 @@ const Index = () => {
           securityCertifications: ['SOC2'],
           egressPolicy: 'paid' as const,
           specializations: ['ai-training', 'ai-inference'] as const
-        }
+        },
+        availability: 'available' as const,
+        location: offer.geolocation || 'Unknown',
+        reliability: offer.reliability_2 || 0.95
       };
 
       const score = recommendationEngine.calculateScore(enhancedOffer, userProfile);

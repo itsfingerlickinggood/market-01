@@ -7,36 +7,43 @@ export class SmartRecommendationEngine implements RecommendationEngine {
       minVRAM: 80, // GB for large models
       fp16Performance: 100, // Minimum TFLOPS
       nvlinkRequired: true,
-      memoryBandwidth: 2000 // GB/s
+      memoryBandwidth: 2000, // GB/s
+      rtCoresRequired: false
     },
     'ai-inference': {
       minVRAM: 24,
       fp16Performance: 50,
       nvlinkRequired: false,
-      memoryBandwidth: 1000
+      memoryBandwidth: 1000,
+      rtCoresRequired: false
     },
     'hpc': {
       minVRAM: 32,
       fp64Performance: 50, // Critical for scientific computing
       nvlinkRequired: false,
-      memoryBandwidth: 1500
+      memoryBandwidth: 1500,
+      rtCoresRequired: false
     },
     'creative': {
       minVRAM: 24, // For 8K editing
       rtCoresRequired: true,
       fp32Performance: 30,
-      nvlinkRequired: false
+      nvlinkRequired: false,
+      memoryBandwidth: 1000
     },
     'gaming': {
       minVRAM: 16,
       rtCoresRequired: true,
       fp32Performance: 20,
-      nvlinkRequired: false
+      nvlinkRequired: false,
+      memoryBandwidth: 800
     },
     'general': {
       minVRAM: 8,
       fp32Performance: 10,
-      nvlinkRequired: false
+      nvlinkRequired: false,
+      memoryBandwidth: 500,
+      rtCoresRequired: false
     }
   };
 
