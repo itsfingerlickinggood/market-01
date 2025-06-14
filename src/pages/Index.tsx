@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,8 +68,8 @@ const Index = () => {
           specializations: ['ai-training', 'ai-inference'] as const
         },
         availability: 'available' as const,
-        location: offer.geolocation || 'Unknown',
-        reliability: offer.reliability_2 || 0.95
+        location: offer.datacenter || 'Unknown',
+        reliability: offer.reliability2 || 0.95
       };
 
       const score = recommendationEngine.calculateScore(enhancedOffer, userProfile);
