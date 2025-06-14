@@ -82,14 +82,14 @@ const Header = () => {
 
           {/* Centered Logo with Analytics Tag */}
           <div className="flex justify-center w-1/3">
-            <div className="flex flex-col items-center space-y-2">
+            <div className="flex flex-col items-center space-y-3">
               <Link to="/">
                 <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
                   market01
                 </Button>
               </Link>
               <Link to="/analytics">
-                <div className="bg-black text-white text-sm px-4 py-2 rounded-lg hover:bg-green-800 transition-colors duration-200 cursor-pointer shadow-lg font-medium">
+                <div className="bg-black text-white text-xs px-6 py-2 rounded-full hover:bg-green-800 transition-colors duration-200 cursor-pointer shadow-lg font-medium border border-gray-700 hover:border-green-600">
                   analytics
                 </div>
               </Link>
