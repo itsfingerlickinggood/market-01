@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, DollarSign, Zap, Wifi, ExternalLink } from "lucide-react";
-import CandlestickChart from "@/components/CandlestickChart";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface PlatformPrice {
   platform: string;
@@ -93,6 +93,16 @@ const GpuDetails = () => {
 
   const status = getStatusBadge(gpu);
 
+  // Prepare chart data - sort by price for better visualization
+  const chartData = [...platformPrices]
+    .sort((a, b) => a.price - b.price)
+    .map(platform => ({
+      platform: platform.platform,
+      price: platform.price,
+      fill: platform.availability === 'available' ? '#22c55e' : 
+            platform.availability === 'limited' ? '#eab308' : '#ef4444'
+    }));
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -112,21 +122,82 @@ const GpuDetails = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* GPU Information Card */}
-          <div className="lg:col-span-1">
+        <div className="flex gap-6">
+          {/* Left Section - Price Chart (65% width) */}
+          <div className="w-[65%]">
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5" />
+                  Price Comparison Across Platforms
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Compare {gpu.gpu_name} pricing across different cloud providers
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="h-96">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={chartData}
+                      layout="horizontal"
+                      margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        type="number" 
+                        domain={['dataMin', 'dataMax']}
+                        tickFormatter={(value) => `$${value.toFixed(3)}`}
+                      />
+                      <YAxis 
+                        type="category" 
+                        dataKey="platform" 
+                        width={90}
+                      />
+                      <Tooltip 
+                        formatter={(value: any) => [`$${value.toFixed(3)}/hour`, 'Price']}
+                        labelFormatter={(label) => `Platform: ${label}`}
+                      />
+                      <Bar 
+                        dataKey="price" 
+                        radius={[0, 4, 4, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="mt-4 flex items-center gap-4 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded"></div>
+                    <span>Available</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-yellow-500 rounded"></div>
+                    <span>Limited</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-red-500 rounded"></div>
+                    <span>Unavailable</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Section - GPU Info & Pricing List (35% width) */}
+          <div className="w-[35%] space-y-6">
+            {/* GPU Information Card */}
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <CardTitle className="text-xl">{gpu.gpu_name}</CardTitle>
+                      <CardTitle className="text-lg">{gpu.gpu_name}</CardTitle>
                       <Badge className={getModelTypeBadge(gpu.model_type)}>
                         {gpu.model_type}
                       </Badge>
                     </div>
-                    <p className="text-gray-600">
-                      {gpu.num_gpus}x GPU • {gpu.gpu_ram}GB RAM • Rank #{gpu.rank}
+                    <p className="text-gray-600 text-sm">
+                      {gpu.num_gpus}x GPU • {gpu.gpu_ram}GB RAM
                     </p>
                   </div>
                   <Badge className={status.color}>
@@ -135,120 +206,79 @@ const GpuDetails = () => {
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-6">
-                {/* Use Case */}
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <h3 className="font-semibold text-blue-900 mb-2">Primary Use Case</h3>
-                  <p className="text-blue-800 text-sm">{gpu.primary_use_case}</p>
-                </div>
-
-                {/* Specifications */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-lg">Specifications</h3>
-                  <div className="grid grid-cols-1 gap-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Host:</span>
-                      <span className="font-medium">{gpu.hostname || 'Unknown'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Location:</span>
-                      <span className="font-medium">{gpu.datacenter || gpu.country || 'Unknown'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">CPU Cores:</span>
-                      <span className="font-medium">{gpu.cpu_cores}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">RAM:</span>
-                      <span className="font-medium">{gpu.cpu_ram}GB</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Storage:</span>
-                      <span className="font-medium">{gpu.disk_space}GB</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Power:</span>
-                      <span className="font-medium">{gpu.power_connector}</span>
-                    </div>
+              <CardContent className="space-y-4">
+                {/* Quick Stats */}
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Host:</span>
+                    <span className="font-medium">{gpu.hostname || 'Unknown'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Location:</span>
+                    <span className="font-medium">{gpu.datacenter || gpu.country || 'Unknown'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">CPU:</span>
+                    <span className="font-medium">{gpu.cpu_cores} cores</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">RAM:</span>
+                    <span className="font-medium">{gpu.cpu_ram}GB</span>
                   </div>
                 </div>
 
-                {/* Network & Reliability */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Zap className="h-4 w-4 text-blue-600" />
-                      <span>{Math.round((gpu.reliability2 || 0) * 100)}% reliability</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Wifi className="h-4 w-4" />
-                      <span className="text-sm">↓{gpu.inet_down}↑{gpu.inet_up}</span>
-                    </div>
+                {/* Reliability */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Zap className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm">{Math.round((gpu.reliability2 || 0) * 100)}% reliability</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Wifi className="h-4 w-4" />
+                    <span className="text-xs">↓{gpu.inet_down}↑{gpu.inet_up}</span>
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="space-y-2">
-                  <Button 
-                    className="w-full" 
-                    disabled={!gpu.rentable || gpu.rented}
-                    size="lg"
-                  >
-                    {!gpu.rentable ? "Unavailable" : gpu.rented ? "Rented" : "Rent Now"}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Charts and Platform Pricing */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Real-time Price Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Real-time Price Chart</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-96">
-                  <CandlestickChart 
-                    gpuModel={gpu.gpu_name || ''} 
-                    className="w-full h-full"
-                  />
-                </div>
+                <Button 
+                  className="w-full" 
+                  disabled={!gpu.rentable || gpu.rented}
+                  size="sm"
+                >
+                  {!gpu.rentable ? "Unavailable" : gpu.rented ? "Rented" : "Rent Now"}
+                </Button>
               </CardContent>
             </Card>
 
-            {/* Multi-Platform Pricing */}
+            {/* Platform Pricing List */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5" />
-                  Multi-Platform Pricing Comparison
-                </CardTitle>
+                <CardTitle className="text-lg">Platform Pricing</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {platformPrices.map((platform, index) => (
+                  {platformPrices
+                    .sort((a, b) => a.price - b.price)
+                    .map((platform, index) => (
                     <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-3">
-                        <span className="font-medium">{platform.platform}</span>
-                        <span className={`text-sm ${getAvailabilityColor(platform.availability)}`}>
+                        <span className="font-medium text-sm">{platform.platform}</span>
+                        <span className={`text-xs ${getAvailabilityColor(platform.availability)}`}>
                           {platform.availability}
                         </span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold">${platform.price}/hour</span>
-                        <Button size="sm" variant="outline" asChild>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm">${platform.price}/hr</span>
+                        <Button size="sm" variant="outline" asChild className="h-6 w-6 p-0">
                           <a href={platform.url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-4 w-4" />
+                            <ExternalLink className="h-3 w-3" />
                           </a>
                         </Button>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
-                  <p><strong>Note:</strong> Prices are estimates and may vary. Click the external link icons to check real-time availability and pricing on each platform.</p>
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-600">
+                  <p><strong>Note:</strong> Prices are estimates and may vary. Click external links for real-time pricing.</p>
                 </div>
               </CardContent>
             </Card>
