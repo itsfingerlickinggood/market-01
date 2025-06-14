@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, DollarSign, Zap, Wifi, ExternalLink } from "lucide-react";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface PlatformPrice {
   platform: string;
@@ -91,6 +91,15 @@ const GpuDetails = () => {
     }
   };
 
+  const getBarColor = (availability: string) => {
+    switch (availability) {
+      case 'available': return '#16a34a';
+      case 'limited': return '#eab308';
+      case 'unavailable': return '#ef4444';
+      default: return '#6b7280';
+    }
+  };
+
   const status = getStatusBadge(gpu);
 
   // Prepare chart data - sort by price for better visualization
@@ -99,14 +108,33 @@ const GpuDetails = () => {
     .map(platform => ({
       platform: platform.platform,
       price: platform.price,
-      fill: platform.availability === 'available' ? '#22c55e' : 
-            platform.availability === 'limited' ? '#eab308' : '#ef4444'
+      availability: platform.availability,
+      color: getBarColor(platform.availability)
     }));
+
+  const maxPrice = Math.max(...chartData.map(d => d.price));
+  const yAxisMax = Math.ceil(maxPrice * 1.2 * 10) / 10; // Add 20% padding and round to 1 decimal
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+          <p className="font-medium text-foreground">{label}</p>
+          <p className="text-primary font-bold">${data.price.toFixed(3)}/hour</p>
+          <p className={`text-sm capitalize ${getAvailabilityColor(data.availability)}`}>
+            {data.availability}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to="/">
@@ -115,7 +143,7 @@ const GpuDetails = () => {
                 Back to Marketplace
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold">{gpu.gpu_name} Details</h1>
+            <h1 className="text-2xl font-bold text-foreground">{gpu.gpu_name} Details</h1>
             <div></div>
           </div>
         </div>
@@ -125,58 +153,62 @@ const GpuDetails = () => {
         <div className="flex gap-6">
           {/* Left Section - Price Chart (65% width) */}
           <div className="w-[65%]">
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5" />
+            <Card className="h-full bg-card border-border">
+              <CardHeader className="pb-6">
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <DollarSign className="h-5 w-5 text-primary" />
                   Price Comparison Across Platforms
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
                   Compare {gpu.gpu_name} pricing across different cloud providers
                 </p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pb-6">
                 <div className="h-96">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={chartData}
-                      layout="horizontal"
-                      margin={{ top: 20, right: 30, left: 100, bottom: 5 }}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                       <XAxis 
-                        type="number" 
-                        domain={[0, 0.9]}
-                        tickFormatter={(value) => `$${value.toFixed(3)}`}
+                        dataKey="platform" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        interval={0}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                       />
                       <YAxis 
-                        type="category" 
-                        dataKey="platform" 
-                        width={90}
+                        domain={[0, yAxisMax]}
+                        tickFormatter={(value) => `$${value.toFixed(2)}`}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                       />
-                      <Tooltip 
-                        formatter={(value: any) => [`$${value.toFixed(3)}/hour`, 'Price']}
-                        labelFormatter={(label) => `Platform: ${label}`}
-                      />
+                      <Tooltip content={<CustomTooltip />} />
                       <Bar 
                         dataKey="price" 
-                        radius={[0, 4, 4, 0]}
-                      />
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={80}
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="mt-4 flex items-center gap-4 text-xs">
+                <div className="mt-6 flex items-center justify-center gap-6 text-xs">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-green-500 rounded"></div>
-                    <span>Available</span>
+                    <span className="text-muted-foreground">Available</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-                    <span>Limited</span>
+                    <span className="text-muted-foreground">Limited</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-red-500 rounded"></div>
-                    <span>Unavailable</span>
+                    <span className="text-muted-foreground">Unavailable</span>
                   </div>
                 </div>
               </CardContent>
@@ -186,17 +218,17 @@ const GpuDetails = () => {
           {/* Right Section - GPU Info & Pricing List (35% width) */}
           <div className="w-[35%] space-y-6">
             {/* GPU Information Card */}
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <CardTitle className="text-lg">{gpu.gpu_name}</CardTitle>
+                      <CardTitle className="text-lg text-foreground">{gpu.gpu_name}</CardTitle>
                       <Badge className={getModelTypeBadge(gpu.model_type)}>
                         {gpu.model_type}
                       </Badge>
                     </div>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       {gpu.num_gpus}x GPU • {gpu.gpu_ram}GB RAM
                     </p>
                   </div>
@@ -210,32 +242,32 @@ const GpuDetails = () => {
                 {/* Quick Stats */}
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Host:</span>
-                    <span className="font-medium">{gpu.hostname || 'Unknown'}</span>
+                    <span className="text-muted-foreground">Host:</span>
+                    <span className="font-medium text-foreground">{gpu.hostname || 'Unknown'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Location:</span>
-                    <span className="font-medium">{gpu.datacenter || gpu.country || 'Unknown'}</span>
+                    <span className="text-muted-foreground">Location:</span>
+                    <span className="font-medium text-foreground">{gpu.datacenter || gpu.country || 'Unknown'}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">CPU:</span>
-                    <span className="font-medium">{gpu.cpu_cores} cores</span>
+                    <span className="text-muted-foreground">CPU:</span>
+                    <span className="font-medium text-foreground">{gpu.cpu_cores} cores</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">RAM:</span>
-                    <span className="font-medium">{gpu.cpu_ram}GB</span>
+                    <span className="text-muted-foreground">RAM:</span>
+                    <span className="font-medium text-foreground">{gpu.cpu_ram}GB</span>
                   </div>
                 </div>
 
                 {/* Reliability */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Zap className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm">{Math.round((gpu.reliability2 || 0) * 100)}% reliability</span>
+                    <Zap className="h-4 w-4 text-primary" />
+                    <span className="text-sm text-foreground">{Math.round((gpu.reliability2 || 0) * 100)}% reliability</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Wifi className="h-4 w-4" />
-                    <span className="text-xs">↓{gpu.inet_down}↑{gpu.inet_up}</span>
+                    <Wifi className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground">↓{gpu.inet_down}↑{gpu.inet_up}</span>
                   </div>
                 </div>
 
@@ -250,25 +282,25 @@ const GpuDetails = () => {
             </Card>
 
             {/* Platform Pricing List */}
-            <Card>
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-lg">Platform Pricing</CardTitle>
+                <CardTitle className="text-lg text-foreground">Platform Pricing</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {platformPrices
                     .sort((a, b) => a.price - b.price)
                     .map((platform, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 border border-border rounded-lg bg-secondary/20">
                       <div className="flex items-center gap-3">
-                        <span className="font-medium text-sm">{platform.platform}</span>
+                        <span className="font-medium text-sm text-foreground">{platform.platform}</span>
                         <span className={`text-xs ${getAvailabilityColor(platform.availability)}`}>
                           {platform.availability}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm">${platform.price}/hr</span>
-                        <Button size="sm" variant="outline" asChild className="h-6 w-6 p-0">
+                        <span className="font-bold text-sm text-foreground">${platform.price}/hr</span>
+                        <Button size="sm" variant="outline" asChild className="h-6 w-6 p-0 border-border">
                           <a href={platform.url} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-3 w-3" />
                           </a>
@@ -277,7 +309,7 @@ const GpuDetails = () => {
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-600">
+                <div className="mt-4 p-3 bg-secondary/30 border border-border rounded-lg text-xs text-muted-foreground">
                   <p><strong>Note:</strong> Prices are estimates and may vary. Click external links for real-time pricing.</p>
                 </div>
               </CardContent>
