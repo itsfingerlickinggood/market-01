@@ -2,7 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, ResponsiveContainer, defs, linearGradient, stop } from "recharts";
+import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
 import { TrendingUp, TrendingDown, MapPin, Zap } from "lucide-react";
 

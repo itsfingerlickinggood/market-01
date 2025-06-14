@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ import Header from "@/components/Header";
 import MarketplaceHero from "@/components/MarketplaceHero";
 import VastAiGrid from "@/components/VastAiGrid";
 import SmartRecommendations from "@/components/SmartRecommendations";
+import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
 import { UserProfile, GPUOffer } from "@/types/gpu-recommendation";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { recommendationEngine } from "@/utils/recommendationEngine";
