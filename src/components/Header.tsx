@@ -8,7 +8,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { User, Menu, X, Sun, Moon, Monitor } from "lucide-react";
+import { User, Menu, X, Sun, Moon, Monitor, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
 
@@ -80,24 +80,24 @@ const Header = () => {
             </DropdownMenu>
           </div>
 
-          {/* Centered Logo with Analytics Tag */}
-          <div className="flex justify-center w-1/3 relative">
-            <div className="flex items-center">
-              <Link to="/">
-                <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
-                  market01
-                </Button>
-              </Link>
-            </div>
-            <Link to="/analytics" className="absolute top-12 left-1/2 transform -translate-x-1/2">
-              <div className="bg-black text-white text-xs px-4 py-1 rounded-full hover:bg-green-800 transition-colors duration-200 cursor-pointer shadow-lg font-medium border border-gray-700 hover:border-green-600">
-                analytics
-              </div>
+          {/* Centered Logo */}
+          <div className="flex justify-center w-1/3">
+            <Link to="/">
+              <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
+                market01
+              </Button>
             </Link>
           </div>
 
-          {/* Right Side - Live Status and Theme Selector */}
+          {/* Right Side - Analytics, Live Status and Theme Selector */}
           <div className="flex items-center justify-end space-x-4 w-1/3">
+            {/* Analytics Button */}
+            <Link to="/analytics">
+              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
+                <BarChart3 className="h-5 w-5" />
+              </Button>
+            </Link>
+
             <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 px-3 py-1 text-xs font-medium animate-pulse">
               <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
               LIVE
