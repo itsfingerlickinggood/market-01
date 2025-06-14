@@ -146,7 +146,7 @@ const GpuDetails = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
                         type="number" 
-                        domain={['dataMin', 'dataMax']}
+                        domain={[0, 0.9]}
                         tickFormatter={(value) => `$${value.toFixed(3)}`}
                       />
                       <YAxis 
