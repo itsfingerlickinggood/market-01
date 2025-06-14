@@ -69,19 +69,23 @@ const UserProfileSelector = ({ onProfileUpdate, currentProfile }: UserProfileSel
         {/* Organization Type */}
         <div>
           <label className="text-sm font-medium mb-3 block">Organization Type</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="flex flex-wrap gap-2">
             {organizationTypes.map((org) => {
               const Icon = org.icon;
+              const isSelected = currentProfile.organization === org.value;
               return (
-                <Button
+                <button
                   key={org.value}
-                  variant={currentProfile.organization === org.value ? "default" : "outline"}
-                  className="h-auto p-3 flex flex-col items-center text-center"
                   onClick={() => updateProfile('organization', org.value)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                    isSelected 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground border border-border'
+                  }`}
                 >
-                  <Icon className="h-5 w-5 mb-1" />
-                  <span className="text-xs font-medium">{org.label}</span>
-                </Button>
+                  <Icon className="h-3 w-3" />
+                  {org.label}
+                </button>
               );
             })}
           </div>
@@ -90,20 +94,23 @@ const UserProfileSelector = ({ onProfileUpdate, currentProfile }: UserProfileSel
         {/* Workload Type */}
         <div>
           <label className="text-sm font-medium mb-3 block">Primary Workload</label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-2">
             {workloadTypes.map((workload) => {
               const Icon = workload.icon;
+              const isSelected = currentProfile.workloadType === workload.value;
               return (
-                <Button
+                <button
                   key={workload.value}
-                  variant={currentProfile.workloadType === workload.value ? "default" : "outline"}
-                  className="h-auto p-3 flex flex-col items-center text-center"
                   onClick={() => updateProfile('workloadType', workload.value)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                    isSelected 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground border border-border'
+                  }`}
                 >
-                  <Icon className="h-5 w-5 mb-1" />
-                  <span className="text-xs font-medium">{workload.label}</span>
-                  <span className="text-xs text-muted-foreground">{workload.desc}</span>
-                </Button>
+                  <Icon className="h-3 w-3" />
+                  {workload.label}
+                </button>
               );
             })}
           </div>
@@ -112,18 +119,23 @@ const UserProfileSelector = ({ onProfileUpdate, currentProfile }: UserProfileSel
         {/* Budget Range */}
         <div>
           <label className="text-sm font-medium mb-3 block">Budget Preference</label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {budgetRanges.map((budget) => (
-              <Button
-                key={budget.value}
-                variant={currentProfile.budgetRange === budget.value ? "default" : "outline"}
-                className="h-auto p-3 flex flex-col items-start text-left"
-                onClick={() => updateProfile('budgetRange', budget.value)}
-              >
-                <span className="font-medium">{budget.label}</span>
-                <span className="text-xs text-muted-foreground">{budget.desc}</span>
-              </Button>
-            ))}
+          <div className="flex flex-wrap gap-2">
+            {budgetRanges.map((budget) => {
+              const isSelected = currentProfile.budgetRange === budget.value;
+              return (
+                <button
+                  key={budget.value}
+                  onClick={() => updateProfile('budgetRange', budget.value)}
+                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                    isSelected 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground border border-border'
+                  }`}
+                >
+                  {budget.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -145,7 +157,7 @@ const UserProfileSelector = ({ onProfileUpdate, currentProfile }: UserProfileSel
                 <select
                   value={currentProfile.dataCompliance}
                   onChange={(e) => updateProfile('dataCompliance', e.target.value)}
-                  className="w-full p-2 border rounded-md text-sm"
+                  className="w-full p-2 border rounded-md text-sm bg-card border-border"
                 >
                   <option value="none">No specific requirements</option>
                   <option value="gdpr">GDPR Compliance</option>
@@ -159,7 +171,7 @@ const UserProfileSelector = ({ onProfileUpdate, currentProfile }: UserProfileSel
                 <select
                   value={currentProfile.scalabilityNeeds}
                   onChange={(e) => updateProfile('scalabilityNeeds', e.target.value)}
-                  className="w-full p-2 border rounded-md text-sm"
+                  className="w-full p-2 border rounded-md text-sm bg-card border-border"
                 >
                   <option value="static">Static - Predictable usage</option>
                   <option value="dynamic">Dynamic - Variable workloads</option>
