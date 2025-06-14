@@ -17,7 +17,7 @@ interface MarketplaceDealProps {
 const generatePriceData = (basePrice: number) => {
   return Array.from({ length: 24 }, (_, i) => ({
     time: i,
-    price: basePrice * (0.8 + Math.random() * 0.4) // ±20% variation
+    price: basePrice * (0.85 + Math.random() * 0.3) // More realistic ±15% variation
   }));
 };
 
@@ -38,7 +38,7 @@ const getCompanyLogo = (company: string) => {
 const MarketplaceDeal = ({ gpu }: MarketplaceDealProps) => {
   const [currentSiteIndex, setCurrentSiteIndex] = useState(0);
   const [priceData, setPriceData] = useState(() => generatePriceData(gpu.basePrice));
-  const [currentPrice, setCurrentPrice] = useState(() => gpu.basePrice * (0.8 + Math.random() * 0.4));
+  const [currentPrice, setCurrentPrice] = useState(() => gpu.basePrice * (0.85 + Math.random() * 0.3));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -47,7 +47,7 @@ const MarketplaceDeal = ({ gpu }: MarketplaceDealProps) => {
       
       // Generate new price data for the current site
       const newPriceData = generatePriceData(gpu.basePrice);
-      const newCurrentPrice = gpu.basePrice * (0.8 + Math.random() * 0.4);
+      const newCurrentPrice = gpu.basePrice * (0.85 + Math.random() * 0.3);
       
       setPriceData(newPriceData);
       setCurrentPrice(newCurrentPrice);
