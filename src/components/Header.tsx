@@ -61,7 +61,7 @@ const Header = () => {
           <div className="flex items-center justify-start w-1/3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-2xl hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
+                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -82,7 +82,7 @@ const Header = () => {
 
           {/* Centered Logo with Analytics Tag */}
           <div className="flex justify-center w-1/3">
-            <div className="flex flex-col items-center space-y-3">
+            <div className="flex flex-col items-center space-y-4">
               <Link to="/">
                 <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
                   market01
@@ -106,7 +106,7 @@ const Header = () => {
             {/* Theme Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
                   {getThemeIcon()}
                 </Button>
               </DropdownMenuTrigger>
@@ -142,7 +142,7 @@ const Header = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden h-10 w-10 rounded-2xl hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20"
+              className="md:hidden h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
