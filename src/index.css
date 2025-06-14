@@ -16,8 +16,8 @@
     --popover: 0 0% 6%; /* #111111 - secondary background */
     --popover-foreground: 0 0% 98%;
 
-    --primary: 142 69% 45%; /* #22c55e - more muted green */
-    --primary-foreground: 0 0% 0%; /* black text on green */
+    --primary: 142 45% 35%; /* #16a34a - darker muted green */
+    --primary-foreground: 0 0% 100%; /* white text on green */
 
     --secondary: 0 0% 10%; /* #1a1a1a - secondary background */
     --secondary-foreground: 0 0% 98%;
@@ -25,26 +25,26 @@
     --muted: 0 0% 10%;
     --muted-foreground: 0 0% 64%; /* #a3a3a3 - medium gray */
 
-    --accent: 142 69% 50%; /* #34d399 - subtle accent green */
-    --accent-foreground: 0 0% 0%;
+    --accent: 142 40% 30%; /* #15803d - very subtle dark green */
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 0 0% 16%; /* #2a2a2a - subtle dark borders */
     --input: 0 0% 16%;
-    --ring: 142 69% 45%;
+    --ring: 142 45% 35%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 142 69% 45%;
-    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-primary: 142 45% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 10%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 16%;
-    --sidebar-ring: 142 69% 45%;
+    --sidebar-ring: 142 45% 35%;
   }
 
   .dark {
@@ -54,27 +54,27 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
-    --primary: 142 69% 45%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 142 45% 35%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 10%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 10%;
     --muted-foreground: 0 0% 64%;
-    --accent: 142 69% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 142 40% 30%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 16%;
     --input: 0 0% 16%;
-    --ring: 142 69% 45%;
+    --ring: 142 45% 35%;
     --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 142 69% 45%;
-    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-primary: 142 45% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 10%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 16%;
-    --sidebar-ring: 142 69% 45%;
+    --sidebar-ring: 142 45% 35%;
   }
 }
 
@@ -88,13 +88,13 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   }
 
-  /* Dark theme specific enhancements - reduced glow effects */
+  /* Dark theme specific enhancements - minimal glow effects */
   .dark-glow-green {
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.15);
+    box-shadow: 0 0 4px rgba(22, 163, 74, 0.1);
   }
 
   .dark-border-glow {
-    border: 1px solid rgba(34, 197, 94, 0.3);
+    border: 1px solid rgba(22, 163, 74, 0.2);
   }
 
   .gradient-dark {
