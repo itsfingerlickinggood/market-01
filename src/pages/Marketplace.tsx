@@ -55,7 +55,7 @@ const Marketplace = () => {
       <Header />
       <MarketplaceHero />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6">
         <div className="flex gap-8">
           {/* Filter Sidebar */}
           <MarketplaceFilters
@@ -66,7 +66,7 @@ const Marketplace = () => {
           />
 
           {/* Main Content */}
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-4">
             {/* Purpose Filter Tags */}
             <PurposeFilterTags 
               selectedPurpose={selectedPurpose}
