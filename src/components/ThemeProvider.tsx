@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useLayoutEffect, useState, useCallback } from "react"
 
 type Theme = "dark" | "light" | "system"
 
@@ -21,40 +21,52 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
+// Cache the theme to avoid localStorage reads
+let cachedTheme: Theme | null = null
+
 export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  )
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (cachedTheme) return cachedTheme
+    const stored = localStorage.getItem(storageKey) as Theme
+    cachedTheme = stored || defaultTheme
+    return cachedTheme
+  })
 
-  useEffect(() => {
+  // Use useLayoutEffect for synchronous DOM updates before paint
+  useLayoutEffect(() => {
     const root = window.document.documentElement
 
+    // Batch DOM operations for better performance
     root.classList.remove("light", "dark")
 
+    let targetTheme = theme
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light"
-
-      root.classList.add(systemTheme)
-      return
+      targetTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
     }
 
-    root.classList.add(theme)
+    // Apply theme class immediately
+    root.classList.add(targetTheme)
+    
+    // Force hardware acceleration for smooth rendering
+    root.style.transform = "translateZ(0)"
   }, [theme])
+
+  // Memoize setTheme to prevent unnecessary re-renders
+  const setThemeOptimized = useCallback((newTheme: Theme) => {
+    // Update cache immediately
+    cachedTheme = newTheme
+    localStorage.setItem(storageKey, newTheme)
+    setTheme(newTheme)
+  }, [storageKey])
 
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
-    },
+    setTheme: setThemeOptimized,
   }
 
   return (

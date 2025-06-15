@@ -9,6 +9,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      // Instant theme application to prevent flicker
+      (function() {
+        const theme = localStorage.getItem('vite-ui-theme') || 'system';
+        const root = document.documentElement;
+        
+        if (theme === 'system') {
+          const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          root.classList.add(systemTheme);
+        } else {
+          root.classList.add(theme);
+        }
+        
+        // Force hardware acceleration
+        root.style.transform = 'translateZ(0)';
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

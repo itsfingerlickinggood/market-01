@@ -1,5 +1,4 @@
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -125,6 +124,15 @@
 
   body {
     @apply bg-background text-foreground font-inter;
+    /* Force hardware acceleration for smooth theme changes */
+    will-change: background-color, color;
+    transform: translateZ(0);
+  }
+
+  /* Performance optimizations for theme-critical elements */
+  .theme-optimized {
+    will-change: background-color, color, border-color;
+    transform: translateZ(0);
   }
 
   /* Dark theme specific enhancements - minimal glow effects */
