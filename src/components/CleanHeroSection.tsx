@@ -16,7 +16,7 @@ const CleanHeroSection = () => {
       
       <div className="pt-8">
         <Link to="/marketplace">
-          <Button size="lg" className="rounded-lg text-white py-[17px] px-[16px] text-xl font-normal">
+          <Button size="lg" className="rounded-lg text-white font-normal text-lg py-[10px] px-[17px]">
             Start exploring
             <ArrowRight className="h-5 w-5 ml-2" />
           </Button>
