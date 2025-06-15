@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +8,8 @@ import CleanHeroSection from "@/components/CleanHeroSection";
 import MinimalMetricsSection from "@/components/MinimalMetricsSection";
 import CleanFeaturesSection from "@/components/CleanFeaturesSection";
 import CleanCTASection from "@/components/CleanCTASection";
+import CommunityFeedbackSection from "@/components/CommunityFeedbackSection";
+
 const Index = () => {
   const {
     isOnboarded,
@@ -34,6 +37,7 @@ const Index = () => {
           <MinimalMetricsSection />
           <CleanFeaturesSection />
           <CleanCTASection />
+          <CommunityFeedbackSection />
         </div>
       </main>
     </div>;
