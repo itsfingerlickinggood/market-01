@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Zap, Target } from "lucide-react";
+import { MapPin, Zap, Target, ArrowDownToLine } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import ProviderTrustBadge from "./ProviderTrustBadge";
