@@ -4,12 +4,10 @@ import { useWorkload } from "@/contexts/WorkloadContext";
 import { useNavigate } from "react-router-dom";
 import WorkloadSelector, { Workload } from "@/components/WorkloadSelector";
 import Header from "@/components/Header";
-import MarketplaceHero from "@/components/MarketplaceHero";
-import HeroSection from "@/components/HeroSection";
-import QuickInsights from "@/components/QuickInsights";
-import CandlestickSection from "@/components/CandlestickSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import CTASection from "@/components/CTASection";
+import CleanHeroSection from "@/components/CleanHeroSection";
+import MinimalMetricsSection from "@/components/MinimalMetricsSection";
+import CleanFeaturesSection from "@/components/CleanFeaturesSection";
+import CleanCTASection from "@/components/CleanCTASection";
 
 const Index = () => {
   const { isOnboarded, setSelectedWorkload } = useWorkload();
@@ -39,14 +37,11 @@ const Index = () => {
       <Header />
       
       <main className="pt-16">
-        <MarketplaceHero />
-        
-        <div className="container mx-auto px-4 py-8 space-y-12">
-          <HeroSection />
-          <CandlestickSection />
-          <QuickInsights />
-          <FeaturesSection />
-          <CTASection />
+        <div className="container mx-auto px-4 py-16 max-w-6xl">
+          <CleanHeroSection />
+          <MinimalMetricsSection />
+          <CleanFeaturesSection />
+          <CleanCTASection />
         </div>
       </main>
     </div>
