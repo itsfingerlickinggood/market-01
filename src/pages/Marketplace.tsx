@@ -1,10 +1,11 @@
+
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Search, Filter, Zap, Star, MapPin, TrendingUp } from "lucide-react";
+import { ChevronDown, Search, Filter, Zap, Star, MapPin, TrendingUp, Users, Shield, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import MarketplaceGpuGrid from "@/components/MarketplaceGpuGrid";
 import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
@@ -101,43 +102,47 @@ const Marketplace = () => {
     <div className="min-h-screen bg-background pt-16">
       <Header />
       
-      {/* Modern Hero Section */}
-      <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-b">
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-6">
-              <TrendingUp className="h-4 w-4" />
-              <span className="text-sm font-medium">Best GPU Deals Updated Live</span>
-            </div>
-            
-            <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              GPU Marketplace
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Compare prices from leading cloud providers and find the perfect GPU for your workload at the best price.
+      {/* Unique Marketplace Benefits Section */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="relative container mx-auto px-4 py-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-white mb-4">Why Choose Our Marketplace?</h2>
+            <p className="text-white/90 text-lg max-w-2xl mx-auto">
+              Experience the future of GPU computing with real-time pricing, verified providers, and instant deployment
             </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Verified Providers</h3>
+                <p className="text-white/80">All providers are thoroughly vetted with 99.9% uptime guarantees</p>
+              </CardContent>
+            </Card>
             
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-              <Card className="border-0 bg-white/50 backdrop-blur-sm">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-600">{offers?.length || 0}+</div>
-                  <div className="text-sm text-muted-foreground">Available GPUs</div>
-                </CardContent>
-              </Card>
-              <Card className="border-0 bg-white/50 backdrop-blur-sm">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-green-600">$0.10+</div>
-                  <div className="text-sm text-muted-foreground">Starting Price/hr</div>
-                </CardContent>
-              </Card>
-              <Card className="border-0 bg-white/50 backdrop-blur-sm">
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-purple-600">24/7</div>
-                  <div className="text-sm text-muted-foreground">Instant Deploy</div>
-                </CardContent>
-              </Card>
-            </div>
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Instant Deployment</h3>
+                <p className="text-white/80">Deploy your workload in under 60 seconds with pre-configured environments</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Community Driven</h3>
+                <p className="text-white/80">Join 10,000+ developers sharing insights and optimizing costs together</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
