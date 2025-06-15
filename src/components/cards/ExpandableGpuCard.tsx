@@ -138,30 +138,13 @@ const ExpandableGpuCard = ({
               <span>{Math.round((gpu.reliability2 || gpu.reliability || 0) * 100)}%</span>
             </div>
           </div>
-
-          {/* Details Button - only show on hover */}
-          {isHovered && (
-            <div className="flex justify-end pt-2">
-              <Link to={`/gpu/${gpu.id}`} onClick={(e) => e.stopPropagation()}>
-                <Button 
-                  variant="default"
-                  size="sm" 
-                  disabled={gpu.rentable === false}
-                  className="text-xs px-3 py-1 h-7 gap-1 shadow-lg transform scale-105 bg-primary hover:bg-primary/90"
-                >
-                  {gpu.rentable === false ? 'Unavailable' : 'Details'}
-                  <ArrowRight className="h-3 w-3" />
-                </Button>
-              </Link>
-            </div>
-          )}
         </CardContent>
 
-        {/* Hover Dropdown - Positioned Absolutely to Cover Cards Below */}
+        {/* Hover Dropdown - Seamlessly merged with main card */}
         {isHovered && (
-          <div className="absolute top-full left-0 right-0 z-50 bg-gradient-to-br from-card/95 via-card/90 to-primary/10 backdrop-blur-md border border-border/30 rounded-b-lg shadow-2xl">
+          <div className="absolute top-full left-0 right-0 z-50 bg-gradient-to-br from-card via-card/95 to-primary/5 backdrop-blur-md rounded-b-lg shadow-2xl">
             {/* Glossy overlay for dropdown */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent rounded-b-lg pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent rounded-b-lg pointer-events-none" />
             
             <div className="relative z-10 p-4 space-y-3">
               {/* Provider Spread */}
@@ -188,6 +171,21 @@ const ExpandableGpuCard = ({
                   <span className="text-muted-foreground">Network:</span>
                   <span className="font-medium">{gpu.inet_down || '1Gbps'}</span>
                 </div>
+              </div>
+
+              {/* Details Button - Bottom Right */}
+              <div className="flex justify-end pt-2">
+                <Link to={`/gpu/${gpu.id}`} onClick={(e) => e.stopPropagation()}>
+                  <Button 
+                    variant="default"
+                    size="sm" 
+                    disabled={gpu.rentable === false}
+                    className="text-xs px-3 py-1 h-7 gap-1 shadow-lg transform scale-105 bg-primary hover:bg-primary/90"
+                  >
+                    {gpu.rentable === false ? 'Unavailable' : 'Details'}
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
