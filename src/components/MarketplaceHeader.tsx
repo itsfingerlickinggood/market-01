@@ -16,7 +16,8 @@ const MarketplaceHeader = ({
   onViewModeChange
 }: MarketplaceHeaderProps) => {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+    <div className="flex flex-col space-y-6">
+      {/* Title Section */}
       <div className="space-y-2 mt-8">
         <h1 className="tracking-tight text-left font-thin text-3xl py-[17px]">
           Marketplace
@@ -26,7 +27,8 @@ const MarketplaceHeader = ({
         </p>
       </div>
 
-      <div className="flex items-center gap-4 lg:mb-6">
+      {/* View Mode Controls - Aligned to match search bar positioning */}
+      <div className="flex justify-end">
         <div className="flex items-center bg-background border border-border rounded-lg p-1 shadow-sm h-10">
           <Button 
             variant={viewMode === "enhanced" ? "default" : "ghost"} 
