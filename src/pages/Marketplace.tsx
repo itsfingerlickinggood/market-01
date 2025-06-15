@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ChevronDown, Search, Filter, Grid3X3, List, Sparkles } from "lucide-react";
 import Header from "@/components/Header";
 import UltraMinimalGpuCard from "@/components/UltraMinimalGpuCard";
-import SophisticatedHoverCard from "@/components/SophisticatedHoverCard";
+import EnhancedGpuHoverCard from "@/components/EnhancedGpuHoverCard";
 import PurposeFilterTags from "@/components/PurposeFilterTags";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
@@ -292,9 +291,9 @@ const Marketplace = () => {
         )}
       </main>
 
-      {/* Sophisticated Hover Card */}
+      {/* Enhanced Hover Card */}
       {hoveredGpu && (
-        <SophisticatedHoverCard
+        <EnhancedGpuHoverCard
           gpu={hoveredGpu}
           position={mousePosition}
           onClose={() => setHoveredGpu(null)}
