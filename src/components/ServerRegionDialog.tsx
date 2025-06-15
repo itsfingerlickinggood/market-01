@@ -11,11 +11,20 @@ interface ServerRegionDialogProps {
 
 const ServerRegionDialog = ({ selectedRegion, onRegionSelect }: ServerRegionDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [globeError, setGlobeError] = useState(false);
 
   const handleRegionSelect = (region: string) => {
     onRegionSelect(region);
     setIsOpen(false);
   };
+
+  // Lazy load the InteractiveGlobe to avoid SSR issues
+  const InteractiveGlobe = React.lazy(() => 
+    import('./InteractiveGlobe').catch(() => {
+      setGlobeError(true);
+      return { default: () => null };
+    })
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -30,48 +39,43 @@ const ServerRegionDialog = ({ selectedRegion, onRegionSelect }: ServerRegionDial
           <DialogTitle>Select Server Region</DialogTitle>
         </DialogHeader>
         <div className="flex-1 min-h-0">
-          <React.Suspense fallback={
+          {globeError ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center">
-                <div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-                <p className="text-sm text-muted-foreground">Loading 3D Globe...</p>
+                <p className="text-sm text-muted-foreground mb-4">3D Globe unavailable</p>
+                <div className="space-y-2">
+                  {['US East', 'US West', 'Europe', 'Asia Pacific'].map((region) => (
+                    <Button
+                      key={region}
+                      variant={selectedRegion === region ? "default" : "outline"}
+                      className="w-full"
+                      onClick={() => handleRegionSelect(region)}
+                    >
+                      {region}
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
-          }>
-            <React.ErrorBoundary
-              fallback={
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-4">3D Globe unavailable</p>
-                    <div className="space-y-2">
-                      {['US East', 'US West', 'Europe', 'Asia Pacific'].map((region) => (
-                        <Button
-                          key={region}
-                          variant={selectedRegion === region ? "default" : "outline"}
-                          className="w-full"
-                          onClick={() => handleRegionSelect(region)}
-                        >
-                          {region}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
+          ) : (
+            <React.Suspense fallback={
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+                  <p className="text-sm text-muted-foreground">Loading 3D Globe...</p>
                 </div>
-              }
-            >
+              </div>
+            }>
               <InteractiveGlobe
                 onLocationSelect={handleRegionSelect}
                 selectedLocation={selectedRegion}
               />
-            </React.ErrorBoundary>
-          </React.Suspense>
+            </React.Suspense>
+          )}
         </div>
       </DialogContent>
     </Dialog>
   );
 };
-
-// Lazy load the InteractiveGlobe to avoid SSR issues
-const InteractiveGlobe = React.lazy(() => import('./InteractiveGlobe'));
 
 export default ServerRegionDialog;
