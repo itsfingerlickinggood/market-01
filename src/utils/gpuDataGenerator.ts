@@ -1,4 +1,4 @@
-import { GPUOffer } from '@/types/gpu-recommendation';
+import { GPUOffer, ProviderTier } from '@/types/gpu-recommendation';
 import { generateEnhancedGPUData } from './enhancedGpuDataGenerator';
 
 interface GPUModel {
@@ -100,18 +100,18 @@ const datacenters = [
 ];
 
 const providers = [
-  { name: "CloudGPU Pro", type: "hyperscaler" as const, specializations: ["ai-training", "hpc"] as const },
-  { name: "GPU Rental Hub", type: "specialist" as const, specializations: ["gaming", "creative"] as const },
-  { name: "FastGPU", type: "specialist" as const, specializations: ["ai-inference", "general"] as const },
-  { name: "Vast.ai", type: "decentralized" as const, specializations: ["ai-training", "ai-inference"] as const },
-  { name: "RunPod", type: "specialist" as const, specializations: ["ai-training", "creative"] as const },
-  { name: "Lambda Labs", type: "specialist" as const, specializations: ["ai-training", "hpc"] as const },
-  { name: "Genesis Cloud", type: "specialist" as const, specializations: ["ai-training", "general"] as const },
-  { name: "CoreWeave", type: "hyperscaler" as const, specializations: ["ai-training", "gaming", "creative"] as const },
-  { name: "TensorDock", type: "specialist" as const, specializations: ["ai-training", "ai-inference"] as const },
-  { name: "JarvisLabs", type: "specialist" as const, specializations: ["ai-training", "hpc"] as const },
-  { name: "PaperSpace", type: "specialist" as const, specializations: ["creative", "ai-training"] as const },
-  { name: "FluidStack", type: "specialist" as const, specializations: ["ai-inference", "general"] as const },
+  { name: "CloudGPU Pro", type: "hyperscaler" as const, tier: "premium" as ProviderTier, specializations: ["ai-training", "hpc"] as const },
+  { name: "GPU Rental Hub", type: "specialist" as const, tier: "verified" as ProviderTier, specializations: ["gaming", "creative"] as const },
+  { name: "FastGPU", type: "specialist" as const, tier: "community" as ProviderTier, specializations: ["ai-inference", "general"] as const },
+  { name: "Vast.ai", type: "decentralized" as const, tier: "community" as ProviderTier, specializations: ["ai-training", "ai-inference"] as const },
+  { name: "RunPod", type: "specialist" as const, tier: "verified" as ProviderTier, specializations: ["ai-training", "creative"] as const },
+  { name: "Lambda Labs", type: "specialist" as const, tier: "premium" as ProviderTier, specializations: ["ai-training", "hpc"] as const },
+  { name: "Genesis Cloud", type: "specialist" as const, tier: "verified" as ProviderTier, specializations: ["ai-training", "general"] as const },
+  { name: "CoreWeave", type: "hyperscaler" as const, tier: "premium" as ProviderTier, specializations: ["ai-training", "gaming", "creative"] as const },
+  { name: "TensorDock", type: "specialist" as const, tier: "community" as ProviderTier, specializations: ["ai-training", "ai-inference"] as const },
+  { name: "JarvisLabs", type: "specialist" as const, tier: "verified" as ProviderTier, specializations: ["ai-training", "hpc"] as const },
+  { name: "PaperSpace", type: "specialist" as const, tier: "verified" as ProviderTier, specializations: ["creative", "ai-training"] as const },
+  { name: "FluidStack", type: "specialist" as const, tier: "community" as ProviderTier, specializations: ["ai-inference", "general"] as const },
 ];
 
 // Enhanced market factors for more realistic pricing
@@ -290,6 +290,7 @@ const generateDummyGPUData = () => {
         provider: {
           name: provider.name,
           type: provider.type,
+          tier: provider.tier,
           globalScale: provider.type === "hyperscaler" ? 8 + Math.floor(Math.random() * 2) : 
                       provider.type === "specialist" ? 6 + Math.floor(Math.random() * 3) : 
                       4 + Math.floor(Math.random() * 3),

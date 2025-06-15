@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import ProviderTrustBadge from "./ProviderTrustBadge";
 import { enhanceProviderWithTrust } from "@/utils/trustScore";
+import { ProviderTier } from "@/types/gpu-recommendation";
 
 interface MarketplaceGpuGridProps {
   offers: any[];
@@ -52,11 +53,14 @@ const MarketplaceGpuGrid = ({
         const isMediumMatch = workloadScore > 60 && workloadScore <= 80;
         
         // Mock provider data with tier assignment
+        const reliability = offer.reliability2 || offer.reliability || 0;
+        const tier: ProviderTier = reliability > 0.9 ? 'verified' : 
+                                   reliability > 0.8 ? 'premium' : 'community';
+        
         const mockProvider = {
           name: offer.datacenter || 'Unknown Provider',
           type: 'specialist' as const,
-          tier: (offer.reliability2 || offer.reliability || 0) > 0.9 ? 'verified' : 
-                (offer.reliability2 || offer.reliability || 0) > 0.8 ? 'premium' : 'community',
+          tier,
           globalScale: 8,
           slaGuarantee: 99.9,
           securityCertifications: ['ISO27001', 'SOC2'],

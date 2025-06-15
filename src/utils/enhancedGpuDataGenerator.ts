@@ -1,5 +1,5 @@
 
-import { GPUOffer } from "@/types/gpu-recommendation";
+import { GPUOffer, ProviderTier } from "@/types/gpu-recommendation";
 
 // Enhanced GPU data with Gemini API integration potential
 export const generateEnhancedGPUData = async (): Promise<GPUOffer[]> => {
@@ -48,12 +48,12 @@ export const generateEnhancedGPUData = async (): Promise<GPUOffer[]> => {
   ];
 
   const providers = [
-    { name: "VastAI", type: "decentralized", specializations: ["ai-training", "ai-inference"] },
-    { name: "RunPod", type: "specialist", specializations: ["ai-training", "gaming"] },
-    { name: "Lambda Labs", type: "specialist", specializations: ["ai-training", "hpc"] },
-    { name: "Genesis Cloud", type: "hyperscaler", specializations: ["general", "ai-training"] },
-    { name: "CoreWeave", type: "hyperscaler", specializations: ["gaming", "creative", "ai-training"] },
-    { name: "Paperspace", type: "specialist", specializations: ["creative", "ai-training"] },
+    { name: "VastAI", type: "decentralized", tier: "community", specializations: ["ai-training", "ai-inference"] },
+    { name: "RunPod", type: "specialist", tier: "verified", specializations: ["ai-training", "gaming"] },
+    { name: "Lambda Labs", type: "specialist", tier: "premium", specializations: ["ai-training", "hpc"] },
+    { name: "Genesis Cloud", type: "hyperscaler", tier: "verified", specializations: ["general", "ai-training"] },
+    { name: "CoreWeave", type: "hyperscaler", tier: "premium", specializations: ["gaming", "creative", "ai-training"] },
+    { name: "Paperspace", type: "specialist", tier: "verified", specializations: ["creative", "ai-training"] },
   ];
 
   const generateMarketData = () => ({
@@ -123,6 +123,7 @@ export const generateEnhancedGPUData = async (): Promise<GPUOffer[]> => {
       provider: {
         name: provider.name,
         type: provider.type as 'hyperscaler' | 'specialist' | 'decentralized',
+        tier: provider.tier as ProviderTier,
         globalScale: Math.random() * 100,
         slaGuarantee: 95 + Math.random() * 4, // 95-99% SLA
         securityCertifications: ['SOC2', 'ISO27001', 'GDPR'],
