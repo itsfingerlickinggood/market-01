@@ -14,7 +14,7 @@ const CleanHeroSection = () => {
         </p>
       </div>
       
-      <div className="pt-8">
+      <div className="pt-8 py-[23px]">
         <Link to="/marketplace">
           <Button size="lg" className="rounded-lg text-white font-normal text-lg py-[10px] px-[17px]">
             Start exploring
