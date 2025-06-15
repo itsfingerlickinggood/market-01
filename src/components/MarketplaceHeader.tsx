@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Grid2X2, List, Sparkles } from "lucide-react";
 
@@ -11,7 +12,7 @@ interface MarketplaceHeaderProps {
 const MarketplaceHeader = ({ selectedPurpose, matchCount, viewMode, onViewModeChange }: MarketplaceHeaderProps) => {
   return (
     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-      <div className="space-y-2">
+      <div className="space-y-2 mt-8">
         <h1 className="text-3xl font-bold tracking-tight">
           {selectedPurpose ? `${selectedPurpose} GPUs` : "GPU Marketplace"}
         </h1>
