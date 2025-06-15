@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Search, Filter, Grid3X3, List, Sparkles, TrendingUp, TrendingDown } from "lucide-react";
+import { ChevronDown, Search, Filter, Grid3X3, List, Sparkles } from "lucide-react";
 import Header from "@/components/Header";
-import MinimalMarketplaceCard from "@/components/MinimalMarketplaceCard";
-import EnhancedGpuHoverCard from "@/components/EnhancedGpuHoverCard";
+import UltraMinimalGpuCard from "@/components/UltraMinimalGpuCard";
+import SophisticatedHoverCard from "@/components/SophisticatedHoverCard";
 import PurposeFilterTags from "@/components/PurposeFilterTags";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
@@ -22,7 +22,6 @@ const Marketplace = () => {
   const [priceFilter, setPriceFilter] = useState("all");
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [density, setDensity] = useState<"compact" | "comfortable">("compact");
   const { data: offers, isLoading } = useVastAiOffers();
 
   // Enhanced offers with scores and metrics
@@ -81,7 +80,8 @@ const Marketplace = () => {
 
   const handleGpuHover = (offer: any, e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
-    setHoveredGpu(offer);
+    // Intelligent hover delay
+    setTimeout(() => setHoveredGpu(offer), 300);
   };
 
   const handleGpuLeave = () => {
@@ -102,44 +102,44 @@ const Marketplace = () => {
     <div className="min-h-screen bg-white">
       <Header />
       
-      {/* Ultra-Minimal Header */}
-      <div className="border-b border-gray-100">
-        <div className="container mx-auto px-6 py-6">
-          {/* Title Row */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold text-gray-900">Marketplace</h1>
+      {/* Zen Header - Pure White Canvas */}
+      <div className="border-b border-gray-100/60">
+        <div className="container mx-auto px-6 py-8">
+          {/* Ultra-Minimal Title */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-6">
+              <h1 className="text-3xl font-light text-gray-900 tracking-tight">Marketplace</h1>
               {selectedPurpose && matchCount > 0 && (
-                <Badge className="bg-blue-50 text-blue-700 border-blue-200">
-                  <Sparkles className="h-3 w-3 mr-1" />
+                <Badge className="bg-blue-50 text-blue-600 border-blue-200 px-3 py-1">
+                  <Sparkles className="h-3 w-3 mr-1.5" />
                   {matchCount} Perfect Matches
                 </Badge>
               )}
             </div>
             
-            {/* View Controls */}
-            <div className="flex items-center gap-1">
+            {/* Ghost View Controls */}
+            <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("grid")}
-                className="h-8 px-3"
+                className="h-8 px-3 text-xs"
               >
-                <Grid3X3 className="h-4 w-4" />
+                <Grid3X3 className="h-3.5 w-3.5" />
               </Button>
               <Button
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("list")}
-                className="h-8 px-3"
+                className="h-8 px-3 text-xs"
               >
-                <List className="h-4 w-4" />
+                <List className="h-3.5 w-3.5" />
               </Button>
             </div>
           </div>
           
-          {/* Controls Row */}
-          <div className="flex items-center gap-4 mb-4">
+          {/* Invisible Grid Controls */}
+          <div className="flex items-center gap-6 mb-6">
             {/* Purpose Tags */}
             <div className="flex-1">
               <PurposeFilterTags 
@@ -148,31 +148,31 @@ const Marketplace = () => {
               />
             </div>
             
-            {/* Right Controls */}
-            <div className="flex items-center gap-3">
-              {/* Search */}
+            {/* Ghost Controls */}
+            <div className="flex items-center gap-4">
+              {/* Ultra-Minimal Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-300" />
                 <Input 
-                  placeholder="Search GPUs..." 
+                  placeholder="Search..." 
                   value={searchTerm} 
                   onChange={(e) => setSearchTerm(e.target.value)} 
-                  className="pl-10 h-9 w-64 border-gray-200 focus:border-gray-300 focus:ring-0" 
+                  className="pl-10 h-9 w-56 border-gray-200/60 focus:border-gray-300 focus:ring-0 bg-transparent" 
                 />
               </div>
 
-              {/* All Filters */}
+              {/* Ghost Filters */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-9 border-gray-200 text-gray-600">
+                  <Button variant="ghost" size="sm" className="h-9 text-gray-500 hover:text-gray-700">
                     <Filter className="h-4 w-4 mr-2" />
                     Filters
                     <ChevronDown className="h-4 w-4 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-48">
-                  <div className="p-2 border-b border-gray-100">
-                    <div className="text-xs font-medium text-gray-500 mb-2">Price Range</div>
+                <DropdownMenuContent className="w-48 bg-white/95 backdrop-blur-md border border-gray-200/60">
+                  <div className="p-3 border-b border-gray-100">
+                    <div className="text-xs font-medium text-gray-600 mb-2">Price Range</div>
                     <div className="space-y-1">
                       <DropdownMenuItem onClick={() => setPriceFilter("all")} className="text-sm">
                         All Prices
@@ -188,8 +188,8 @@ const Marketplace = () => {
                       </DropdownMenuItem>
                     </div>
                   </div>
-                  <div className="p-2">
-                    <div className="text-xs font-medium text-gray-500 mb-2">Sort By</div>
+                  <div className="p-3">
+                    <div className="text-xs font-medium text-gray-600 mb-2">Sort By</div>
                     <div className="space-y-1">
                       <DropdownMenuItem onClick={() => setSortBy("best-deals")} className="text-sm">
                         Best Deals
@@ -209,93 +209,82 @@ const Marketplace = () => {
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
-
-              {/* Density Toggle */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setDensity(density === "compact" ? "comfortable" : "compact")}
-                className="h-9 text-gray-600"
-              >
-                {density === "compact" ? "Compact" : "Comfortable"}
-              </Button>
             </div>
           </div>
 
-          {/* Live Stats */}
-          <div className="flex items-center gap-6 text-sm text-gray-500">
-            <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+          {/* Breathing Status Dots */}
+          <div className="flex items-center gap-6 text-sm text-gray-400">
+            <span className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
               {sortedOffers.length} GPUs
             </span>
-            <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
               {availableCount} Available
             </span>
             {selectedPurpose && matchCount > 0 && (
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></div>
                 {matchCount} Perfect Matches
               </span>
             )}
-            {searchTerm && <span>• Filtered by "{searchTerm}"</span>}
+            {searchTerm && <span>• "{searchTerm}"</span>}
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-6 py-6">
+      {/* Invisible Grid Content */}
+      <main className="container mx-auto px-6 py-8">
         {isLoading ? (
           <div className={viewMode === "grid" 
-            ? `grid gap-3 ${density === "compact" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"}` 
+            ? "grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6" 
             : "space-y-2"
           }>
             {Array.from({ length: 24 }).map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+                <div className="bg-gray-50/60 rounded-lg p-4 space-y-3">
+                  <div className="h-4 bg-gray-200/60 rounded w-3/4"></div>
+                  <div className="h-3 bg-gray-200/60 rounded w-1/2"></div>
+                  <div className="h-5 bg-gray-200/60 rounded w-1/3"></div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <div className={viewMode === "grid" 
-            ? `grid gap-3 ${density === "compact" ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"}` 
-            : "space-y-2"
+            ? "grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6" 
+            : "space-y-1"
           }>
             {sortedOffers.map((offer) => (
-              <MinimalMarketplaceCard
+              <UltraMinimalGpuCard
                 key={offer.id}
                 offer={offer}
                 onHover={handleGpuHover}
                 onLeave={handleGpuLeave}
                 onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
                 showPurposeMatch={selectedPurpose && offer.isPurposeMatch}
-                density={density}
                 viewMode={viewMode}
               />
             ))}
           </div>
         )}
 
-        {/* Enhanced Empty State */}
+        {/* Zen Empty State */}
         {!isLoading && sortedOffers.length === 0 && (
-          <div className="text-center py-20">
-            <div className="text-4xl mb-4">🔍</div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No GPUs match your criteria</h3>
-            <p className="text-gray-500 mb-6 max-w-md mx-auto">
-              Try adjusting your filters or search terms to find more options
+          <div className="text-center py-24">
+            <div className="text-6xl mb-6">🔍</div>
+            <h3 className="text-xl font-light text-gray-900 mb-3">Nothing found</h3>
+            <p className="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+              Try adjusting your search or filters to discover more GPU options
             </p>
             <Button 
-              variant="outline" 
+              variant="ghost" 
               onClick={() => {
                 setSearchTerm("");
                 setPriceFilter("all");
                 setSelectedPurpose(null);
               }}
-              className="border-gray-200"
+              className="text-gray-600 hover:text-gray-900"
             >
               Clear all filters
             </Button>
@@ -303,9 +292,9 @@ const Marketplace = () => {
         )}
       </main>
 
-      {/* Enhanced Hover Card */}
+      {/* Sophisticated Hover Card */}
       {hoveredGpu && (
-        <EnhancedGpuHoverCard
+        <SophisticatedHoverCard
           gpu={hoveredGpu}
           position={mousePosition}
           onClose={() => setHoveredGpu(null)}
