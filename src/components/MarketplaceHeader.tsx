@@ -1,52 +1,58 @@
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Grid3X3, List, Sparkles } from "lucide-react";
+import { Grid2X2, List, Sparkles } from "lucide-react";
 
 interface MarketplaceHeaderProps {
   selectedPurpose: string | null;
   matchCount: number;
-  viewMode: "grid" | "list";
-  onViewModeChange: (mode: "grid" | "list") => void;
+  viewMode: "grid" | "list" | "enhanced";
+  onViewModeChange: (mode: "grid" | "list" | "enhanced") => void;
 }
 
-const MarketplaceHeader = ({ 
-  selectedPurpose, 
-  matchCount, 
-  viewMode, 
-  onViewModeChange 
-}: MarketplaceHeaderProps) => {
+const MarketplaceHeader = ({ selectedPurpose, matchCount, viewMode, onViewModeChange }: MarketplaceHeaderProps) => {
   return (
-    <div className="flex items-center justify-between mb-8">
-      <div className="flex items-center gap-6">
-        <h1 className="text-3xl font-light text-foreground tracking-tight transition-colors duration-300">
-          Marketplace
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">
+          {selectedPurpose ? `${selectedPurpose} GPUs` : "GPU Marketplace"}
         </h1>
-        {selectedPurpose && matchCount > 0 && (
-          <Badge className="bg-primary/10 text-primary border-primary/20 px-3 py-1 transition-colors duration-300">
-            <Sparkles className="h-3 w-3 mr-1.5" />
-            {matchCount} Perfect Matches
-          </Badge>
-        )}
+        <p className="text-muted-foreground">
+          {selectedPurpose 
+            ? `${matchCount} GPUs optimized for ${selectedPurpose.toLowerCase()}`
+            : "Discover and rent high-performance GPUs from trusted providers"
+          }
+        </p>
       </div>
-      
-      <div className="flex items-center gap-1 bg-muted/50 rounded-lg p-1 transition-colors duration-300">
-        <Button
-          variant={viewMode === "grid" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => onViewModeChange("grid")}
-          className="h-8 px-3 text-xs transition-all duration-300"
-        >
-          <Grid3X3 className="h-3.5 w-3.5" />
-        </Button>
-        <Button
-          variant={viewMode === "list" ? "default" : "ghost"}
-          size="sm"
-          onClick={() => onViewModeChange("list")}
-          className="h-8 px-3 text-xs transition-all duration-300"
-        >
-          <List className="h-3.5 w-3.5" />
-        </Button>
+
+      <div className="flex items-center gap-4">
+        <div className="flex items-center bg-muted rounded-lg p-1">
+          <Button
+            variant={viewMode === "enhanced" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onViewModeChange("enhanced")}
+            className="px-3"
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            Enhanced
+          </Button>
+          <Button
+            variant={viewMode === "grid" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onViewModeChange("grid")}
+            className="px-3"
+          >
+            <Grid2X2 className="h-4 w-4 mr-2" />
+            Grid
+          </Button>
+          <Button
+            variant={viewMode === "list" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => onViewModeChange("list")}
+            className="px-3"
+          >
+            <List className="h-4 w-4 mr-2" />
+            List
+          </Button>
+        </div>
       </div>
     </div>
   );

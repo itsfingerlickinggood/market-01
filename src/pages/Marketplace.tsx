@@ -20,7 +20,7 @@ const Marketplace = () => {
   const [priceFilter, setPriceFilter] = useState("all");
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
   const [trendFilter, setTrendFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "enhanced">("enhanced");
   const { data: offers, isLoading } = useVastAiOffers();
 
   // Enhanced offers with scores, metrics, and price trends
@@ -161,6 +161,11 @@ const Marketplace = () => {
       <main className="container mx-auto px-6 py-8">
         {!isLoading && sortedOffers.length === 0 ? (
           <MarketplaceEmptyState onClearFilters={handleClearFilters} />
+        ) : viewMode === "enhanced" ? (
+          <MarketplaceEnhancedGrid
+            offers={sortedOffers}
+            isLoading={isLoading}
+          />
         ) : (
           <MarketplaceGrid
             offers={sortedOffers}
