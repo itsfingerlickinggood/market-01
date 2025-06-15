@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -48,7 +47,7 @@ const GpuDetails = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Modern Navigation Header */}
+      {/* Hero Navigation Header */}
       <GpuDetailsHeader
         gpu={gpu}
         isFavorited={isFavorited}
@@ -61,7 +60,7 @@ const GpuDetails = () => {
         onSectionChange={setActiveSection}
       />
 
-      {/* Hero Section */}
+      {/* New Provider-focused Hero Section */}
       <ModernGpuHero gpu={gpu} />
 
       {/* Main Content */}

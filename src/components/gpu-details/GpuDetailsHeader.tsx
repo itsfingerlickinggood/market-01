@@ -39,13 +39,18 @@ const GpuDetailsHeader = ({
               </Button>
             </Link>
             
-            {/* Breadcrumb */}
+            {/* Enhanced Breadcrumb */}
             <nav className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
               <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
               <ChevronRight className="h-3 w-3" />
               <Link to="/marketplace" className="hover:text-foreground transition-colors">Marketplace</Link>
               <ChevronRight className="h-3 w-3" />
-              <span className="text-foreground font-medium">{gpu.gpu_name}</span>
+              <span className="flex items-center gap-1 text-foreground font-medium">
+                {gpu.provider_logo && <span className="text-xl mr-1">{gpu.provider_logo}</span>}
+                <span>{gpu.company}</span>
+              </span>
+              <ChevronRight className="h-3 w-3" />
+              <span className="text-foreground font-semibold">{gpu.gpu_name}</span>
             </nav>
           </div>
           
