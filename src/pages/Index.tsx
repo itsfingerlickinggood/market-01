@@ -53,9 +53,9 @@ const Index = () => {
         <MarketplaceHero />
         
         <div className="container mx-auto px-4 py-8 space-y-12">
+          <HeroSection />
           <LiveMarketSection deals={mockDeals} />
           <CandlestickSection />
-          <HeroSection />
           <MarketplaceStats />
           <QuickInsights />
           <FeaturesSection />
