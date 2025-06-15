@@ -14,7 +14,7 @@ const MarketplaceHeader = ({
 }: MarketplaceHeaderProps) => {
   return <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
       <div className="space-y-2 mt-8">
-        <h1 className="tracking-tight font-thin tracking-tighter text-left ,change to juts from-amber ">
+        <h1 className="tracking-tight tracking-tighter text-left ,change to juts from-amber font-thin text-3xl">
           {selectedPurpose ? `${selectedPurpose} GPUs` : "GPU Marketplace"}
         </h1>
         <p className="text-muted-foreground">
