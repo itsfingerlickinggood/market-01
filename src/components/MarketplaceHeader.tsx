@@ -16,7 +16,7 @@ const MarketplaceHeader = ({
   onViewModeChange
 }: MarketplaceHeaderProps) => {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
       <div className="space-y-2 mt-8">
         <h1 className="tracking-tight text-left font-thin text-3xl py-[17px]">
           Marketplace
@@ -26,13 +26,13 @@ const MarketplaceHeader = ({
         </p>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="flex items-center bg-card border border-border rounded-lg p-1 shadow-sm">
+      <div className="flex items-center gap-4 lg:mb-6">
+        <div className="flex items-center bg-background border border-border rounded-lg p-1 shadow-sm h-10">
           <Button 
             variant={viewMode === "enhanced" ? "default" : "ghost"} 
             size="sm" 
             onClick={() => onViewModeChange("enhanced")} 
-            className="px-3"
+            className="px-3 h-8"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             Enhanced
@@ -41,7 +41,7 @@ const MarketplaceHeader = ({
             variant={viewMode === "grid" ? "default" : "ghost"} 
             size="sm" 
             onClick={() => onViewModeChange("grid")} 
-            className="px-3"
+            className="px-3 h-8"
           >
             <Grid2X2 className="h-4 w-4 mr-2" />
             Grid
@@ -50,7 +50,7 @@ const MarketplaceHeader = ({
             variant={viewMode === "list" ? "default" : "ghost"} 
             size="sm" 
             onClick={() => onViewModeChange("list")} 
-            className="px-3"
+            className="px-3 h-8"
           >
             <List className="h-4 w-4 mr-2" />
             List

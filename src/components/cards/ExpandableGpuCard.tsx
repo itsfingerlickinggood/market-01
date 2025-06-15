@@ -44,153 +44,161 @@ const ExpandableGpuCard = ({
 
   return (
     <div className="relative">
-      <Card 
+      {/* Single unified card container */}
+      <div 
         className={`
-          transition-all duration-500 cursor-pointer relative overflow-visible border-0 shadow-none
+          transition-all duration-500 cursor-pointer relative overflow-visible
           ${isHovered ? 
-            'shadow-2xl transform scale-105 bg-gradient-to-br from-card via-card/95 to-primary/5 z-50' : 
-            'hover:shadow-lg hover:-translate-y-1 z-10 bg-card'
+            'shadow-2xl transform scale-105 z-50' : 
+            'hover:shadow-lg hover:-translate-y-1 z-10'
           }
           ${className}
         `}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Glossy overlay effect */}
-        {isHovered && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse pointer-events-none z-10 rounded-lg" />
-        )}
-        
-        <CardContent className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-20' : ''}`}>
-          {/* Header with Actions */}
-          <div className="flex items-start justify-between">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <div className={`w-2 h-2 rounded-full ${
-                  gpu.rentable !== false ? "bg-green-500 animate-pulse" : "bg-red-400"
-                }`} />
-                <h3 className="font-semibold text-sm truncate">{gpu.gpu_name}</h3>
+        {/* Main card content with seamless background */}
+        <div className={`
+          bg-gradient-to-br from-card via-card/95 to-primary/5 backdrop-blur-md rounded-lg
+          ${isHovered ? 'shadow-2xl' : 'shadow-sm'}
+          transition-all duration-500
+        `}>
+          {/* Glossy overlay effect */}
+          {isHovered && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse pointer-events-none z-10 rounded-lg" />
+          )}
+          
+          <div className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-20' : ''}`}>
+            {/* Header with Actions */}
+            <div className="flex items-start justify-between">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className={`w-2 h-2 rounded-full ${
+                    gpu.rentable !== false ? "bg-green-500 animate-pulse" : "bg-red-400"
+                  }`} />
+                  <h3 className="font-semibold text-sm truncate">{gpu.gpu_name}</h3>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {gpu.num_gpus || 1}x GPU • {gpu.gpu_ram || 24}GB VRAM
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {gpu.num_gpus || 1}x GPU • {gpu.gpu_ram || 24}GB VRAM
-              </p>
+              
+              {/* Quick Actions - only show when not hovered */}
+              {!isHovered && (
+                <div className="flex items-center gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Heart className="h-3 w-3 text-gray-400 hover:text-pink-500" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <BarChart3 className="h-3 w-3 text-gray-400 hover:text-blue-500" />
+                  </Button>
+                </div>
+              )}
             </div>
-            
-            {/* Quick Actions - only show when not hovered */}
-            {!isHovered && (
-              <div className="flex items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0"
-                  onClick={(e) => e.stopPropagation()}
+
+            {/* Price with Micro Chart */}
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-lg font-bold text-primary">
+                  ${(gpu.dph_total || 1.0).toFixed(3)}
+                </span>
+                <span className="text-sm text-muted-foreground ml-1">/hr</span>
+              </div>
+              
+              <MicroCandlestickChart 
+                width={60} 
+                height={30}
+                showTrend={true}
+                className="flex-shrink-0"
+              />
+            </div>
+
+            {/* Status and Location */}
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <Badge 
+                  variant={gpu.rentable !== false ? "default" : "destructive"}
+                  className="text-xs px-2 py-0.5"
                 >
-                  <Heart className="h-3 w-3 text-gray-400 hover:text-pink-500" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 p-0"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <BarChart3 className="h-3 w-3 text-gray-400 hover:text-blue-500" />
-                </Button>
+                  {gpu.rentable !== false ? "Available" : "Rented"}
+                </Badge>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <MapPin className="h-3 w-3" />
+                  <span className="truncate">
+                    {(gpu.datacenter || "Unknown").split('(')[0].trim()}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Zap className="h-3 w-3 text-green-500" />
+                <span>{Math.round((gpu.reliability2 || gpu.reliability || 0) * 100)}%</span>
+              </div>
+            </div>
+
+            {/* Seamless Expanded Content - No separation, same background */}
+            {isHovered && (
+              <div className="pt-3 space-y-3 border-t border-border/20">
+                {/* Glossy overlay for expanded section */}
+                <div className="absolute left-0 right-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
+                
+                <div className="relative z-10">
+                  {/* Provider Spread */}
+                  <div>
+                    <div className="text-xs font-medium text-muted-foreground mb-2">Provider Comparison</div>
+                    <ProviderSpreadIndicator spread={mockProviderSpread} />
+                  </div>
+                  
+                  {/* Quick Specs */}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">CPU:</span>
+                      <span className="font-medium">{gpu.cpu_cores || 16} cores</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">RAM:</span>
+                      <span className="font-medium">{gpu.cpu_ram || 32}GB</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Storage:</span>
+                      <span className="font-medium">{gpu.disk_space || 500}GB</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Network:</span>
+                      <span className="font-medium">{gpu.inet_down || '1Gbps'}</span>
+                    </div>
+                  </div>
+
+                  {/* Details Button - Bottom Right */}
+                  <div className="flex justify-end pt-2">
+                    <Link to={`/gpu/${gpu.id}`} onClick={(e) => e.stopPropagation()}>
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        disabled={gpu.rentable === false}
+                        className="text-xs px-3 py-1 h-7 gap-1 shadow-lg transform scale-105 bg-primary hover:bg-primary/90"
+                      >
+                        {gpu.rentable === false ? 'Unavailable' : 'Details'}
+                        <ArrowRight className="h-3 w-3" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
               </div>
             )}
           </div>
-
-          {/* Price with Micro Chart */}
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-lg font-bold text-primary">
-                ${(gpu.dph_total || 1.0).toFixed(3)}
-              </span>
-              <span className="text-sm text-muted-foreground ml-1">/hr</span>
-            </div>
-            
-            <MicroCandlestickChart 
-              width={60} 
-              height={30}
-              showTrend={true}
-              className="flex-shrink-0"
-            />
-          </div>
-
-          {/* Status and Location */}
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <Badge 
-                variant={gpu.rentable !== false ? "default" : "destructive"}
-                className="text-xs px-2 py-0.5"
-              >
-                {gpu.rentable !== false ? "Available" : "Rented"}
-              </Badge>
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <MapPin className="h-3 w-3" />
-                <span className="truncate">
-                  {(gpu.datacenter || "Unknown").split('(')[0].trim()}
-                </span>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Zap className="h-3 w-3 text-green-500" />
-              <span>{Math.round((gpu.reliability2 || gpu.reliability || 0) * 100)}%</span>
-            </div>
-          </div>
-        </CardContent>
-
-        {/* Hover Dropdown - Seamlessly merged with main card */}
-        {isHovered && (
-          <div className="absolute top-full left-0 right-0 z-50 bg-gradient-to-br from-card via-card/95 to-primary/5 backdrop-blur-md shadow-2xl border-0">
-            {/* Glossy overlay for dropdown */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
-            
-            <div className="relative z-10 p-4 space-y-3">
-              {/* Provider Spread */}
-              <div>
-                <div className="text-xs font-medium text-muted-foreground mb-2">Provider Comparison</div>
-                <ProviderSpreadIndicator spread={mockProviderSpread} />
-              </div>
-              
-              {/* Quick Specs */}
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">CPU:</span>
-                  <span className="font-medium">{gpu.cpu_cores || 16} cores</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">RAM:</span>
-                  <span className="font-medium">{gpu.cpu_ram || 32}GB</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Storage:</span>
-                  <span className="font-medium">{gpu.disk_space || 500}GB</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Network:</span>
-                  <span className="font-medium">{gpu.inet_down || '1Gbps'}</span>
-                </div>
-              </div>
-
-              {/* Details Button - Bottom Right */}
-              <div className="flex justify-end pt-2">
-                <Link to={`/gpu/${gpu.id}`} onClick={(e) => e.stopPropagation()}>
-                  <Button 
-                    variant="default"
-                    size="sm" 
-                    disabled={gpu.rentable === false}
-                    className="text-xs px-3 py-1 h-7 gap-1 shadow-lg transform scale-105 bg-primary hover:bg-primary/90"
-                  >
-                    {gpu.rentable === false ? 'Unavailable' : 'Details'}
-                    <ArrowRight className="h-3 w-3" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
