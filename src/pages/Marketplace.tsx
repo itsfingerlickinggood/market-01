@@ -2,32 +2,23 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ChevronDown, SortAsc } from "lucide-react";
+import { ChevronDown, Search, Filter } from "lucide-react";
 import Header from "@/components/Header";
-import WorkloadMarketplaceHero from "@/components/WorkloadMarketplaceHero";
-import PurposeFilterTags, { purposeTags } from "@/components/PurposeFilterTags";
-import SimpleFilterTags from "@/components/SimpleFilterTags";
 import MarketplaceGpuGrid from "@/components/MarketplaceGpuGrid";
 import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
-import { enhanceProviderWithTrust } from "@/utils/trustScore";
 
 const Marketplace = () => {
   const { selectedWorkload } = useWorkload();
   const [hoveredGpu, setHoveredGpu] = useState<any>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [sortBy, setSortBy] = useState("workload-match");
-  const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
-  
-  // Simple filter states
-  const [selectedModels, setSelectedModels] = useState<string[]>([]);
-  const [selectedVrams, setSelectedVrams] = useState<string[]>([]);
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
-  const [selectedTiers, setSelectedTiers] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState("price");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [priceFilter, setPriceFilter] = useState("all");
 
   const { data: offers, isLoading } = useVastAiOffers();
 
@@ -41,157 +32,46 @@ const Marketplace = () => {
     }));
   }, [offers, selectedWorkload]);
 
-  const handleModelToggle = (model: string) => {
-    setSelectedModels(prev => 
-      prev.includes(model) 
-        ? prev.filter(m => m !== model)
-        : [...prev, model]
-    );
-  };
+  // Simple filtering
+  const filteredOffers = useMemo(() => {
+    let filtered = enhancedOffers || [];
 
-  const handleVramToggle = (vram: string) => {
-    setSelectedVrams(prev => 
-      prev.includes(vram) 
-        ? prev.filter(v => v !== vram)
-        : [...prev, vram]
-    );
-  };
-
-  const handleRegionToggle = (region: string) => {
-    setSelectedRegions(prev => 
-      prev.includes(region) 
-        ? prev.filter(r => r !== region)
-        : [...prev, region]
-    );
-  };
-
-  const handleCompanyToggle = (company: string) => {
-    setSelectedCompanies(prev => 
-      prev.includes(company) 
-        ? prev.filter(c => c !== company)
-        : [...prev, company]
-    );
-  };
-
-  const handleTierToggle = (tier: string) => {
-    setSelectedTiers(prev => 
-      prev.includes(tier) 
-        ? prev.filter(t => t !== tier)
-        : [...prev, tier]
-    );
-  };
-
-  const handleClearAllFilters = () => {
-    setSelectedModels([]);
-    setSelectedVrams([]);
-    setSelectedRegions([]);
-    setSelectedCompanies([]);
-    setSelectedTiers([]);
-  };
-
-  // Filter offers based on selected tags
-  const filteredOffers = (enhancedOffers || []).filter(offer => {
-    // Model filter
-    if (selectedModels.length > 0) {
-      const matchesModel = selectedModels.some(model =>
-        offer.gpu_name?.toLowerCase().includes(model.toLowerCase())
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(offer =>
+        offer.gpu_name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      if (!matchesModel) return false;
     }
 
-    // VRAM filter
-    if (selectedVrams.length > 0) {
-      const offerVram = offer.gpu_ram || 0;
-      const matchesVram = selectedVrams.some(vram => {
-        const vramNum = parseInt(vram);
-        return offerVram >= vramNum && offerVram < (vramNum + 8);
+    // Price filter
+    if (priceFilter !== "all") {
+      filtered = filtered.filter(offer => {
+        const price = offer.dph_total || 0;
+        switch (priceFilter) {
+          case "low": return price < 1;
+          case "medium": return price >= 1 && price < 3;
+          case "high": return price >= 3;
+          default: return true;
+        }
       });
-      if (!matchesVram) return false;
     }
 
-    // Company filter
-    if (selectedCompanies.length > 0) {
-      const matchesCompany = selectedCompanies.some(company =>
-        offer.gpu_name?.toLowerCase().includes(company.toLowerCase())
-      );
-      if (!matchesCompany) return false;
-    }
+    return filtered;
+  }, [enhancedOffers, searchTerm, priceFilter]);
 
-    // Region filter (using datacenter as proxy for region)
-    if (selectedRegions.length > 0) {
-      const matchesRegion = selectedRegions.some(region => {
-        const datacenter = offer.datacenter?.toLowerCase() || '';
-        if (region === 'US East') return datacenter.includes('us') || datacenter.includes('east');
-        if (region === 'US West') return datacenter.includes('us') || datacenter.includes('west');
-        if (region === 'Europe') return datacenter.includes('eu') || datacenter.includes('europe');
-        if (region === 'Asia Pacific') return datacenter.includes('asia') || datacenter.includes('ap');
-        return datacenter.includes(region.toLowerCase());
-      });
-      if (!matchesRegion) return false;
-    }
-
-    // Trust tier filter
-    if (selectedTiers.length > 0) {
-      const reliability = offer.reliability2 || offer.reliability || 0;
-      const tier = reliability > 0.9 ? 'verified' : 
-                   reliability > 0.8 ? 'premium' : 'community';
-      
-      if (!selectedTiers.includes(tier)) return false;
-    }
-
-    return true;
-  });
-
+  // Simple sorting
   const sortedOffers = [...filteredOffers].sort((a, b) => {
     switch (sortBy) {
-      case 'workload-match':
-        return (b.workloadScore || 0) - (a.workloadScore || 0);
       case 'price':
-        return (a.dph_total || a.pricing?.onDemand || 0) - (b.dph_total || b.pricing?.onDemand || 0);
+        return (a.dph_total || 0) - (b.dph_total || 0);
       case 'performance':
         return (b.reliability2 || b.reliability || 0) - (a.reliability2 || a.reliability || 0);
-      case 'availability':
-        const orderMap = { 'available': 0, 'limited': 1, 'unavailable': 2 };
-        return (orderMap[a.availability] || 2) - (orderMap[b.availability] || 2);
-      case 'trust':
-        const aTrust = enhanceProviderWithTrust({
-          name: a.datacenter || 'Unknown',
-          type: 'specialist' as const,
-          tier: (a.reliability2 || a.reliability || 0) > 0.9 ? 'verified' : 
-                (a.reliability2 || a.reliability || 0) > 0.8 ? 'premium' : 'community',
-          globalScale: 8,
-          slaGuarantee: 99.9,
-          securityCertifications: [],
-          egressPolicy: 'free' as const,
-          specializations: []
-        }).trustScore || 0;
-        const bTrust = enhanceProviderWithTrust({
-          name: b.datacenter || 'Unknown',
-          type: 'specialist' as const,
-          tier: (b.reliability2 || b.reliability || 0) > 0.9 ? 'verified' : 
-                (b.reliability2 || b.reliability || 0) > 0.8 ? 'premium' : 'community',
-          globalScale: 8,
-          slaGuarantee: 99.9,
-          securityCertifications: [],
-          egressPolicy: 'free' as const,
-          specializations: []
-        }).trustScore || 0;
-        return bTrust - aTrust;
+      case 'workload-match':
+        return (b.workloadScore || 0) - (a.workloadScore || 0);
       default:
         return 0;
     }
   });
-
-  const getSortLabel = (value: string) => {
-    switch (value) {
-      case 'workload-match': return 'Best Match for ' + (selectedWorkload?.title || 'Workload');
-      case 'price': return 'Price (Low to High)';
-      case 'performance': return 'Reliability Score';
-      case 'availability': return 'Availability Status';
-      case 'trust': return 'Trust Score';
-      default: return 'Sort by';
-    }
-  };
 
   const handleGpuHover = (offer: any, e: React.MouseEvent) => {
     setMousePosition({ x: e.clientX, y: e.clientY });
@@ -205,89 +85,128 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-background pt-16">
       <Header />
-      <WorkloadMarketplaceHero />
       
-      <main className="container mx-auto px-4 py-6">
-        <div className="flex gap-8">
-          {/* Filter Sidebar */}
-          <SimpleFilterTags
-            selectedModels={selectedModels}
-            selectedVrams={selectedVrams}
-            selectedRegions={selectedRegions}
-            selectedCompanies={selectedCompanies}
-            selectedTiers={selectedTiers}
-            onModelToggle={handleModelToggle}
-            onVramToggle={handleVramToggle}
-            onRegionToggle={handleRegionToggle}
-            onCompanyToggle={handleCompanyToggle}
-            onTierToggle={handleTierToggle}
-            onClearAll={handleClearAllFilters}
-          />
-
-          {/* Main Content */}
-          <div className="flex-1 space-y-4">
-            {/* Purpose Filter Tags */}
-            <PurposeFilterTags 
-              selectedPurpose={selectedPurpose}
-              onPurposeChange={setSelectedPurpose}
-            />
-
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <h2 className="text-2xl font-bold">
-                  {selectedWorkload ? 
-                    `${selectedWorkload.title} GPUs` : 
-                    'All GPUs'
-                  }
-                </h2>
-                <Badge variant="outline" className="text-sm">
-                  {sortedOffers.length} available
-                </Badge>
-              </div>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="min-w-[200px] justify-between">
-                    <div className="flex items-center">
-                      <SortAsc className="h-3 w-3 mr-1.5" />
-                      <span className="truncate">{getSortLabel(sortBy)}</span>
-                    </div>
-                    <ChevronDown className="h-3 w-3 ml-1.5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64 bg-background/95 backdrop-blur-md">
-                  {selectedWorkload && (
-                    <DropdownMenuItem onClick={() => setSortBy('workload-match')}>
-                      Best Match for {selectedWorkload.title}
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem onClick={() => setSortBy('trust')}>
-                    Trust Score
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy('price')}>
-                    Price (Low to High)
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy('performance')}>
-                    Reliability Score
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy('availability')}>
-                    Availability Status
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            {/* GPU Grid */}
-            <MarketplaceGpuGrid
-              offers={sortedOffers}
-              isLoading={isLoading}
-              selectedPurpose={selectedPurpose}
-              onGpuHover={handleGpuHover}
-              onGpuLeave={handleGpuLeave}
-              onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
-            />
+      {/* Simple Hero */}
+      <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-2">GPU Marketplace</h1>
+            <p className="text-muted-foreground">Find the perfect GPU for your needs</p>
           </div>
         </div>
+      </div>
+      
+      <main className="container mx-auto px-4 py-6">
+        {/* Simple Filters */}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search GPUs..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {/* Price Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="min-w-[120px] justify-between">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Price: {priceFilter === "all" ? "All" : priceFilter === "low" ? "< $1/hr" : priceFilter === "medium" ? "$1-3/hr" : "> $3/hr"}
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setPriceFilter("all")}>
+                  All Prices
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setPriceFilter("low")}>
+                  Under $1/hour
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setPriceFilter("medium")}>
+                  $1-3/hour
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setPriceFilter("high")}>
+                  Over $3/hour
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Sort */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="min-w-[140px] justify-between">
+                  Sort: {sortBy === "price" ? "Price" : sortBy === "performance" ? "Performance" : "Best Match"}
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setSortBy("price")}>
+                  Price (Low to High)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("performance")}>
+                  Performance
+                </DropdownMenuItem>
+                {selectedWorkload && (
+                  <DropdownMenuItem onClick={() => setSortBy("workload-match")}>
+                    Best Match
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Results count */}
+          <div className="flex items-center gap-2">
+            <Badge variant="outline">
+              {sortedOffers.length} GPUs available
+            </Badge>
+            {searchTerm && (
+              <Badge variant="secondary">
+                Filtered by: "{searchTerm}"
+              </Badge>
+            )}
+            {priceFilter !== "all" && (
+              <Badge variant="secondary">
+                Price: {priceFilter === "low" ? "< $1/hr" : priceFilter === "medium" ? "$1-3/hr" : "> $3/hr"}
+              </Badge>
+            )}
+          </div>
+        </div>
+
+        {/* GPU Grid */}
+        <MarketplaceGpuGrid
+          offers={sortedOffers}
+          isLoading={isLoading}
+          selectedPurpose={null}
+          onGpuHover={handleGpuHover}
+          onGpuLeave={handleGpuLeave}
+          onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
+        />
+
+        {/* Empty state */}
+        {!isLoading && sortedOffers.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🔍</div>
+            <h3 className="text-xl font-semibold mb-2">No GPUs found</h3>
+            <p className="text-muted-foreground mb-4">
+              Try adjusting your search or filters
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setSearchTerm("");
+                setPriceFilter("all");
+              }}
+            >
+              Clear all filters
+            </Button>
+          </div>
+        )}
       </main>
 
       {/* Hover Dialog */}
