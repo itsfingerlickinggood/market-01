@@ -34,9 +34,6 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement
 
-    // Add transition class for smooth theme switching
-    root.style.transition = "background-color 0.3s ease, color 0.3s ease"
-
     root.classList.remove("light", "dark")
 
     if (theme === "system") {
@@ -50,13 +47,6 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme)
-
-    // Remove transition after theme change to prevent layout shifts
-    const timeoutId = setTimeout(() => {
-      root.style.transition = ""
-    }, 300)
-
-    return () => clearTimeout(timeoutId)
   }, [theme])
 
   const value = {
