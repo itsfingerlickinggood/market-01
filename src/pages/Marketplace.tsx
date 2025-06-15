@@ -1,21 +1,23 @@
-
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ChevronDown, SortAsc } from "lucide-react";
 import Header from "@/components/Header";
-import MarketplaceHero from "@/components/MarketplaceHero";
+import WorkloadMarketplaceHero from "@/components/WorkloadMarketplaceHero";
 import PurposeFilterTags, { purposeTags } from "@/components/PurposeFilterTags";
 import SimpleFilterTags from "@/components/SimpleFilterTags";
 import MarketplaceGpuGrid from "@/components/MarketplaceGpuGrid";
 import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
+import { useWorkload } from "@/contexts/WorkloadContext";
+import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
 
 const Marketplace = () => {
+  const { selectedWorkload } = useWorkload();
   const [hoveredGpu, setHoveredGpu] = useState<any>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [sortBy, setSortBy] = useState("recommendation");
+  const [sortBy, setSortBy] = useState("workload-match");
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
   
   // Simple filter states
@@ -25,6 +27,16 @@ const Marketplace = () => {
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
 
   const { data: offers, isLoading } = useVastAiOffers();
+
+  // Add workload scores to offers
+  const enhancedOffers = useMemo(() => {
+    if (!offers || !selectedWorkload) return offers || [];
+    
+    return offers.map(offer => ({
+      ...offer,
+      workloadScore: calculateWorkloadScore(offer, selectedWorkload.id)
+    }));
+  }, [offers, selectedWorkload]);
 
   const handleModelToggle = (model: string) => {
     setSelectedModels(prev => 
@@ -66,7 +78,7 @@ const Marketplace = () => {
   };
 
   // Filter offers based on selected tags
-  const filteredOffers = (offers || []).filter(offer => {
+  const filteredOffers = (enhancedOffers || []).filter(offer => {
     // Model filter
     if (selectedModels.length > 0) {
       const matchesModel = selectedModels.some(model =>
@@ -111,6 +123,8 @@ const Marketplace = () => {
 
   const sortedOffers = [...filteredOffers].sort((a, b) => {
     switch (sortBy) {
+      case 'workload-match':
+        return (b.workloadScore || 0) - (a.workloadScore || 0);
       case 'price':
         return (a.dph_total || a.pricing?.onDemand || 0) - (b.dph_total || b.pricing?.onDemand || 0);
       case 'performance':
@@ -118,8 +132,6 @@ const Marketplace = () => {
       case 'availability':
         const orderMap = { 'available': 0, 'limited': 1, 'unavailable': 2 };
         return (orderMap[a.availability] || 2) - (orderMap[b.availability] || 2);
-      case 'recommendation':
-        return (b.recommendationScore || 0) - (a.recommendationScore || 0);
       default:
         return 0;
     }
@@ -127,10 +139,10 @@ const Marketplace = () => {
 
   const getSortLabel = (value: string) => {
     switch (value) {
+      case 'workload-match': return 'Best Match for ' + (selectedWorkload?.title || 'Workload');
       case 'price': return 'Price (Low to High)';
       case 'performance': return 'Reliability Score';
       case 'availability': return 'Availability Status';
-      case 'recommendation': return 'Match Score';
       default: return 'Sort by';
     }
   };
@@ -147,7 +159,7 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-background pt-16">
       <Header />
-      <MarketplaceHero />
+      <WorkloadMarketplaceHero />
       
       <main className="container mx-auto px-4 py-6">
         <div className="flex gap-8">
@@ -175,8 +187,8 @@ const Marketplace = () => {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl font-bold">
-                  {selectedPurpose ? 
-                    `GPUs for ${purposeTags.find(t => t.id === selectedPurpose)?.label}` : 
+                  {selectedWorkload ? 
+                    `${selectedWorkload.title} GPUs` : 
                     'All GPUs'
                   }
                 </h2>
@@ -187,18 +199,20 @@ const Marketplace = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="min-w-[160px] justify-between">
+                  <Button variant="outline" size="sm" className="min-w-[200px] justify-between">
                     <div className="flex items-center">
                       <SortAsc className="h-3 w-3 mr-1.5" />
-                      <span>{getSortLabel(sortBy)}</span>
+                      <span className="truncate">{getSortLabel(sortBy)}</span>
                     </div>
                     <ChevronDown className="h-3 w-3 ml-1.5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-md">
-                  <DropdownMenuItem onClick={() => setSortBy('recommendation')}>
-                    Match Score
-                  </DropdownMenuItem>
+                <DropdownMenuContent align="end" className="w-64 bg-background/95 backdrop-blur-md">
+                  {selectedWorkload && (
+                    <DropdownMenuItem onClick={() => setSortBy('workload-match')}>
+                      Best Match for {selectedWorkload.title}
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => setSortBy('price')}>
                     Price (Low to High)
                   </DropdownMenuItem>
