@@ -43,32 +43,41 @@ const ExpandableGpuCard = ({
   };
 
   return (
-    <div className="relative">
-      {/* Single unified card container */}
+    <div className={`relative ${className}`}>
+      {/* Single unified card container with absolute positioning when hovered */}
       <div 
         className={`
-          transition-all duration-500 cursor-pointer relative overflow-visible
+          transition-all duration-500 cursor-pointer
           ${isHovered ? 
-            'shadow-2xl transform scale-105 z-50' : 
-            'hover:shadow-lg hover:-translate-y-1 z-10'
+            'absolute inset-0 z-50 transform scale-110' : 
+            'relative z-10 hover:shadow-lg hover:-translate-y-1'
           }
-          ${className}
         `}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Main card content with seamless background */}
+        {/* Main card content with seamless background and glossy effect */}
         <div className={`
-          bg-gradient-to-br from-card via-card/95 to-primary/5 backdrop-blur-md rounded-lg
-          ${isHovered ? 'shadow-2xl' : 'shadow-sm'}
-          transition-all duration-500
+          bg-gradient-to-br from-card via-card/98 to-primary/8 backdrop-blur-lg rounded-lg
+          ${isHovered ? 
+            'shadow-2xl ring-1 ring-primary/20' : 
+            'shadow-sm hover:shadow-md'
+          }
+          transition-all duration-500 relative overflow-hidden
         `}>
-          {/* Glossy overlay effect */}
+          {/* Enhanced glossy overlay effect when hovered */}
           {isHovered && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse pointer-events-none z-10 rounded-lg" />
+            <>
+              {/* Main glossy overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-primary/10 pointer-events-none z-10 rounded-lg" />
+              {/* Moving shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-pulse pointer-events-none z-20 rounded-lg" />
+              {/* Edge glow */}
+              <div className="absolute inset-0 rounded-lg ring-2 ring-primary/30 pointer-events-none z-30" />
+            </>
           )}
           
-          <div className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-20' : ''}`}>
+          <div className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-40' : ''}`}>
             {/* Header with Actions */}
             <div className="flex items-start justify-between">
               <div className="flex-1 min-w-0">
@@ -146,12 +155,9 @@ const ExpandableGpuCard = ({
               </div>
             </div>
 
-            {/* Seamless Expanded Content - No separation, same background */}
+            {/* Seamless Expanded Content - Appears without borders */}
             {isHovered && (
-              <div className="pt-3 space-y-3 border-t border-border/20">
-                {/* Glossy overlay for expanded section */}
-                <div className="absolute left-0 right-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
-                
+              <div className="pt-3 space-y-3">
                 <div className="relative z-10">
                   {/* Provider Spread */}
                   <div>
@@ -186,7 +192,7 @@ const ExpandableGpuCard = ({
                         variant="default"
                         size="sm" 
                         disabled={gpu.rentable === false}
-                        className="text-xs px-3 py-1 h-7 gap-1 shadow-lg transform scale-105 bg-primary hover:bg-primary/90"
+                        className="text-xs px-3 py-1 h-7 gap-1 shadow-lg bg-primary hover:bg-primary/90"
                       >
                         {gpu.rentable === false ? 'Unavailable' : 'Details'}
                         <ArrowRight className="h-3 w-3" />
