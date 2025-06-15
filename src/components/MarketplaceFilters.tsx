@@ -16,7 +16,6 @@ import {
   ChevronUp
 } from "lucide-react";
 import { useState } from "react";
-import ServerRegionDialog from "./ServerRegionDialog";
 
 interface MarketplaceFiltersProps {
   priceRange: number[];
@@ -37,8 +36,6 @@ const MarketplaceFilters = ({
     performance: false,
     location: false
   });
-
-  const [selectedRegion, setSelectedRegion] = useState<string>('');
 
   const brands = [
     { name: 'NVIDIA', count: 47, color: 'bg-green-500' },
@@ -76,19 +73,12 @@ const MarketplaceFilters = ({
     }
   };
 
-  const handleRegionSelect = (region: string) => {
-    setSelectedRegion(region);
-  };
-
   const clearAllFilters = () => {
     setPriceRange([0, 15]);
     setSelectedBrands([]);
-    setSelectedRegion('');
   };
 
-  const activeFiltersCount = selectedBrands.length + 
-    (priceRange[0] > 0 || priceRange[1] < 15 ? 1 : 0) + 
-    (selectedRegion ? 1 : 0);
+  const activeFiltersCount = selectedBrands.length + (priceRange[0] > 0 || priceRange[1] < 15 ? 1 : 0);
 
   return (
     <div className="w-80 space-y-4">
@@ -262,11 +252,6 @@ const MarketplaceFilters = ({
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-purple-600" />
                 <span className="font-medium">Server Location</span>
-                {selectedRegion && (
-                  <Badge variant="secondary" className="text-xs">
-                    {selectedRegion}
-                  </Badge>
-                )}
               </div>
               {expandedSections.location ? (
                 <ChevronUp className="h-4 w-4" />
@@ -276,21 +261,21 @@ const MarketplaceFilters = ({
             </button>
             
             {expandedSections.location && (
-              <div className="pl-6">
-                <ServerRegionDialog
-                  selectedRegion={selectedRegion}
-                  onRegionSelect={handleRegionSelect}
-                />
-                {selectedRegion && (
-                  <div className="mt-3 p-3 bg-muted/50 rounded-lg">
-                    <div className="text-sm">
-                      <div className="font-medium">{selectedRegion}</div>
-                      <div className="text-muted-foreground text-xs">
-                        Click to change region
-                      </div>
+              <div className="space-y-3 pl-6">
+                {locations.map(location => (
+                  <div key={location.name} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Checkbox id={location.name} />
+                      <label htmlFor={location.name} className="text-sm cursor-pointer">
+                        <div className="font-medium">{location.name}</div>
+                        <div className="text-xs text-muted-foreground">~{location.latency} avg latency</div>
+                      </label>
                     </div>
+                    <Badge variant="secondary" className="text-xs">
+                      {location.count}
+                    </Badge>
                   </div>
-                )}
+                ))}
               </div>
             )}
           </div>
