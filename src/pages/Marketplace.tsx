@@ -1,7 +1,6 @@
 
 import { useState, useMemo } from "react";
 import Header from "@/components/Header";
-import UltraMinimalGpuCard from "@/components/UltraMinimalGpuCard";
 import EnhancedGpuHoverCard from "@/components/EnhancedGpuHoverCard";
 import MarketplaceHeader from "@/components/MarketplaceHeader";
 import MarketplaceFilters from "@/components/MarketplaceFilters";
@@ -20,10 +19,11 @@ const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
+  const [trendFilter, setTrendFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { data: offers, isLoading } = useVastAiOffers();
 
-  // Enhanced offers with scores and metrics
+  // Enhanced offers with scores, metrics, and price trends
   const enhancedOffers = useMemo(() => {
     if (!offers) return [];
     return offers.map(offer => {
@@ -33,11 +33,22 @@ const Marketplace = () => {
       const reliability = offer.reliability2 || offer.reliability || 0;
       const dealScore = reliability > 0 ? reliability * 100 / Math.max(price, 0.1) : 0;
       
+      // Generate price trend simulation
+      const baseTrend = Math.random() - 0.5; // -0.5 to 0.5
+      const trendStrength = Math.abs(baseTrend);
+      let trendDirection = "stable";
+      
+      if (trendStrength > 0.15) {
+        trendDirection = baseTrend > 0 ? "up" : "down";
+      }
+      
       return {
         ...offer,
         workloadScore,
         purposeScore,
         dealScore,
+        trendDirection,
+        trendStrength,
         isBestDeal: dealScore > 30,
         isHotDeal: price < 1 && reliability > 0.8,
         isPurposeMatch: selectedPurpose && purposeScore > 70
@@ -47,11 +58,13 @@ const Marketplace = () => {
 
   const filteredOffers = useMemo(() => {
     let filtered = enhancedOffers || [];
+    
     if (searchTerm) {
       filtered = filtered.filter(offer => 
         offer.gpu_name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+    
     if (priceFilter !== "all") {
       filtered = filtered.filter(offer => {
         const price = offer.dph_total || 0;
@@ -63,8 +76,13 @@ const Marketplace = () => {
         }
       });
     }
+    
+    if (trendFilter !== "all") {
+      filtered = filtered.filter(offer => offer.trendDirection === trendFilter);
+    }
+    
     return filtered;
-  }, [enhancedOffers, searchTerm, priceFilter]);
+  }, [enhancedOffers, searchTerm, priceFilter, trendFilter]);
 
   const sortedOffers = [...filteredOffers].sort((a, b) => {
     switch (sortBy) {
@@ -73,6 +91,7 @@ const Marketplace = () => {
       case 'highest-performance': return (b.reliability2 || b.reliability || 0) - (a.reliability2 || a.reliability || 0);
       case 'workload-match': return (b.workloadScore || 0) - (a.workloadScore || 0);
       case 'purpose-match': return (b.purposeScore || 0) - (a.purposeScore || 0);
+      case 'price-trend': return (b.trendStrength || 0) - (a.trendStrength || 0);
       default: return 0;
     }
   });
@@ -97,6 +116,7 @@ const Marketplace = () => {
     setSearchTerm("");
     setPriceFilter("all");
     setSelectedPurpose(null);
+    setTrendFilter("all");
   };
 
   const availableCount = sortedOffers.filter(offer => offer.rentable !== false).length;
@@ -124,6 +144,8 @@ const Marketplace = () => {
             onPriceFilterChange={setPriceFilter}
             sortBy={sortBy}
             onSortChange={setSortBy}
+            trendFilter={trendFilter}
+            onTrendFilterChange={setTrendFilter}
           />
 
           <MarketplaceStats

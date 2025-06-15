@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import MicroCandlestickChart from "./MicroCandlestickChart";
 
 interface UltraMinimalGpuCardProps {
   offer: any;
@@ -48,6 +49,17 @@ const UltraMinimalGpuCard = ({
               <p className="text-xs text-muted-foreground mt-0.5 transition-colors duration-300">
                 {offer.datacenter?.split('(')[0]?.trim() || "Unknown"} • {offer.num_gpus || 1}x
               </p>
+            </div>
+          </div>
+
+          {/* Center: Price Chart */}
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block">
+              <MicroCandlestickChart 
+                basePrice={offer.dph_total || 1.0}
+                width={70}
+                height={28}
+              />
             </div>
           </div>
 
@@ -105,13 +117,20 @@ const UltraMinimalGpuCard = ({
             </div>
           </div>
 
-          {/* Price - Ultra Prominent */}
-          <div className="flex items-baseline justify-between">
+          {/* Price Chart Section */}
+          <div className="flex items-center justify-between">
             <div>
               <span className="font-bold text-foreground text-lg tracking-tight transition-colors duration-300">
                 ${(offer.dph_total || 0).toFixed(3)}
               </span>
               <span className="text-muted-foreground ml-1 text-xs transition-colors duration-300">/hr</span>
+            </div>
+            <div className="flex-shrink-0">
+              <MicroCandlestickChart 
+                basePrice={offer.dph_total || 1.0}
+                width={84}
+                height={32}
+              />
             </div>
           </div>
 
