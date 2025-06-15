@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 const CleanHeroSection = () => {
-  return <div className="text-center space-y-8 py-20">
+  return <div className="text-center space-y-8 py-[59px]">
       <div className="space-y-6">
         <h1 className="text-6xl tracking-tight leading-tight md:text-6xl font-bold text-center">
           Find GPUs in minutes,
