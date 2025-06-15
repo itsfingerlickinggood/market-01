@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 interface GpuCardContainerProps {
-  children: React.ReactNode;
+  children: (isHovered: boolean) => React.ReactNode;
   className?: string;
 }
 
@@ -48,7 +48,7 @@ const GpuCardContainer = ({ children, className = "" }: GpuCardContainerProps) =
           )}
           
           <div className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-40' : ''}`}>
-            {typeof children === 'function' ? children(isHovered) : children}
+            {children(isHovered)}
           </div>
         </div>
       </div>
