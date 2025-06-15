@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, X, Zap, ChevronDown, Users } from "lucide-react";
 import SmartNotifications from "@/components/SmartNotifications";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -62,6 +62,7 @@ const Header = () => {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3">
             <SmartNotifications />
+            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -121,8 +122,9 @@ const Header = () => {
                   )}
                 </Link>
               ))}
-              <div className="pt-2 border-t border-border">
-                <Button size="sm" className="w-full">Sign In</Button>
+              <div className="pt-2 border-t border-border flex items-center justify-between">
+                <ThemeToggle />
+                <Button size="sm" className="flex-1 ml-3">Sign In</Button>
               </div>
             </nav>
           </div>
