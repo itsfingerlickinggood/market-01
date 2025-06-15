@@ -1,35 +1,16 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { 
-  Download, 
-  RefreshCcw, 
-  Calendar, 
-  Share, 
-  Fullscreen,
-  Zap,
-  TrendingUp
-} from "lucide-react";
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Download, RefreshCcw, Calendar, Share, Fullscreen, Zap, TrendingUp } from "lucide-react";
 const AnalyticsHeader = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [timePeriod, setTimePeriod] = useState("30d");
-
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => setIsRefreshing(false), 2000);
   };
-
-  return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10 border border-border/50 rounded-2xl p-8 mb-8">
+  return <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10 border border-border/50 rounded-2xl p-8 mb-8">
       {/* Enhanced animated background particles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-4 -right-4 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-pulse"></div>
@@ -56,20 +37,20 @@ const AnalyticsHeader = () => {
                 </Badge>
               </div>
             </div>
-            <p className="text-muted-foreground text-xl max-w-2xl">
+            <p className="text-muted-foreground max-w-2xl font-light text-lg">
               Comprehensive insights into GPU rental markets, pricing trends, and provider performance across the ecosystem
             </p>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>Real-time data</span>
+                <span className="text-sm">Real-time data</span>
               </div>
               <span>•</span>
-              <span>24 providers monitored</span>
+              <span className="text-sm">24 providers monitored</span>
               <span>•</span>
-              <span>247 GPU models tracked</span>
+              <span className="text-sm">247 GPU models tracked</span>
               <span>•</span>
-              <span>Last updated 47 seconds ago</span>
+              <span className="text-base">Last updated 47 seconds ago</span>
             </div>
           </div>
 
@@ -92,48 +73,28 @@ const AnalyticsHeader = () => {
             </Select>
 
             {/* Enhanced Action Buttons */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="bg-background/60 backdrop-blur-sm border-border/60 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300"
-            >
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing} className="bg-background/60 backdrop-blur-sm border-border/60 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300">
               <RefreshCcw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="bg-background/60 backdrop-blur-sm border-border/60 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300"
-            >
+            <Button variant="outline" size="sm" className="bg-background/60 backdrop-blur-sm border-border/60 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300">
               <Share className="h-4 w-4 mr-2" />
               Share
             </Button>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="bg-background/60 backdrop-blur-sm border-border/60 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300"
-            >
+            <Button variant="outline" size="sm" className="bg-background/60 backdrop-blur-sm border-border/60 hover:bg-primary/5 hover:border-primary/30 transition-all duration-300">
               <Fullscreen className="h-4 w-4 mr-2" />
               Full Screen
             </Button>
 
-            <Button 
-              variant="default" 
-              size="sm" 
-              className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
-            >
+            <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300">
               <Download className="h-4 w-4 mr-2" />
               Export Report
             </Button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AnalyticsHeader;
