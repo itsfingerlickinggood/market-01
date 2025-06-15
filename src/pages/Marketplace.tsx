@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,7 @@ import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
+import { enhanceProviderWithTrust } from "@/utils/trustScore";
 
 const Marketplace = () => {
   const { selectedWorkload } = useWorkload();
@@ -25,6 +27,7 @@ const Marketplace = () => {
   const [selectedVrams, setSelectedVrams] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
+  const [selectedTiers, setSelectedTiers] = useState<string[]>([]);
 
   const { data: offers, isLoading } = useVastAiOffers();
 
@@ -70,11 +73,20 @@ const Marketplace = () => {
     );
   };
 
+  const handleTierToggle = (tier: string) => {
+    setSelectedTiers(prev => 
+      prev.includes(tier) 
+        ? prev.filter(t => t !== tier)
+        : [...prev, tier]
+    );
+  };
+
   const handleClearAllFilters = () => {
     setSelectedModels([]);
     setSelectedVrams([]);
     setSelectedRegions([]);
     setSelectedCompanies([]);
+    setSelectedTiers([]);
   };
 
   // Filter offers based on selected tags
@@ -118,6 +130,15 @@ const Marketplace = () => {
       if (!matchesRegion) return false;
     }
 
+    // Trust tier filter
+    if (selectedTiers.length > 0) {
+      const reliability = offer.reliability2 || offer.reliability || 0;
+      const tier = reliability > 0.9 ? 'verified' : 
+                   reliability > 0.8 ? 'premium' : 'community';
+      
+      if (!selectedTiers.includes(tier)) return false;
+    }
+
     return true;
   });
 
@@ -132,6 +153,30 @@ const Marketplace = () => {
       case 'availability':
         const orderMap = { 'available': 0, 'limited': 1, 'unavailable': 2 };
         return (orderMap[a.availability] || 2) - (orderMap[b.availability] || 2);
+      case 'trust':
+        const aTrust = enhanceProviderWithTrust({
+          name: a.datacenter || 'Unknown',
+          type: 'specialist' as const,
+          tier: (a.reliability2 || a.reliability || 0) > 0.9 ? 'verified' : 
+                (a.reliability2 || a.reliability || 0) > 0.8 ? 'premium' : 'community',
+          globalScale: 8,
+          slaGuarantee: 99.9,
+          securityCertifications: [],
+          egressPolicy: 'free' as const,
+          specializations: []
+        }).trustScore || 0;
+        const bTrust = enhanceProviderWithTrust({
+          name: b.datacenter || 'Unknown',
+          type: 'specialist' as const,
+          tier: (b.reliability2 || b.reliability || 0) > 0.9 ? 'verified' : 
+                (b.reliability2 || b.reliability || 0) > 0.8 ? 'premium' : 'community',
+          globalScale: 8,
+          slaGuarantee: 99.9,
+          securityCertifications: [],
+          egressPolicy: 'free' as const,
+          specializations: []
+        }).trustScore || 0;
+        return bTrust - aTrust;
       default:
         return 0;
     }
@@ -143,6 +188,7 @@ const Marketplace = () => {
       case 'price': return 'Price (Low to High)';
       case 'performance': return 'Reliability Score';
       case 'availability': return 'Availability Status';
+      case 'trust': return 'Trust Score';
       default: return 'Sort by';
     }
   };
@@ -169,10 +215,12 @@ const Marketplace = () => {
             selectedVrams={selectedVrams}
             selectedRegions={selectedRegions}
             selectedCompanies={selectedCompanies}
+            selectedTiers={selectedTiers}
             onModelToggle={handleModelToggle}
             onVramToggle={handleVramToggle}
             onRegionToggle={handleRegionToggle}
             onCompanyToggle={handleCompanyToggle}
+            onTierToggle={handleTierToggle}
             onClearAll={handleClearAllFilters}
           />
 
@@ -213,6 +261,9 @@ const Marketplace = () => {
                       Best Match for {selectedWorkload.title}
                     </DropdownMenuItem>
                   )}
+                  <DropdownMenuItem onClick={() => setSortBy('trust')}>
+                    Trust Score
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setSortBy('price')}>
                     Price (Low to High)
                   </DropdownMenuItem>

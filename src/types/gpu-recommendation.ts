@@ -1,3 +1,4 @@
+
 export interface GPUOffer {
   id: number;
   gpu_name: string;
@@ -47,14 +48,27 @@ export interface PricingTiers {
   storageCost: number;
 }
 
+export type ProviderTier = 'verified' | 'community' | 'premium';
+
 export interface ProviderInfo {
   name: string;
   type: 'hyperscaler' | 'specialist' | 'decentralized';
+  tier: ProviderTier;
   globalScale: number;
   slaGuarantee: number;
   securityCertifications: string[];
   egressPolicy: 'free' | 'paid';
   specializations: WorkloadType[];
+  verificationBadges?: VerificationBadge[];
+  trustScore?: number;
+  uptimeGuarantee?: number;
+}
+
+export interface VerificationBadge {
+  type: 'iso27001' | 'soc2' | 'hipaa' | 'gdpr' | 'enterprise' | 'performance' | 'uptime';
+  verified: boolean;
+  verifiedDate?: string;
+  description: string;
 }
 
 export type WorkloadType = 'ai-training' | 'ai-inference' | 'gaming' | 'creative' | 'hpc' | 'general';

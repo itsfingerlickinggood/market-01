@@ -1,159 +1,155 @@
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Filter } from "lucide-react";
+import { X } from "lucide-react";
+import TrustFilterSection from "./TrustFilterSection";
 
 interface SimpleFilterTagsProps {
   selectedModels: string[];
   selectedVrams: string[];
   selectedRegions: string[];
   selectedCompanies: string[];
+  selectedTiers?: string[];
   onModelToggle: (model: string) => void;
   onVramToggle: (vram: string) => void;
   onRegionToggle: (region: string) => void;
   onCompanyToggle: (company: string) => void;
+  onTierToggle?: (tier: string) => void;
   onClearAll: () => void;
 }
+
+const gpuModels = ["RTX 4090", "RTX 4080", "RTX 3090", "H100", "A100", "V100"];
+const vramOptions = ["8", "16", "24", "32", "48", "80"];
+const regions = ["US East", "US West", "Europe", "Asia Pacific"];
+const companies = ["NVIDIA", "AMD", "Intel"];
 
 const SimpleFilterTags = ({
   selectedModels,
   selectedVrams,
   selectedRegions,
   selectedCompanies,
+  selectedTiers = [],
   onModelToggle,
   onVramToggle,
   onRegionToggle,
   onCompanyToggle,
+  onTierToggle = () => {},
   onClearAll
 }: SimpleFilterTagsProps) => {
-  const models = [
-    "RTX 4090", "RTX 4080", "RTX 4070", "RTX 3090", "RTX 3080", "RTX 3070",
-    "A100 80GB", "A100 40GB", "H100", "V100", "MI210", "MI250X"
-  ];
+  const totalSelected = selectedModels.length + selectedVrams.length + selectedRegions.length + selectedCompanies.length + selectedTiers.length;
 
-  const vrams = ["8GB", "12GB", "16GB", "24GB", "40GB", "48GB", "80GB"];
-
-  const regions = [
-    "US East", "US West", "Europe", "Asia Pacific", "Canada", "Australia"
-  ];
-
-  const companies = ["NVIDIA", "AMD", "Intel"];
-
-  const getTotalActiveFilters = () => {
-    return selectedModels.length + selectedVrams.length + selectedRegions.length + selectedCompanies.length;
+  const handleClearAllFilters = () => {
+    onClearAll();
+    // Clear trust filters too
+    selectedTiers.forEach(tier => onTierToggle(tier));
   };
 
-  const activeFiltersCount = getTotalActiveFilters();
-
   return (
-    <Card className="w-80">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filters
-            {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="ml-2">
-                {activeFiltersCount}
-              </Badge>
-            )}
-          </CardTitle>
-          {activeFiltersCount > 0 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onClearAll}
-              className="text-destructive hover:text-destructive"
-            >
-              Clear All
-            </Button>
-          )}
-        </div>
-      </CardHeader>
+    <div className="w-80 space-y-4">
+      {/* Trust Filter Section */}
+      <TrustFilterSection
+        selectedTiers={selectedTiers}
+        onTierToggle={onTierToggle}
+        onClearFilters={() => selectedTiers.forEach(tier => onTierToggle(tier))}
+      />
 
-      <CardContent className="space-y-6">
-        {/* GPU Models */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">GPU Models</h4>
+      {/* GPU Models */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium">GPU Models</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
           <div className="flex flex-wrap gap-2">
-            {models.map((model) => (
+            {gpuModels.map((model) => (
               <Badge
                 key={model}
                 variant={selectedModels.includes(model) ? "default" : "outline"}
-                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="cursor-pointer"
                 onClick={() => onModelToggle(model)}
               >
                 {model}
-                {selectedModels.includes(model) && (
-                  <X className="h-3 w-3 ml-1" />
-                )}
               </Badge>
             ))}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* VRAM */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">VRAM</h4>
+      {/* VRAM */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium">VRAM (GB)</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
           <div className="flex flex-wrap gap-2">
-            {vrams.map((vram) => (
+            {vramOptions.map((vram) => (
               <Badge
                 key={vram}
                 variant={selectedVrams.includes(vram) ? "default" : "outline"}
-                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="cursor-pointer"
                 onClick={() => onVramToggle(vram)}
               >
-                {vram}
-                {selectedVrams.includes(vram) && (
-                  <X className="h-3 w-3 ml-1" />
-                )}
+                {vram}GB+
               </Badge>
             ))}
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Regions */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Regions</h4>
-          <div className="flex flex-wrap gap-2">
-            {regions.map((region) => (
-              <Badge
-                key={region}
-                variant={selectedRegions.includes(region) ? "default" : "outline"}
-                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-                onClick={() => onRegionToggle(region)}
-              >
-                {region}
-                {selectedRegions.includes(region) && (
-                  <X className="h-3 w-3 ml-1" />
-                )}
-              </Badge>
-            ))}
-          </div>
-        </div>
-
-        {/* Companies */}
-        <div className="space-y-3">
-          <h4 className="text-sm font-medium text-foreground">Companies</h4>
+      {/* Companies */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium">Companies</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
           <div className="flex flex-wrap gap-2">
             {companies.map((company) => (
               <Badge
                 key={company}
                 variant={selectedCompanies.includes(company) ? "default" : "outline"}
-                className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="cursor-pointer"
                 onClick={() => onCompanyToggle(company)}
               >
                 {company}
-                {selectedCompanies.includes(company) && (
-                  <X className="h-3 w-3 ml-1" />
-                )}
               </Badge>
             ))}
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Regions */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium">Regions</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="flex flex-wrap gap-2">
+            {regions.map((region) => (
+              <Badge
+                key={region}
+                variant={selectedRegions.includes(region) ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => onRegionToggle(region)}
+              >
+                {region}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Clear All */}
+      {totalSelected > 0 && (
+        <Button 
+          variant="outline" 
+          onClick={handleClearAllFilters}
+          className="w-full"
+        >
+          <X className="h-4 w-4 mr-2" />
+          Clear All Filters ({totalSelected})
+        </Button>
+      )}
+    </div>
   );
 };
 

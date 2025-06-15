@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Zap, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useWorkload } from "@/contexts/WorkloadContext";
+import ProviderTrustBadge from "./ProviderTrustBadge";
+import { enhanceProviderWithTrust } from "@/utils/trustScore";
 
 interface MarketplaceGpuGridProps {
   offers: any[];
@@ -49,6 +51,21 @@ const MarketplaceGpuGrid = ({
         const isHighMatch = workloadScore > 80;
         const isMediumMatch = workloadScore > 60 && workloadScore <= 80;
         
+        // Mock provider data with tier assignment
+        const mockProvider = {
+          name: offer.datacenter || 'Unknown Provider',
+          type: 'specialist' as const,
+          tier: (offer.reliability2 || offer.reliability || 0) > 0.9 ? 'verified' : 
+                (offer.reliability2 || offer.reliability || 0) > 0.8 ? 'premium' : 'community',
+          globalScale: 8,
+          slaGuarantee: 99.9,
+          securityCertifications: ['ISO27001', 'SOC2'],
+          egressPolicy: 'free' as const,
+          specializations: ['ai-training' as const]
+        };
+
+        const enhancedProvider = enhanceProviderWithTrust(mockProvider);
+        
         return (
           <Link key={offer.id} to={`/gpu/${offer.id}`}>
             <Card 
@@ -62,8 +79,11 @@ const MarketplaceGpuGrid = ({
             >
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h4 className="font-semibold">{offer.gpu_name}</h4>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold">{offer.gpu_name}</h4>
+                      <ProviderTrustBadge provider={enhancedProvider} size="sm" />
+                    </div>
                     <p className="text-sm text-muted-foreground">
                       {offer.num_gpus || 1}x GPU • {offer.gpu_ram || offer.specs?.vramCapacity || 'N/A'}GB VRAM
                     </p>
@@ -98,9 +118,16 @@ const MarketplaceGpuGrid = ({
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-1 text-sm mb-3">
-                  <Zap className="h-3 w-3 text-yellow-500" />
-                  {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
+                <div className="flex items-center justify-between text-sm mb-3">
+                  <div className="flex items-center gap-1">
+                    <Zap className="h-3 w-3 text-yellow-500" />
+                    {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% reliability
+                  </div>
+                  {enhancedProvider.trustScore && (
+                    <div className="text-xs text-blue-600 font-medium">
+                      Trust: {Math.round(enhancedProvider.trustScore * 100)}%
+                    </div>
+                  )}
                 </div>
                 
                 {selectedWorkload && workloadScore > 0 && (
