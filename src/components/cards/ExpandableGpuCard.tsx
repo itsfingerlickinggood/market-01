@@ -46,10 +46,10 @@ const ExpandableGpuCard = ({
     <div className="relative">
       <Card 
         className={`
-          transition-all duration-500 cursor-pointer relative overflow-hidden
+          transition-all duration-500 cursor-pointer relative overflow-visible
           ${isHovered ? 
-            'shadow-2xl transform scale-105 bg-gradient-to-br from-card via-card/95 to-primary/5 border-primary/20' : 
-            'hover:shadow-lg hover:-translate-y-1'
+            'shadow-2xl transform scale-105 bg-gradient-to-br from-card via-card/95 to-primary/5 border-primary/20 z-50' : 
+            'hover:shadow-lg hover:-translate-y-1 z-10'
           }
           ${className}
         `}
@@ -58,10 +58,10 @@ const ExpandableGpuCard = ({
       >
         {/* Glossy overlay effect */}
         {isHovered && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse pointer-events-none z-10" />
         )}
         
-        <CardContent className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-10' : ''}`}>
+        <CardContent className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-20' : ''}`}>
           {/* Header with Actions */}
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
@@ -139,9 +139,31 @@ const ExpandableGpuCard = ({
             </div>
           </div>
 
-          {/* Hover Content - Provider Spread and Specs */}
+          {/* Details Button - only show on hover */}
           {isHovered && (
-            <div className="space-y-3 pt-2 border-t border-border/30">
+            <div className="flex justify-end pt-2">
+              <Link to={`/gpu/${gpu.id}`} onClick={(e) => e.stopPropagation()}>
+                <Button 
+                  variant="default"
+                  size="sm" 
+                  disabled={gpu.rentable === false}
+                  className="text-xs px-3 py-1 h-7 gap-1 shadow-lg transform scale-105 bg-primary hover:bg-primary/90"
+                >
+                  {gpu.rentable === false ? 'Unavailable' : 'Details'}
+                  <ArrowRight className="h-3 w-3" />
+                </Button>
+              </Link>
+            </div>
+          )}
+        </CardContent>
+
+        {/* Hover Dropdown - Positioned Absolutely to Cover Cards Below */}
+        {isHovered && (
+          <div className="absolute top-full left-0 right-0 z-50 bg-gradient-to-br from-card/95 via-card/90 to-primary/10 backdrop-blur-md border border-border/30 rounded-b-lg shadow-2xl">
+            {/* Glossy overlay for dropdown */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent rounded-b-lg pointer-events-none" />
+            
+            <div className="relative z-10 p-4 space-y-3">
               {/* Provider Spread */}
               <div>
                 <div className="text-xs font-medium text-muted-foreground mb-2">Provider Comparison</div>
@@ -168,25 +190,8 @@ const ExpandableGpuCard = ({
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Single Details Button */}
-          <div className="flex justify-end pt-2">
-            <Link to={`/gpu/${gpu.id}`} onClick={(e) => e.stopPropagation()}>
-              <Button 
-                variant={isHovered ? "default" : "outline"}
-                size="sm" 
-                disabled={gpu.rentable === false}
-                className={`text-xs px-3 py-1 h-7 gap-1 transition-all duration-300 ${
-                  isHovered ? 'shadow-lg transform scale-105' : ''
-                }`}
-              >
-                {gpu.rentable === false ? 'Unavailable' : 'Details'}
-                <ArrowRight className="h-3 w-3" />
-              </Button>
-            </Link>
           </div>
-        </CardContent>
+        )}
       </Card>
     </div>
   );
