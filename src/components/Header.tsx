@@ -5,25 +5,30 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Menu, X, Zap, ChevronDown, Users } from "lucide-react";
 import SmartNotifications from "@/components/SmartNotifications";
 import { ThemeToggle } from "@/components/ThemeToggle";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const navigation = [{
-    name: 'Home',
-    href: '/'
-  }, {
-    name: 'Marketplace',
-    href: '/marketplace'
-  }, {
-    name: 'Analytics',
-    href: '/analytics'
-  }, {
-    name: 'Community',
-    href: '/community'
-  }, {
-    name: 'Contact',
-    href: '/contact'
-  }];
+  
+  const navigation = [
+    {
+      name: 'Marketplace',
+      href: '/marketplace'
+    }, 
+    {
+      name: 'Analytics',
+      href: '/analytics'
+    }, 
+    {
+      name: 'Community',
+      href: '/community'
+    }, 
+    {
+      name: 'Contact',
+      href: '/contact'
+    }
+  ];
+
   const isActivePath = (path: string) => {
     return location.pathname === path;
   };
@@ -97,4 +102,5 @@ const Header = () => {
       </div>
     </header>;
 };
+
 export default Header;
