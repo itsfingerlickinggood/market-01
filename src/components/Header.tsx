@@ -18,7 +18,6 @@ const Header = () => {
 
   const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'GPU Selection', href: '/gpu-selection' },
     { name: 'Marketplace', href: '/marketplace' },
     { name: 'Analytics', href: '/analytics' },
     { name: 'Community', href: '/community' },
@@ -38,9 +37,9 @@ const Header = () => {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl">GPU Market</span>
+            <span className="font-bold text-xl">Market01</span>
             <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
-              Zero Egress
+              Best Deals
             </Badge>
           </Link>
 
