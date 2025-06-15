@@ -20,7 +20,7 @@ const Marketplace = () => {
     x: 0,
     y: 0
   });
-  const [sortBy, setSortBy] = useState("best-deals");
+  const [sortBy, setSortBy] = useState("lowest-price");
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
@@ -88,8 +88,6 @@ const Marketplace = () => {
   }, [enhancedOffers, searchTerm, priceFilter, trendFilter]);
   const sortedOffers = [...filteredOffers].sort((a, b) => {
     switch (sortBy) {
-      case 'best-deals':
-        return (b.dealScore || 0) - (a.dealScore || 0);
       case 'lowest-price':
         return (a.dph_total || 0) - (b.dph_total || 0);
       case 'highest-performance':
@@ -142,7 +140,20 @@ const Marketplace = () => {
 
           {/* Manual Options - Second Priority */}
           <div className="pt-4 border-t border-border/30">
-            <MarketplaceFilters selectedPurpose={selectedPurpose} onPurposeChange={handlePurposeChange} searchTerm={searchTerm} onSearchChange={setSearchTerm} priceFilter={priceFilter} onPriceFilterChange={setPriceFilter} sortBy={sortBy} onSortChange={setSortBy} trendFilter={trendFilter} onTrendFilterChange={setTrendFilter} />
+            <MarketplaceFilters 
+              selectedPurpose={selectedPurpose} 
+              onPurposeChange={handlePurposeChange} 
+              searchTerm={searchTerm} 
+              onSearchChange={setSearchTerm} 
+              priceFilter={priceFilter} 
+              onPriceFilterChange={setPriceFilter} 
+              sortBy={sortBy} 
+              onSortChange={setSortBy} 
+              trendFilter={trendFilter} 
+              onTrendFilterChange={setTrendFilter}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+            />
           </div>
         </div>
       </div>

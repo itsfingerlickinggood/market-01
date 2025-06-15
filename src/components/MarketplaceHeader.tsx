@@ -16,7 +16,7 @@ const MarketplaceHeader = ({
   onViewModeChange
 }: MarketplaceHeaderProps) => {
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="space-y-6">
       {/* Title Section */}
       <div className="space-y-2 mt-8">
         <h1 className="tracking-tight text-left font-thin text-3xl py-[17px]">
@@ -25,39 +25,6 @@ const MarketplaceHeader = ({
         <p className="text-muted-foreground my-[8px] py-0">
           {selectedPurpose ? `${matchCount} GPUs optimized for ${selectedPurpose.toLowerCase()}` : "Discover and rent high-performance GPUs from trusted providers"}
         </p>
-      </div>
-
-      {/* View Mode Controls - Aligned to match search bar positioning */}
-      <div className="flex justify-end">
-        <div className="flex items-center bg-background border border-border rounded-lg p-1 shadow-sm h-10">
-          <Button 
-            variant={viewMode === "enhanced" ? "default" : "ghost"} 
-            size="sm" 
-            onClick={() => onViewModeChange("enhanced")} 
-            className="px-3 h-8"
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            Enhanced
-          </Button>
-          <Button 
-            variant={viewMode === "grid" ? "default" : "ghost"} 
-            size="sm" 
-            onClick={() => onViewModeChange("grid")} 
-            className="px-3 h-8"
-          >
-            <Grid2X2 className="h-4 w-4 mr-2" />
-            Grid
-          </Button>
-          <Button 
-            variant={viewMode === "list" ? "default" : "ghost"} 
-            size="sm" 
-            onClick={() => onViewModeChange("list")} 
-            className="px-3 h-8"
-          >
-            <List className="h-4 w-4 mr-2" />
-            List
-          </Button>
-        </div>
       </div>
     </div>
   );

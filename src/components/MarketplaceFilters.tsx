@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, X, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Search, X, TrendingUp, TrendingDown, Minus, Grid2X2, List, Sparkles } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,6 +23,8 @@ interface MarketplaceFiltersProps {
   onSortChange: (sort: string) => void;
   trendFilter?: string;
   onTrendFilterChange?: (trend: string) => void;
+  viewMode?: "grid" | "list" | "enhanced";
+  onViewModeChange?: (mode: "grid" | "list" | "enhanced") => void;
 }
 
 const MarketplaceFilters = ({
@@ -35,7 +37,9 @@ const MarketplaceFilters = ({
   sortBy,
   onSortChange,
   trendFilter = "all",
-  onTrendFilterChange = () => {}
+  onTrendFilterChange = () => {},
+  viewMode = "enhanced",
+  onViewModeChange = () => {}
 }: MarketplaceFiltersProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -56,7 +60,6 @@ const MarketplaceFilters = ({
   ];
 
   const sortOptions = [
-    { id: "best-deals", label: "Best Deals" },
     { id: "lowest-price", label: "Lowest Price" },
     { id: "highest-performance", label: "Performance" },
     { id: "workload-match", label: "Workload Match" },
@@ -73,7 +76,7 @@ const MarketplaceFilters = ({
 
   return (
     <div className="space-y-4 mb-6">
-      {/* Main Filter Row */}
+      {/* Main Filter Row with View Mode Controls */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Search */}
         <div className="relative flex-1 min-w-64">
@@ -96,6 +99,40 @@ const MarketplaceFilters = ({
           )}
         </div>
 
+        {/* View Mode Controls */}
+        <div className="flex items-center bg-background border border-border rounded-lg p-1 shadow-sm h-10">
+          <Button 
+            variant={viewMode === "enhanced" ? "default" : "ghost"} 
+            size="sm" 
+            onClick={() => onViewModeChange("enhanced")} 
+            className="px-3 h-8"
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            Enhanced
+          </Button>
+          <Button 
+            variant={viewMode === "grid" ? "default" : "ghost"} 
+            size="sm" 
+            onClick={() => onViewModeChange("grid")} 
+            className="px-3 h-8"
+          >
+            <Grid2X2 className="h-4 w-4 mr-2" />
+            Grid
+          </Button>
+          <Button 
+            variant={viewMode === "list" ? "default" : "ghost"} 
+            size="sm" 
+            onClick={() => onViewModeChange("list")} 
+            className="px-3 h-8"
+          >
+            <List className="h-4 w-4 mr-2" />
+            List
+          </Button>
+        </div>
+      </div>
+
+      {/* Second Filter Row */}
+      <div className="flex flex-wrap items-center gap-3">
         {/* Price Range Filter */}
         <Select value={priceFilter} onValueChange={onPriceFilterChange}>
           <SelectTrigger className="w-48 bg-background border-border/50 focus:border-primary/50 transition-colors duration-300">
@@ -140,15 +177,6 @@ const MarketplaceFilters = ({
             ))}
           </SelectContent>
         </Select>
-
-        {/* Expand Button */}
-        <Button 
-          variant="outline" 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="border-border/50 hover:border-primary/50 transition-colors duration-300"
-        >
-          {isExpanded ? "Less" : "More"} Filters
-        </Button>
       </div>
 
       {/* Purpose Tags - Always Visible */}
