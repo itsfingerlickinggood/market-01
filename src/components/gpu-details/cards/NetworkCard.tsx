@@ -11,21 +11,21 @@ const NetworkCard = ({ gpu, enhancedData }: NetworkCardProps) => {
   const content = (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Data Center</span>
-        <span className="font-medium">{enhancedData?.location || 'US-East'}</span>
+        <span className="text-sm text-muted-foreground">Data Center</span>
+        <span className="font-medium text-foreground">{enhancedData?.location || 'US-East'}</span>
       </div>
       <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Network Speed</span>
-        <span className="font-medium">{gpu.inet_down || '10 Gbps'}</span>
+        <span className="text-sm text-muted-foreground">Network Speed</span>
+        <span className="font-medium text-foreground">{gpu.inet_down || '10 Gbps'}</span>
       </div>
       <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-600">Latency</span>
-        <span className="font-medium text-green-600">{"< 1ms"}</span>
+        <span className="text-sm text-muted-foreground">Latency</span>
+        <span className="font-medium text-primary">{"< 1ms"}</span>
       </div>
-      <div className="pt-2 border-t">
+      <div className="pt-2 border-t border-border">
         <div className="flex items-center gap-2">
-          <Network className="h-4 w-4 text-gray-500" />
-          <span className="text-sm text-gray-600">IPv6 Support, DDoS Protection</span>
+          <Network className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">IPv6 Support, DDoS Protection</span>
         </div>
       </div>
     </div>

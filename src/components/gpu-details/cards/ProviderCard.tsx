@@ -13,7 +13,7 @@ const ProviderCard = ({ provider }: ProviderCardProps) => {
       <div className="flex items-center gap-3">
         <span className="text-2xl">{provider?.logo || '☁️'}</span>
         <div>
-          <div className="font-semibold">{provider?.name || 'Cloud Provider'}</div>
+          <div className="font-semibold text-foreground">{provider?.name || 'Cloud Provider'}</div>
           <Badge variant="outline" className="text-xs mt-1">
             {provider?.tier || 'Enterprise'} Tier
           </Badge>
@@ -21,12 +21,12 @@ const ProviderCard = ({ provider }: ProviderCardProps) => {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <div className="text-sm text-gray-500">Trust Score</div>
-          <div className="font-semibold text-green-600">{provider?.trustScore || 95}%</div>
+          <div className="text-sm text-muted-foreground">Trust Score</div>
+          <div className="font-semibold text-primary">{provider?.trustScore || 95}%</div>
         </div>
         <div>
-          <div className="text-sm text-gray-500">Uptime</div>
-          <div className="font-semibold">99.9%</div>
+          <div className="text-sm text-muted-foreground">Uptime</div>
+          <div className="font-semibold text-foreground">99.9%</div>
         </div>
       </div>
       <div className="flex flex-wrap gap-1">
