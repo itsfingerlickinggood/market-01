@@ -7,29 +7,24 @@ import MarketplaceStats from "@/components/MarketplaceStats";
 import MarketplaceGrid from "@/components/MarketplaceGrid";
 import MarketplaceEnhancedGrid from "@/components/MarketplaceEnhancedGrid";
 import MarketplaceEmptyState from "@/components/MarketplaceEmptyState";
-import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
+import { generateEnhancedGpuOffers } from "@/utils/enhancedGpuDataGenerator";
 
 const Marketplace = () => {
-  const {
-    selectedWorkload
-  } = useWorkload();
+  const { selectedWorkload } = useWorkload();
   const [hoveredGpu, setHoveredGpu] = useState<any>(null);
-  const [mousePosition, setMousePosition] = useState({
-    x: 0,
-    y: 0
-  });
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [sortBy, setSortBy] = useState("lowest-price");
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
   const [trendFilter, setTrendFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list" | "enhanced">("enhanced");
-  const {
-    data: offers,
-    isLoading
-  } = useVastAiOffers();
+
+  // Generate enhanced offers with company/provider data
+  const offers = useMemo(() => generateEnhancedGpuOffers(50), []);
+  const isLoading = false; // Static data, no loading
 
   // Enhanced offers with scores, metrics, and price trends
   const enhancedOffers = useMemo(() => {
@@ -61,10 +56,15 @@ const Marketplace = () => {
       };
     });
   }, [offers, selectedWorkload, selectedPurpose]);
+
   const filteredOffers = useMemo(() => {
     let filtered = enhancedOffers || [];
     if (searchTerm) {
-      filtered = filtered.filter(offer => offer.gpu_name?.toLowerCase().includes(searchTerm.toLowerCase()));
+      filtered = filtered.filter(offer => 
+        offer.gpu_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        offer.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        offer.website?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
     if (priceFilter !== "all") {
       filtered = filtered.filter(offer => {
@@ -86,6 +86,7 @@ const Marketplace = () => {
     }
     return filtered;
   }, [enhancedOffers, searchTerm, priceFilter, trendFilter]);
+
   const sortedOffers = [...filteredOffers].sort((a, b) => {
     switch (sortBy) {
       case 'lowest-price':
@@ -102,40 +103,55 @@ const Marketplace = () => {
         return 0;
     }
   });
+
   const handleGpuHover = (offer: any, e: React.MouseEvent) => {
-    setMousePosition({
-      x: e.clientX,
-      y: e.clientY
-    });
+    setMousePosition({ x: e.clientX, y: e.clientY });
     setTimeout(() => setHoveredGpu(offer), 300);
   };
+
   const handleGpuLeave = () => {
     setHoveredGpu(null);
   };
+
   const handlePurposeChange = (purpose: string | null) => {
     setSelectedPurpose(purpose);
     if (purpose) {
       setSortBy("purpose-match");
     }
   };
+
   const handleClearFilters = () => {
     setSearchTerm("");
     setPriceFilter("all");
     setSelectedPurpose(null);
     setTrendFilter("all");
   };
+
   const availableCount = sortedOffers.filter(offer => offer.rentable !== false).length;
   const matchCount = sortedOffers.filter(offer => offer.isPurposeMatch).length;
-  return <div className="min-h-screen bg-background transition-colors duration-300">
+
+  return (
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <Header />
       
       <div className="border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-6 py-12 space-y-8">
           {/* User-Centric Features - First Priority */}
           <div className="space-y-6">
-            <MarketplaceHeader selectedPurpose={selectedPurpose} matchCount={matchCount} viewMode={viewMode} onViewModeChange={setViewMode} />
+            <MarketplaceHeader 
+              selectedPurpose={selectedPurpose} 
+              matchCount={matchCount} 
+              viewMode={viewMode} 
+              onViewModeChange={setViewMode} 
+            />
             
-            <MarketplaceStats totalOffers={sortedOffers.length} availableCount={availableCount} selectedPurpose={selectedPurpose} matchCount={matchCount} searchTerm={searchTerm} />
+            <MarketplaceStats 
+              totalOffers={sortedOffers.length} 
+              availableCount={availableCount} 
+              selectedPurpose={selectedPurpose} 
+              matchCount={matchCount} 
+              searchTerm={searchTerm} 
+            />
           </div>
 
           {/* Manual Options - Second Priority */}
@@ -159,14 +175,33 @@ const Marketplace = () => {
       </div>
 
       <main className="container mx-auto px-6 py-8">
-        {!isLoading && sortedOffers.length === 0 ? <MarketplaceEmptyState onClearFilters={handleClearFilters} /> : viewMode === "enhanced" ? <MarketplaceEnhancedGrid offers={sortedOffers} isLoading={isLoading} /> : <MarketplaceGrid offers={sortedOffers} viewMode={viewMode} isLoading={isLoading} hoveredGpu={hoveredGpu} onHover={handleGpuHover} onLeave={handleGpuLeave} onMouseMove={e => setMousePosition({
-        x: e.clientX,
-        y: e.clientY
-      })} selectedPurpose={selectedPurpose} />}
+        {!isLoading && sortedOffers.length === 0 ? (
+          <MarketplaceEmptyState onClearFilters={handleClearFilters} />
+        ) : viewMode === "enhanced" ? (
+          <MarketplaceEnhancedGrid offers={sortedOffers} isLoading={isLoading} />
+        ) : (
+          <MarketplaceGrid 
+            offers={sortedOffers} 
+            viewMode={viewMode} 
+            isLoading={isLoading} 
+            hoveredGpu={hoveredGpu} 
+            onHover={handleGpuHover} 
+            onLeave={handleGpuLeave} 
+            onMouseMove={e => setMousePosition({ x: e.clientX, y: e.clientY })} 
+            selectedPurpose={selectedPurpose} 
+          />
+        )}
       </main>
 
-      {hoveredGpu && <EnhancedGpuHoverCard gpu={hoveredGpu} position={mousePosition} onClose={() => setHoveredGpu(null)} />}
-    </div>;
+      {hoveredGpu && (
+        <EnhancedGpuHoverCard 
+          gpu={hoveredGpu} 
+          position={mousePosition} 
+          onClose={() => setHoveredGpu(null)} 
+        />
+      )}
+    </div>
+  );
 };
 
 export default Marketplace;

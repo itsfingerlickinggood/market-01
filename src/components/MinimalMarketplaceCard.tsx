@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface MinimalMarketplaceCardProps {
@@ -32,6 +32,15 @@ const MinimalMarketplaceCard = ({
     }`} />
   );
 
+  const getTierBadgeColor = (tier: string) => {
+    switch (tier) {
+      case 'marketplace': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'specialist': return 'bg-green-100 text-green-700 border-green-200';
+      case 'hyperscaler': return 'bg-purple-100 text-purple-700 border-purple-200';
+      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+  };
+
   if (isList) {
     return (
       <Link to={`/gpu/${offer.id}`}>
@@ -41,16 +50,24 @@ const MinimalMarketplaceCard = ({
           onMouseLeave={onLeave}
           onMouseMove={onMouseMove}
         >
-          {/* Left: GPU Info */}
+          {/* Left: Company & GPU Info */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
             <StatusDot available={offer.rentable !== false} />
-            <div className="flex-1 min-w-0">
-              <h3 className="font-medium text-gray-900 truncate">
-                {offer.gpu_name}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {offer.datacenter?.split('(')[0]?.trim() || "Unknown"} • {offer.num_gpus || 1}x GPU
-              </p>
+            <div className="flex items-center gap-3">
+              <span className="text-lg">{offer.provider_logo}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900 truncate">
+                    {offer.company}
+                  </h3>
+                  <Badge className={`text-xs ${getTierBadgeColor(offer.provider_tier)}`}>
+                    {offer.provider_tier}
+                  </Badge>
+                </div>
+                <p className="text-sm text-gray-500">
+                  {offer.gpu_name} • {offer.website}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -64,7 +81,7 @@ const MinimalMarketplaceCard = ({
             )}
             <div className="text-right">
               <div className="font-semibold text-gray-900">
-                ${(offer.dph_total || 0).toFixed(3)}
+                {offer.price_range || `$${(offer.dph_total || 0).toFixed(3)}`}
               </div>
               <div className="text-xs text-gray-500">/hour</div>
             </div>
@@ -83,6 +100,7 @@ const MinimalMarketplaceCard = ({
         onMouseEnter={(e) => onHover(offer, e)}
         onMouseLeave={onLeave}
         onMouseMove={onMouseMove}
+        style={{ borderLeft: `3px solid ${offer.provider_color}` }}
       >
         {/* Purpose Match Badge */}
         {showPurposeMatch && (
@@ -96,36 +114,43 @@ const MinimalMarketplaceCard = ({
         
         {/* Main Content */}
         <div className={`space-y-${isCompact ? '2' : '3'}`}>
-          {/* Header with Status */}
+          {/* Company Header with Status */}
           <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <StatusDot available={offer.rentable !== false} />
-                <h3 className={`font-medium text-gray-900 truncate ${isCompact ? 'text-sm' : 'text-base'}`}>
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className="text-lg">{offer.provider_logo}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <StatusDot available={offer.rentable !== false} />
+                  <h3 className={`font-semibold text-gray-900 truncate ${isCompact ? 'text-sm' : 'text-base'}`}>
+                    {offer.company}
+                  </h3>
+                </div>
+                <p className={`text-gray-500 ${isCompact ? 'text-xs' : 'text-sm'}`}>
                   {offer.gpu_name}
-                </h3>
+                </p>
               </div>
-              <p className={`text-gray-500 ${isCompact ? 'text-xs' : 'text-sm'}`}>
-                {offer.num_gpus || 1}x GPU
-              </p>
             </div>
+            <Badge className={`text-xs ${getTierBadgeColor(offer.provider_tier)}`}>
+              {offer.provider_tier}
+            </Badge>
           </div>
 
           {/* Price - Prominent */}
           <div className="flex items-baseline justify-between">
             <div>
               <span className={`font-semibold text-gray-900 ${isCompact ? 'text-lg' : 'text-xl'}`}>
-                ${(offer.dph_total || 0).toFixed(3)}
+                {offer.price_range || `$${(offer.dph_total || 0).toFixed(3)}`}
               </span>
               <span className={`text-gray-500 ml-1 ${isCompact ? 'text-xs' : 'text-sm'}`}>/hr</span>
             </div>
           </div>
 
-          {/* Footer Info - Minimal */}
+          {/* Provider Website & Uptime */}
           <div className={`flex items-center justify-between ${isCompact ? 'text-xs' : 'text-sm'} text-gray-500`}>
-            <span className="truncate">
-              {(offer.datacenter || "Unknown").split('(')[0].trim()}
-            </span>
+            <div className="flex items-center gap-1 truncate">
+              <ExternalLink className="h-3 w-3" />
+              <span className="truncate">{offer.website}</span>
+            </div>
             <span className="flex-shrink-0">
               {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}% uptime
             </span>

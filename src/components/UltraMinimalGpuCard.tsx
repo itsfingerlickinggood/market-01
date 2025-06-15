@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import MicroCandlestickChart from "./MicroCandlestickChart";
 
@@ -30,6 +30,15 @@ const UltraMinimalGpuCard = ({
     />
   );
 
+  const getTierBadgeColor = (tier: string) => {
+    switch (tier) {
+      case 'marketplace': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'specialist': return 'bg-green-100 text-green-700 border-green-200';
+      case 'hyperscaler': return 'bg-purple-100 text-purple-700 border-purple-200';
+      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+  };
+
   if (viewMode === "list") {
     return (
       <Link to={`/gpu/${offer.id}`}>
@@ -39,16 +48,24 @@ const UltraMinimalGpuCard = ({
           onMouseLeave={onLeave}
           onMouseMove={onMouseMove}
         >
-          {/* Left: GPU Info */}
+          {/* Left: Company & GPU Info */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <StatusDot available={offer.rentable !== false} />
-            <div className="flex-1 min-w-0">
-              <h3 className="font-medium text-foreground truncate text-sm transition-colors duration-300">
-                {offer.gpu_name}
-              </h3>
-              <p className="text-xs text-muted-foreground mt-0.5 transition-colors duration-300">
-                {offer.datacenter?.split('(')[0]?.trim() || "Unknown"} • {offer.num_gpus || 1}x
-              </p>
+            <div className="flex items-center gap-2">
+              <span className="text-lg">{offer.provider_logo}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-foreground text-sm transition-colors duration-300">
+                    {offer.company}
+                  </h3>
+                  <Badge className={`text-xs px-1.5 py-0.5 ${getTierBadgeColor(offer.provider_tier)}`}>
+                    {offer.provider_tier}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5 transition-colors duration-300">
+                  {offer.gpu_name} • {offer.website}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -73,7 +90,7 @@ const UltraMinimalGpuCard = ({
             )}
             <div className="text-right">
               <div className="font-semibold text-foreground text-sm transition-colors duration-300">
-                ${(offer.dph_total || 0).toFixed(3)}
+                {offer.price_range || `$${(offer.dph_total || 0).toFixed(2)}`}
               </div>
               <div className="text-xs text-muted-foreground transition-colors duration-300">/hour</div>
             </div>
@@ -92,6 +109,7 @@ const UltraMinimalGpuCard = ({
         onMouseEnter={(e) => onHover(offer, e)}
         onMouseLeave={onLeave}
         onMouseMove={onMouseMove}
+        style={{ borderLeft: `3px solid ${offer.provider_color}` }}
       >
         {/* Purpose Match Indicator */}
         {showPurposeMatch && (
@@ -102,43 +120,50 @@ const UltraMinimalGpuCard = ({
         
         {/* Main Content */}
         <div className="p-4 space-y-3">
-          {/* Header with Status */}
+          {/* Company Header */}
           <div className="flex items-start justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <StatusDot available={offer.rentable !== false} />
-                <h3 className="font-medium text-foreground truncate text-sm leading-tight transition-colors duration-300">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className="text-lg flex-shrink-0">{offer.provider_logo}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-bold text-foreground text-sm leading-tight transition-colors duration-300 truncate">
+                    {offer.company}
+                  </h3>
+                  <StatusDot available={offer.rentable !== false} />
+                </div>
+                <p className="text-xs text-muted-foreground transition-colors duration-300 truncate">
                   {offer.gpu_name}
-                </h3>
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground transition-colors duration-300">
-                {offer.num_gpus || 1}x GPU
-              </p>
             </div>
+            <Badge className={`text-xs px-1.5 py-0.5 ${getTierBadgeColor(offer.provider_tier)} flex-shrink-0`}>
+              {offer.provider_tier}
+            </Badge>
           </div>
 
-          {/* Price Chart Section */}
+          {/* Price and Chart Section */}
           <div className="flex items-center justify-between">
             <div>
-              <span className="font-bold text-foreground text-lg tracking-tight transition-colors duration-300">
-                ${(offer.dph_total || 0).toFixed(3)}
+              <span className="font-bold text-foreground text-base tracking-tight transition-colors duration-300">
+                {offer.price_range || `$${(offer.dph_total || 0).toFixed(2)}`}
               </span>
               <span className="text-muted-foreground ml-1 text-xs transition-colors duration-300">/hr</span>
             </div>
             <div className="flex-shrink-0">
               <MicroCandlestickChart 
                 basePrice={offer.dph_total || 1.0}
-                width={84}
-                height={32}
+                width={60}
+                height={24}
               />
             </div>
           </div>
 
-          {/* Footer Info - Ghost Light */}
+          {/* Provider Website and Reliability */}
           <div className="flex items-center justify-between text-xs text-muted-foreground transition-colors duration-300">
-            <span className="truncate">
-              {(offer.datacenter || "Unknown").split('(')[0].trim()}
-            </span>
+            <div className="flex items-center gap-1 truncate">
+              <ExternalLink className="h-3 w-3 flex-shrink-0" />
+              <span className="truncate">{offer.website}</span>
+            </div>
             <span className="flex-shrink-0">
               {Math.round((offer.reliability2 || offer.reliability || 0) * 100)}%
             </span>
