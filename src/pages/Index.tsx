@@ -6,7 +6,6 @@ import WorkloadSelector, { Workload } from "@/components/WorkloadSelector";
 import Header from "@/components/Header";
 import MarketplaceHero from "@/components/MarketplaceHero";
 import HeroSection from "@/components/HeroSection";
-import MarketplaceStats from "@/components/MarketplaceStats";
 import QuickInsights from "@/components/QuickInsights";
 import CandlestickSection from "@/components/CandlestickSection";
 import FeaturesSection from "@/components/FeaturesSection";
@@ -45,7 +44,6 @@ const Index = () => {
         <div className="container mx-auto px-4 py-8 space-y-12">
           <HeroSection />
           <CandlestickSection />
-          <MarketplaceStats />
           <QuickInsights />
           <FeaturesSection />
           <CTASection />
