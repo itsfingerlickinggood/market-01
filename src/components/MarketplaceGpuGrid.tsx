@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Zap, Target, ArrowDownToLine } from "lucide-react";
+import { MapPin, Zap, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import ProviderTrustBadge from "./ProviderTrustBadge";
@@ -109,14 +109,6 @@ const MarketplaceGpuGrid = ({
                     }>
                       {offer.availability}
                     </Badge>
-                  </div>
-                </div>
-                
-                {/* Zero Egress Badge */}
-                <div className="mb-2">
-                  <div className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
-                    <ArrowDownToLine className="h-3 w-3" />
-                    Zero Egress Fees
                   </div>
                 </div>
                 

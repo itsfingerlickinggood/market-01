@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Search, Filter, TrendingDown, Zap, Star, MapPin, ArrowDownToLine } from "lucide-react";
+import { ChevronDown, Search, Filter, TrendingDown, Zap, Star, MapPin } from "lucide-react";
 import Header from "@/components/Header";
 import MarketplaceGpuGrid from "@/components/MarketplaceGpuGrid";
 import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
@@ -115,7 +115,7 @@ const Marketplace = () => {
               Find the Best GPU Rental Deals Across the Internet
             </p>
             <p className="text-sm text-muted-foreground mb-6">
-              Compare prices from top providers • Zero egress fees • Instant deployment
+              Compare prices from top providers • Instant deployment
             </p>
             
             {/* Quick Stats */}
@@ -128,12 +128,6 @@ const Marketplace = () => {
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                   Starting at $0.10/hr
-                </Badge>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                  <ArrowDownToLine className="h-3 w-3 mr-1" />
-                  Zero Egress
                 </Badge>
               </div>
             </div>
@@ -266,10 +260,6 @@ const Marketplace = () => {
                  priceFilter === "value" ? "Value" : "Premium"} deals
               </Badge>
             )}
-            <Badge className="bg-green-100 text-green-800 ml-auto">
-              <ArrowDownToLine className="h-3 w-3 mr-1" />
-              All deals include zero egress fees
-            </Badge>
           </div>
         </div>
 
