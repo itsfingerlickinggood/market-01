@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Search, Filter } from "lucide-react";
+import { ChevronDown, Search, Filter, Target } from "lucide-react";
 import Header from "@/components/Header";
 import MinimalMarketplaceCard from "@/components/MinimalMarketplaceCard";
 import EnhancedGpuHoverCard from "@/components/EnhancedGpuHoverCard";
+import PurposeDrivenMarketplace from "@/components/PurposeDrivenMarketplace";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
@@ -19,6 +20,7 @@ const Marketplace = () => {
   const [sortBy, setSortBy] = useState("best-deals");
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"purpose" | "browse">("purpose");
   const { data: offers, isLoading } = useVastAiOffers();
 
   // Add workload scores and deal rankings to offers
@@ -39,7 +41,6 @@ const Marketplace = () => {
     });
   }, [offers, selectedWorkload]);
 
-  // Filter offers
   const filteredOffers = useMemo(() => {
     let filtered = enhancedOffers || [];
     if (searchTerm) {
@@ -61,7 +62,6 @@ const Marketplace = () => {
     return filtered;
   }, [enhancedOffers, searchTerm, priceFilter]);
 
-  // Sort offers
   const sortedOffers = [...filteredOffers].sort((a, b) => {
     switch (sortBy) {
       case 'best-deals': return (b.dealScore || 0) - (a.dealScore || 0);
@@ -81,20 +81,63 @@ const Marketplace = () => {
     setHoveredGpu(null);
   };
 
+  if (viewMode === "purpose") {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16">
+        <Header />
+        
+        <div className="bg-white border-b border-gray-200">
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Smart GPU Marketplace
+                </h1>
+                <p className="text-lg text-gray-600">
+                  AI-powered recommendations for your specific use case
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                onClick={() => setViewMode("browse")}
+                className="flex items-center gap-2"
+              >
+                <Search className="h-4 w-4" />
+                Browse All GPUs
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <PurposeDrivenMarketplace />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       <Header />
       
       {/* Clean Minimal Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-12">
-          <div className="text-center max-w-2xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-900 mb-3">
-              GPU Marketplace
-            </h1>
-            <p className="text-lg text-gray-600">
-              Rent high-performance GPUs from verified providers worldwide
-            </p>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                GPU Marketplace
+              </h1>
+              <p className="text-lg text-gray-600">
+                Rent high-performance GPUs from verified providers worldwide
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => setViewMode("purpose")}
+              className="flex items-center gap-2"
+            >
+              <Target className="h-4 w-4" />
+              Smart Recommendations
+            </Button>
           </div>
         </div>
       </div>
@@ -103,7 +146,6 @@ const Marketplace = () => {
         {/* Simplified Search and Filters */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-stretch mb-6">
-            {/* Search */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input 
@@ -115,7 +157,6 @@ const Marketplace = () => {
             </div>
 
             <div className="flex gap-3">
-              {/* Price Filter */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="h-10 min-w-[140px] justify-between border-gray-300">
@@ -142,7 +183,6 @@ const Marketplace = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              {/* Sort */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="h-10 min-w-[160px] justify-between border-gray-300">
@@ -172,7 +212,6 @@ const Marketplace = () => {
             </div>
           </div>
 
-          {/* Results Summary */}
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="outline" className="text-sm px-3 py-1 border-gray-300">
               {sortedOffers.length} GPUs found
