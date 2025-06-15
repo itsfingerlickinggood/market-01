@@ -1,202 +1,195 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
-  MessageCircle, 
+  MessageSquare, 
   Heart, 
-  Shield, 
-  Lightbulb,
+  Zap, 
   CheckCircle,
   AlertTriangle,
-  Info
+  Info,
+  Copy
 } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const VoiceAndTone = () => {
-  const voicePrinciples = [
+  const [copiedExample, setCopiedExample] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const voiceAttributes = [
     {
-      icon: <Heart className="h-5 w-5 text-red-500" />,
-      title: "Empathetic Expert",
-      description: "We understand the frustration of complex GPU setups and hidden costs. We speak to users as trusted advisors, not salespeople.",
-      example: "We know how frustrating surprise egress fees can be. That's why we made them zero - forever."
+      trait: "Empathetic Expert",
+      description: "We understand your challenges and speak your language",
+      example: "We know setting up GPU infrastructure can be overwhelming. Let us handle the complexity so you can focus on what matters most."
     },
     {
-      icon: <Shield className="h-5 w-5 text-blue-500" />,
-      title: "Clear & Direct",
-      description: "No jargon, no marketing speak. We tell users exactly what they're getting and what it costs.",
-      example: "Total cost: $2.40/hour. No hidden fees. No surprises."
+      trait: "Radically Transparent",
+      description: "No hidden fees, no confusing jargon, just honest communication",
+      example: "Total cost: $2.45/hour. That's it. No surprise egress fees, no hidden charges."
     },
     {
-      icon: <Lightbulb className="h-5 w-5 text-yellow-500" />,
-      title: "Enthusiastic & Supportive",
-      description: "We celebrate user success and provide encouragement throughout their journey.",
-      example: "Great choice! This GPU will handle your training workload perfectly."
+      trait: "Enthusiastic & Supportive",
+      description: "We're genuinely excited about your success",
+      example: "🎉 Your model finished training! Ready to deploy it to production? We've got templates to make it seamless."
     }
   ];
 
   const microcopyExamples = [
     {
-      context: "Data Egress Tooltip",
-      tone: "Educational & Reassuring",
-      copy: "💡 Data egress = downloading files from your instance. Unlike AWS ($0.09/GB), we charge $0.00. Download all you want!",
-      reasoning: "Explains technical term simply, shows competitive advantage, gives permission to use freely"
+      context: "Tooltip for egress fees",
+      type: "info",
+      text: "💡 Unlike cloud giants, we believe your data belongs to you. Download, upload, or move your data freely - always $0 egress fees."
     },
     {
-      context: "Deployment Success",
-      tone: "Celebratory & Helpful",
-      copy: "🎉 Your GPU is ready! SSH in with the command below, or jump straight to your Jupyter notebook.",
-      reasoning: "Celebrates achievement, provides immediate next steps, offers multiple pathways"
+      context: "Successful deployment",
+      type: "success",
+      text: "🚀 Your instance is live! SSH details sent to your email. Happy computing!"
     },
     {
-      context: "Spot Instance Interruption",
-      tone: "Apologetic & Solution-Focused",
-      copy: "⚠️ Your spot instance was interrupted (this saves you 70% vs on-demand). We're automatically finding you a replacement.",
-      reasoning: "Acknowledges inconvenience, reminds of benefit, shows proactive help"
+      context: "Spot instance interruption",
+      type: "warning",
+      text: "⚡ Heads up! Your spot instance was reclaimed, but we've saved your work. Ready to spin up a new one?"
     },
     {
-      context: "High Workload Match",
-      tone: "Confident & Specific",
-      copy: "Perfect Match: This GPU excels at your workload (95% compatibility). Expect 2.3x faster training than a V100.",
-      reasoning: "Uses specific metrics, sets clear expectations, provides comparative context"
+      context: "Loading state",
+      type: "info",
+      text: "🔍 Scanning the galaxy for the perfect GPU match..."
     },
     {
-      context: "Provider Trust Badge",
-      tone: "Trustworthy & Transparent",
-      copy: "Verified Provider: Hardware tested ✓ SOC 2 certified ✓ 99.8% uptime ✓",
-      reasoning: "Shows concrete validations, uses checkmarks for quick scanning, specific metrics"
-    },
-    {
-      context: "First-time User Welcome",
-      tone: "Warm & Guiding",
-      copy: "Welcome! Let's find the perfect GPU for your project. What are you building today?",
-      reasoning: "Personal greeting, focuses on user's goal, open-ended invitation to share"
+      context: "Error state",
+      type: "error",
+      text: "😅 Oops! Something went sideways. Our team has been notified and we'll fix this faster than you can say 'CUDA cores'."
     }
   ];
 
-  const toneGuidelines = [
-    {
-      do: "Use specific metrics and comparisons",
-      dont: "Make vague claims",
-      example: "2.3x faster than V100" vs "Much faster"
-    },
-    {
-      do: "Acknowledge user expertise levels",
-      dont: "Assume technical knowledge",
-      example: "GPU memory (VRAM)" vs "VRAM"
-    },
-    {
-      do: "Show, don't just tell",
-      dont: "Use empty marketing phrases",
-      example: "Zero egress fees (save $45 on 500GB)" vs "Cost-effective solution"
-    },
-    {
-      do: "Celebrate user wins",
-      dont: "Be purely transactional",
-      example: "Great choice! This setup is perfect for your workload" vs "Order confirmed"
-    }
-  ];
+  const handleCopyExample = (text: string, context: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedExample(context);
+    setTimeout(() => setCopiedExample(null), 2000);
+    
+    toast({
+      title: "Copied!",
+      description: "Example copied to clipboard",
+    });
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold mb-4">Voice & Tone Guide</h1>
+        <p className="text-muted-foreground text-lg">
+          Our communication style reflects our core values: transparency, empathy, and genuine excitement about GPU computing.
+        </p>
+      </div>
+
+      {/* Voice Attributes */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5 text-primary" />
-            Voice & Tone Guide
+            <MessageSquare className="h-5 w-5 text-primary" />
+            Our Voice Attributes
           </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Our communication principles for creating lovable user experiences
-          </p>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {voicePrinciples.map((principle, index) => (
-              <Card key={index} className="p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  {principle.icon}
-                  <h3 className="font-semibold">{principle.title}</h3>
-                </div>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {principle.description}
-                </p>
-                <div className="bg-muted/50 p-3 rounded-lg">
-                  <p className="text-sm italic">"{principle.example}"</p>
-                </div>
-              </Card>
-            ))}
-          </div>
+          {voiceAttributes.map((attr, index) => (
+            <div key={index} className="border-l-4 border-primary/30 pl-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Badge variant="secondary">{attr.trait}</Badge>
+              </div>
+              <p className="text-muted-foreground mb-2">{attr.description}</p>
+              <div className="bg-muted/50 p-3 rounded-md italic">
+                "{attr.example}"
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
 
+      {/* Microcopy Examples */}
       <Card>
         <CardHeader>
-          <CardTitle>Microcopy Examples</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Real examples of how we communicate in key user moments
-          </p>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-primary" />
+            Microcopy Examples
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {microcopyExamples.map((example, index) => (
+        <CardContent className="space-y-4">
+          {microcopyExamples.map((example, index) => {
+            const getIcon = () => {
+              switch (example.type) {
+                case "success":
+                  return <CheckCircle className="h-4 w-4 text-green-600" />;
+                case "warning":
+                  return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
+                case "error":
+                  return <AlertTriangle className="h-4 w-4 text-red-600" />;
+                default:
+                  return <Info className="h-4 w-4 text-blue-600" />;
+              }
+            };
+
+            return (
               <div key={index} className="border rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="outline">{example.context}</Badge>
-                  <Badge className="bg-blue-100 text-blue-800">{example.tone}</Badge>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    {getIcon()}
+                    <span className="font-medium text-sm">{example.context}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleCopyExample(example.text, example.context)}
+                    className="h-8 w-8 p-0"
+                  >
+                    {copiedExample === example.context ? (
+                      <CheckCircle className="h-3 w-3 text-green-600" />
+                    ) : (
+                      <Copy className="h-3 w-3" />
+                    )}
+                  </Button>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg mb-3">
-                  <p className="font-medium">{example.copy}</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  <strong>Why this works:</strong> {example.reasoning}
+                <p className="text-sm bg-muted/30 p-2 rounded">
+                  {example.text}
                 </p>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </CardContent>
       </Card>
 
+      {/* Writing Guidelines */}
       <Card>
         <CardHeader>
-          <CardTitle>Tone Guidelines</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Do's and don'ts for consistent communication
-          </p>
+          <CardTitle className="flex items-center gap-2">
+            <Heart className="h-5 w-5 text-primary" />
+            Writing Guidelines
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {toneGuidelines.map((guideline, index) => (
-              <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg">
-                <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-green-800">Do: {guideline.do}</p>
-                    <p className="text-sm text-green-700 mt-1">"{guideline.example.split(' vs ')[0]}"</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-red-800">Don't: {guideline.dont}</p>
-                    <p className="text-sm text-red-700 mt-1">"{guideline.example.split(' vs ')[1]}"</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-blue-50 dark:bg-blue-950/20">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">
-                The Lovable Test
-              </h3>
-              <p className="text-blue-800 dark:text-blue-300 text-sm">
-                Before writing any copy, ask: "Would a frustrated developer at 2 AM find this helpful, 
-                clear, and reassuring?" If not, rewrite it.
-              </p>
+              <h3 className="font-semibold text-green-700 mb-3">✅ Do</h3>
+              <ul className="space-y-2 text-sm">
+                <li>• Use active voice and clear, direct language</li>
+                <li>• Include relevant emojis to add personality</li>
+                <li>• Acknowledge user emotions and frustrations</li>
+                <li>• Celebrate user successes, big and small</li>
+                <li>• Use technical terms when necessary, but explain them</li>
+                <li>• Be human - admit mistakes and show we care</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-red-700 mb-3">❌ Don't</h3>
+              <ul className="space-y-2 text-sm">
+                <li>• Use corporate jargon or buzzwords</li>
+                <li>• Hide problems behind vague language</li>
+                <li>• Overwhelm users with technical details</li>
+                <li>• Sound robotic or overly formal</li>
+                <li>• Make promises we can't keep</li>
+                <li>• Blame users for system issues</li>
+              </ul>
             </div>
           </div>
         </CardContent>
