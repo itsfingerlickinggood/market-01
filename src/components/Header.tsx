@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -38,9 +37,6 @@ const Header = () => {
               <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="font-bold text-xl">Market01</span>
-            <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
-              Best Deals
-            </Badge>
           </Link>
 
           {/* Desktop Navigation */}
