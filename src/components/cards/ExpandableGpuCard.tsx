@@ -46,10 +46,10 @@ const ExpandableGpuCard = ({
     <div className="relative">
       <Card 
         className={`
-          transition-all duration-500 cursor-pointer relative overflow-visible
+          transition-all duration-500 cursor-pointer relative overflow-visible border-0 shadow-none
           ${isHovered ? 
-            'shadow-2xl transform scale-105 bg-gradient-to-br from-card via-card/95 to-primary/5 border-primary/20 z-50' : 
-            'hover:shadow-lg hover:-translate-y-1 z-10'
+            'shadow-2xl transform scale-105 bg-gradient-to-br from-card via-card/95 to-primary/5 z-50' : 
+            'hover:shadow-lg hover:-translate-y-1 z-10 bg-card'
           }
           ${className}
         `}
@@ -58,7 +58,7 @@ const ExpandableGpuCard = ({
       >
         {/* Glossy overlay effect */}
         {isHovered && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse pointer-events-none z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 animate-pulse pointer-events-none z-10 rounded-lg" />
         )}
         
         <CardContent className={`p-4 space-y-3 transition-all duration-300 ${isHovered ? 'relative z-20' : ''}`}>
@@ -142,9 +142,9 @@ const ExpandableGpuCard = ({
 
         {/* Hover Dropdown - Seamlessly merged with main card */}
         {isHovered && (
-          <div className="absolute top-full left-0 right-0 z-50 bg-gradient-to-br from-card via-card/95 to-primary/5 backdrop-blur-md rounded-b-lg shadow-2xl">
+          <div className="absolute top-full left-0 right-0 z-50 bg-gradient-to-br from-card via-card/95 to-primary/5 backdrop-blur-md shadow-2xl border-0">
             {/* Glossy overlay for dropdown */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent rounded-b-lg pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
             
             <div className="relative z-10 p-4 space-y-3">
               {/* Provider Spread */}
