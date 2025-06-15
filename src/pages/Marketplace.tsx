@@ -1,10 +1,9 @@
-
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Search, Filter, Target, Sparkles } from "lucide-react";
+import { ChevronDown, Search, Filter, Target, Sparkles, Grid3X3, List } from "lucide-react";
 import Header from "@/components/Header";
 import MinimalMarketplaceCard from "@/components/MinimalMarketplaceCard";
 import EnhancedGpuHoverCard from "@/components/EnhancedGpuHoverCard";
@@ -21,6 +20,7 @@ const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
   const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { data: offers, isLoading } = useVastAiOffers();
 
   // Add workload scores and deal rankings to offers
@@ -96,177 +96,155 @@ const Marketplace = () => {
   const purposeMatchCount = sortedOffers.filter(offer => offer.isPurposeMatch).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen bg-background pt-16">
       <Header />
       
-      {/* Clean Minimal Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Smart GPU Marketplace
-              </h1>
-              <p className="text-lg text-gray-600">
-                {selectedPurpose ? "AI-powered recommendations for your use case" : "Rent high-performance GPUs from verified providers worldwide"}
-              </p>
-            </div>
-            {selectedPurpose && purposeMatchCount > 0 && (
-              <div className="text-right">
-                <Badge className="bg-primary text-primary-foreground mb-2">
+      {/* Compact Header */}
+      <div className="border-b border-border bg-card/50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">GPU Marketplace</h1>
+              {selectedPurpose && purposeMatchCount > 0 && (
+                <Badge className="bg-primary text-primary-foreground">
                   <Sparkles className="h-3 w-3 mr-1" />
-                  {purposeMatchCount} Perfect Matches
+                  {purposeMatchCount} Matches
                 </Badge>
-                <p className="text-sm text-muted-foreground">Optimized for your purpose</p>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          
+          {/* Compact Controls */}
+          <div className="flex flex-col lg:flex-row gap-3">
+            <PurposeFilterTags 
+              selectedPurpose={selectedPurpose}
+              onPurposeChange={handlePurposeChange}
+            />
+            
+            <div className="flex gap-2 lg:ml-auto">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Input 
+                  placeholder="Search..." 
+                  value={searchTerm} 
+                  onChange={(e) => setSearchTerm(e.target.value)} 
+                  className="pl-8 h-8 w-48 text-sm" 
+                />
               </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 text-sm">
+                    <Filter className="h-3.5 w-3.5 mr-1" />
+                    {priceFilter === "all" ? "Price" : 
+                     priceFilter === "budget" ? "Budget" : 
+                     priceFilter === "value" ? "Value" : "Premium"}
+                    <ChevronDown className="h-3.5 w-3.5 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setPriceFilter("all")}>All Prices</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setPriceFilter("budget")}>Budget (&lt;$0.50/hr)</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setPriceFilter("value")}>Value ($0.50-2/hr)</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setPriceFilter("premium")}>Premium (&gt;$2/hr)</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 text-sm">
+                    Sort
+                    <ChevronDown className="h-3.5 w-3.5 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setSortBy("best-deals")}>Best Deals</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("lowest-price")}>Lowest Price</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("highest-performance")}>Best Performance</DropdownMenuItem>
+                  {selectedPurpose && (
+                    <DropdownMenuItem onClick={() => setSortBy("purpose-match")}>Perfect Match</DropdownMenuItem>
+                  )}
+                  {selectedWorkload && (
+                    <DropdownMenuItem onClick={() => setSortBy("workload-match")}>Workload Match</DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="flex items-center gap-3 mt-3 text-sm text-muted-foreground">
+            <span>{sortedOffers.length} GPUs</span>
+            {searchTerm && <span>• "{searchTerm}"</span>}
+            {priceFilter !== "all" && <span>• {priceFilter}</span>}
+            {selectedPurpose && (
+              <Badge variant="secondary" className="text-xs">
+                <Target className="h-3 w-3 mr-1" />
+                {selectedPurpose.replace('-', ' ')}
+              </Badge>
             )}
           </div>
         </div>
       </div>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Purpose Filter Tags */}
-        <PurposeFilterTags 
-          selectedPurpose={selectedPurpose}
-          onPurposeChange={handlePurposeChange}
-        />
-
-        {/* Simplified Search and Filters */}
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row gap-4 items-stretch mb-6">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input 
-                placeholder="Search GPU models..." 
-                value={searchTerm} 
-                onChange={(e) => setSearchTerm(e.target.value)} 
-                className="pl-9 h-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500" 
-              />
-            </div>
-
-            <div className="flex gap-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="h-10 min-w-[140px] justify-between border-gray-300">
-                    <Filter className="h-4 w-4 mr-2" />
-                    {priceFilter === "all" ? "All Prices" : 
-                     priceFilter === "budget" ? "Budget" : 
-                     priceFilter === "value" ? "Value" : "Premium"}
-                    <ChevronDown className="h-4 w-4 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white">
-                  <DropdownMenuItem onClick={() => setPriceFilter("all")}>
-                    All Prices
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setPriceFilter("budget")}>
-                    Budget (Under $0.50/hr)
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setPriceFilter("value")}>
-                    Value ($0.50-2/hr)
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setPriceFilter("premium")}>
-                    Premium (Over $2/hr)
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="h-10 min-w-[160px] justify-between border-gray-300">
-                    Sort: {sortBy === "best-deals" ? "Best Deals" : 
-                           sortBy === "lowest-price" ? "Lowest Price" : 
-                           sortBy === "highest-performance" ? "Performance" : 
-                           sortBy === "purpose-match" ? "Perfect Match" : "Best Match"}
-                    <ChevronDown className="h-4 w-4 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-white">
-                  <DropdownMenuItem onClick={() => setSortBy("best-deals")}>
-                    Best Deals
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("lowest-price")}>
-                    Lowest Price
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("highest-performance")}>
-                    Best Performance
-                  </DropdownMenuItem>
-                  {selectedPurpose && (
-                    <DropdownMenuItem onClick={() => setSortBy("purpose-match")}>
-                      Perfect Match
-                    </DropdownMenuItem>
-                  )}
-                  {selectedWorkload && (
-                    <DropdownMenuItem onClick={() => setSortBy("workload-match")}>
-                      Workload Match
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge variant="outline" className="text-sm px-3 py-1 border-gray-300">
-              {sortedOffers.length} GPUs found
-            </Badge>
-            {searchTerm && (
-              <Badge variant="secondary" className="px-3 py-1 bg-blue-50 text-blue-700">
-                "{searchTerm}"
-              </Badge>
-            )}
-            {priceFilter !== "all" && (
-              <Badge variant="secondary" className="px-3 py-1 bg-green-50 text-green-700">
-                {priceFilter === "budget" ? "Budget" : 
-                 priceFilter === "value" ? "Value" : "Premium"} range
-              </Badge>
-            )}
-            {selectedPurpose && (
-              <Badge className="px-3 py-1 bg-primary text-primary-foreground">
-                <Target className="h-3 w-3 mr-1" />
-                Purpose: {selectedPurpose.replace('-', ' ')}
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        {/* Clean GPU Grid */}
-        <div className="mb-8">
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                    <div className="h-6 bg-gray-200 rounded w-1/3"></div>
-                  </div>
+      <main className="container mx-auto px-4 py-4">
+        {/* GPU Grid/List */}
+        {isLoading ? (
+          <div className={viewMode === "grid" 
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3" 
+            : "space-y-2"
+          }>
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-card border rounded-lg p-3 space-y-2">
+                  <div className="h-4 bg-muted rounded w-3/4"></div>
+                  <div className="h-3 bg-muted rounded w-1/2"></div>
+                  <div className="h-5 bg-muted rounded w-1/3"></div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {sortedOffers.map((offer) => (
-                <MinimalMarketplaceCard
-                  key={offer.id}
-                  offer={offer}
-                  onHover={handleGpuHover}
-                  onLeave={handleGpuLeave}
-                  onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
-                  showPurposeMatch={selectedPurpose && offer.isPurposeMatch}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className={viewMode === "grid" 
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3" 
+            : "space-y-2"
+          }>
+            {sortedOffers.map((offer) => (
+              <MinimalMarketplaceCard
+                key={offer.id}
+                offer={offer}
+                onHover={handleGpuHover}
+                onLeave={handleGpuLeave}
+                onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
+                showPurposeMatch={selectedPurpose && offer.isPurposeMatch}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Empty State */}
         {!isLoading && sortedOffers.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-4xl mb-4">🔍</div>
-            <h3 className="text-xl font-medium text-gray-900 mb-2">No GPUs found</h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Try adjusting your search criteria or browse all available options
+          <div className="text-center py-12">
+            <div className="text-3xl mb-3">🔍</div>
+            <h3 className="text-lg font-medium mb-2">No GPUs found</h3>
+            <p className="text-muted-foreground mb-4 max-w-md mx-auto">
+              Try adjusting your search criteria
             </p>
             <Button 
               variant="outline" 
@@ -274,10 +252,9 @@ const Marketplace = () => {
                 setSearchTerm("");
                 setPriceFilter("all");
                 setSelectedPurpose(null);
-              }} 
-              className="px-6"
+              }}
             >
-              Show all GPUs
+              Reset filters
             </Button>
           </div>
         )}
