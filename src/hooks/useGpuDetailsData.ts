@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
+import { generateEnhancedGpuData } from "@/utils/enhancedGpuDataGenerator";
 
 interface PlatformProvider {
   name: string;
@@ -44,6 +45,7 @@ export const useGpuDetailsData = (id: string | undefined) => {
   const { data: offers } = useVastAiOffers();
   const [gpu, setGpu] = useState<any>(null);
   const [providerData, setProviderData] = useState<PlatformProvider[]>([]);
+  const [enhancedGpuData, setEnhancedGpuData] = useState<any>(null);
 
   useEffect(() => {
     if (offers && id) {
@@ -53,9 +55,13 @@ export const useGpuDetailsData = (id: string | undefined) => {
       if (foundGpu) {
         const providers = generateProviderData(foundGpu.dph_total || 1.0);
         setProviderData(providers);
+        
+        // Generate enhanced data with realistic provider information
+        const enhanced = generateEnhancedGpuData(foundGpu);
+        setEnhancedGpuData(enhanced);
       }
     }
   }, [offers, id]);
 
-  return { gpu, providerData };
+  return { gpu, providerData, enhancedGpuData };
 };
