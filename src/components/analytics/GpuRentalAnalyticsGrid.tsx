@@ -1,9 +1,9 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { LineChart, Line, ResponsiveContainer, AreaChart, Area, XAxis, YAxis } from "recharts";
+import { LineChart, Line, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { 
   Cpu, 
   Building2, 
@@ -13,10 +13,13 @@ import {
   TrendingUp,
   TrendingDown,
   Activity,
-  Eye,
+  MapPin,
   Zap,
   Heart,
-  BarChart3
+  BarChart3,
+  Star,
+  Shield,
+  Sparkles
 } from "lucide-react";
 
 const GpuRentalAnalyticsGrid = () => {
@@ -31,118 +34,170 @@ const GpuRentalAnalyticsGrid = () => {
     {
       id: 1,
       company: "NVIDIA",
+      companyLogo: "🟢",
       model: "RTX 4090",
+      tier: "High-End",
       provider: "RunPod",
       providerColor: "#6366F1",
-      currentPrice: "$2.89",
+      providerIcon: "🚀",
+      currentPrice: 2.89,
       priceChange: "+12%",
       trend: "up" as const,
       vram: "24GB",
       availability: "available",
       utilization: 87,
+      reliability: 95,
       priceHistory: generatePriceHistory(),
       location: "US West",
       setupTime: "2 min",
-      lastRented: "5 min ago"
+      lastRented: "5 min ago",
+      performanceScore: 92,
+      trustScore: 4.8
     },
     {
       id: 2,
       company: "NVIDIA", 
+      companyLogo: "🟢",
       model: "A100 80GB",
+      tier: "Enterprise",
       provider: "AWS EC2",
       providerColor: "#FF9900",
-      currentPrice: "$4.99",
+      providerIcon: "☁️",
+      currentPrice: 4.99,
       priceChange: "-5%",
       trend: "down" as const,
       vram: "80GB",
       availability: "limited",
       utilization: 94,
+      reliability: 99,
       priceHistory: generatePriceHistory(),
       location: "US East",
       setupTime: "8 min",
-      lastRented: "12 min ago"
+      lastRented: "12 min ago",
+      performanceScore: 98,
+      trustScore: 4.9
     },
     {
       id: 3,
       company: "NVIDIA",
+      companyLogo: "🟢",
       model: "H100 80GB", 
+      tier: "Enterprise",
       provider: "Google Cloud",
       providerColor: "#4285F4",
-      currentPrice: "$8.99",
+      providerIcon: "🌐",
+      currentPrice: 8.99,
       priceChange: "+24%",
       trend: "up" as const,
       vram: "80GB",
       availability: "available",
       utilization: 91,
+      reliability: 97,
       priceHistory: generatePriceHistory(),
       location: "EU West",
       setupTime: "5 min",
-      lastRented: "3 min ago"
+      lastRented: "3 min ago",
+      performanceScore: 100,
+      trustScore: 4.7
     },
     {
       id: 4,
       company: "NVIDIA",
+      companyLogo: "🟢",
       model: "RTX 4080",
+      tier: "High-End",
       provider: "Vast.ai",
       providerColor: "#10B981",
-      currentPrice: "$1.89",
+      providerIcon: "⚡",
+      currentPrice: 1.89,
       priceChange: "+8%",
       trend: "up" as const,
       vram: "16GB",
       availability: "available",
       utilization: 76,
+      reliability: 88,
       priceHistory: generatePriceHistory(),
       location: "Global",
       setupTime: "1 min",
-      lastRented: "8 min ago"
+      lastRented: "8 min ago",
+      performanceScore: 85,
+      trustScore: 4.3
     },
     {
       id: 5,
       company: "NVIDIA",
+      companyLogo: "🟢",
       model: "RTX 3090",
+      tier: "Mid-Range",
       provider: "Paperspace",
       providerColor: "#8B5CF6",
-      currentPrice: "$1.69",
+      providerIcon: "📄",
+      currentPrice: 1.69,
       priceChange: "-3%",
       trend: "down" as const,
       vram: "24GB",
       availability: "available", 
       utilization: 68,
+      reliability: 92,
       priceHistory: generatePriceHistory(),
       location: "US East",
       setupTime: "30 sec",
-      lastRented: "15 min ago"
+      lastRented: "15 min ago",
+      performanceScore: 78,
+      trustScore: 4.5
     },
     {
       id: 6,
       company: "NVIDIA",
+      companyLogo: "🟢",
       model: "V100 32GB",
+      tier: "Professional",
       provider: "Lambda Labs",
       providerColor: "#F59E0B",
-      currentPrice: "$2.49",
+      providerIcon: "λ",
+      currentPrice: 2.49,
       priceChange: "+15%",
       trend: "up" as const,
       vram: "32GB",
       availability: "limited",
       utilization: 82,
+      reliability: 94,
       priceHistory: generatePriceHistory(),
       location: "US West",
       setupTime: "2 min",
-      lastRented: "7 min ago"
+      lastRented: "7 min ago",
+      performanceScore: 88,
+      trustScore: 4.6
     }
   ];
+
+  const getTierColor = (tier: string) => {
+    switch (tier) {
+      case "Enterprise": return "bg-purple-500/20 text-purple-300 border-purple-500/30";
+      case "High-End": return "bg-blue-500/20 text-blue-300 border-blue-500/30";
+      case "Professional": return "bg-green-500/20 text-green-300 border-green-500/30";
+      case "Mid-Range": return "bg-orange-500/20 text-orange-300 border-orange-500/30";
+      default: return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+    }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">GPU Rental Market</h2>
-          <p className="text-muted-foreground">Real-time pricing and availability across providers</p>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            GPU Rental Market
+          </h2>
+          <p className="text-muted-foreground text-lg">Real-time pricing and availability across providers</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-green-100 text-green-700">
-            <Activity className="h-3 w-3 mr-1" />
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+            <Activity className="h-3 w-3 mr-1 animate-pulse" />
             Live Data
+          </Badge>
+          <Badge variant="outline" className="border-primary/20 text-primary">
+            <Sparkles className="h-3 w-3 mr-1" />
+            6 Providers
           </Badge>
         </div>
       </div>
@@ -154,60 +209,72 @@ const GpuRentalAnalyticsGrid = () => {
           return (
             <Card 
               key={gpu.id}
-              className="group hover:scale-105 transition-all duration-300 cursor-pointer bg-card/50 backdrop-blur-sm border-border/60 hover:shadow-lg hover:shadow-primary/10"
+              className="group relative overflow-hidden bg-gradient-to-br from-card/95 via-card/98 to-card backdrop-blur-xl border-border/60 hover:border-primary/30 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/10"
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className={`w-2 h-2 rounded-full ${
-                        gpu.availability === 'available' ? "bg-green-500 animate-pulse" : "bg-orange-400"
-                      }`} />
-                      <Badge 
-                        variant="outline" 
-                        className="text-xs px-2 py-0"
-                        style={{ borderColor: gpu.providerColor, color: gpu.providerColor }}
-                      >
-                        {gpu.provider}
-                      </Badge>
-                    </div>
-                    
-                    <div className="space-y-1">
+              {/* Gradient overlay effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              {/* Animated border glow */}
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-transparent via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-pulse" />
+
+              <CardHeader className="pb-4 relative z-10">
+                {/* Company & Provider Header */}
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">{gpu.companyLogo}</div>
+                    <div>
                       <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">{gpu.company}</span>
+                        <h3 className="font-bold text-lg text-foreground">{gpu.company}</h3>
+                        <Badge className={`text-xs px-2 py-0.5 border ${getTierColor(gpu.tier)}`}>
+                          {gpu.tier}
+                        </Badge>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Cpu className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-semibold">{gpu.model}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Server className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">{gpu.vram} VRAM</span>
-                      </div>
+                      <p className="text-sm text-muted-foreground">{gpu.model}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                      <Heart className="h-3 w-3 text-gray-400 hover:text-pink-500" />
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-primary/10">
+                      <Heart className="h-4 w-4 text-gray-400 hover:text-pink-500 transition-colors" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                      <BarChart3 className="h-3 w-3 text-gray-400 hover:text-blue-500" />
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-primary/10">
+                      <BarChart3 className="h-4 w-4 text-gray-400 hover:text-blue-500 transition-colors" />
                     </Button>
                   </div>
                 </div>
-              </CardHeader>
 
-              <CardContent className="space-y-4">
-                {/* Price Section */}
+                {/* Provider Badge */}
                 <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-2xl font-bold text-primary">{gpu.currentPrice}</span>
-                    <span className="text-sm text-muted-foreground ml-1">/hr</span>
+                  <div className="flex items-center gap-2">
+                    <div className="text-lg">{gpu.providerIcon}</div>
+                    <Badge 
+                      variant="outline" 
+                      className="font-semibold px-3 py-1 border-2"
+                      style={{ 
+                        borderColor: gpu.providerColor + '40', 
+                        backgroundColor: gpu.providerColor + '10',
+                        color: gpu.providerColor 
+                      }}
+                    >
+                      {gpu.provider}
+                    </Badge>
                   </div>
                   
-                  <div className="h-12 w-20">
+                  <div className={`w-3 h-3 rounded-full ${
+                    gpu.availability === 'available' ? "bg-green-500 animate-pulse shadow-lg shadow-green-500/50" : "bg-orange-400 shadow-lg shadow-orange-400/50"
+                  }`} />
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4 relative z-10">
+                {/* Price Section */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold text-primary">${gpu.currentPrice.toFixed(2)}</span>
+                    <span className="text-sm text-muted-foreground">/hr</span>
+                  </div>
+                  
+                  <div className="h-12 w-24">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={gpu.priceHistory}>
                         <Area
@@ -215,7 +282,7 @@ const GpuRentalAnalyticsGrid = () => {
                           dataKey="price"
                           stroke={gpu.providerColor}
                           fill={gpu.providerColor}
-                          fillOpacity={0.2}
+                          fillOpacity={0.3}
                           strokeWidth={2}
                         />
                       </AreaChart>
@@ -223,13 +290,53 @@ const GpuRentalAnalyticsGrid = () => {
                   </div>
                 </div>
 
-                {/* Stats Row */}
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">{gpu.setupTime}</span>
+                {/* Performance & Trust Scores */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Cpu className="h-3 w-3" />
+                        Performance
+                      </span>
+                      <span className="font-medium">{gpu.performanceScore}%</span>
+                    </div>
+                    <Progress value={gpu.performanceScore} className="h-2" />
                   </div>
                   
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Star className="h-3 w-3" />
+                        Trust
+                      </span>
+                      <span className="font-medium">{gpu.trustScore}/5</span>
+                    </div>
+                    <Progress value={(gpu.trustScore / 5) * 100} className="h-2" />
+                  </div>
+                </div>
+
+                {/* Specs Grid */}
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">VRAM:</span>
+                    <span className="font-medium">{gpu.vram}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Setup:</span>
+                    <span className="font-medium">{gpu.setupTime}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Location:</span>
+                    <span className="font-medium">{gpu.location}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Usage:</span>
+                    <span className="font-medium">{gpu.utilization}%</span>
+                  </div>
+                </div>
+
+                {/* Price Change & Actions */}
+                <div className="flex items-center justify-between pt-2">
                   <Badge 
                     variant="secondary" 
                     className={`flex items-center gap-1 ${
@@ -241,20 +348,27 @@ const GpuRentalAnalyticsGrid = () => {
                     <TrendIcon className="h-3 w-3" />
                     {gpu.priceChange}
                   </Badge>
-                </div>
-
-                {/* Utilization */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Utilization</span>
-                    <span className="font-medium">{gpu.utilization}%</span>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="h-7 text-xs">
+                      Compare
+                    </Button>
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      className="h-7 text-xs bg-primary hover:bg-primary/90"
+                      disabled={gpu.availability !== 'available'}
+                    >
+                      {gpu.availability === 'available' ? 'Rent Now' : 'Limited'}
+                    </Button>
                   </div>
-                  <Progress value={gpu.utilization} className="h-2" />
                 </div>
 
-                {/* Location & Last Rented */}
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{gpu.location}</span>
+                {/* Reliability Indicator */}
+                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-1 border-t border-border/30">
+                  <Shield className="h-3 w-3 text-green-500" />
+                  <span>{gpu.reliability}% uptime</span>
+                  <span>•</span>
                   <span>Last rented {gpu.lastRented}</span>
                 </div>
               </CardContent>

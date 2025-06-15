@@ -13,7 +13,9 @@ import {
   Activity,
   Cpu,
   Server,
-  Building2
+  Building2,
+  Users,
+  Zap
 } from "lucide-react";
 
 const InteractiveStatsGrid = () => {
@@ -34,67 +36,67 @@ const InteractiveStatsGrid = () => {
 
   const stats = [
     {
-      title: "GPU Searches",
-      value: "4,287",
-      change: "+28%",
+      title: "GPU Models Tracked",
+      value: "247",
+      change: "+18%",
       trend: "up" as const,
-      icon: Search,
-      description: "vs last month",
+      icon: Cpu,
+      description: "across all providers",
       sparklineData: generateSparklineData('up'),
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
     },
     {
-      title: "Model Comparisons",
-      value: "1,834",
-      change: "+22%",
+      title: "Provider Networks",
+      value: "24",
+      change: "+3",
       trend: "up" as const,
-      icon: GitCompare,
-      description: "active comparisons",
+      icon: Building2,
+      description: "connected platforms",
       sparklineData: generateSparklineData('up'),
       color: "text-green-500",
       bgColor: "bg-green-500/10",
     },
     {
       title: "Active Rentals",
-      value: "512",
-      change: "+18%",
+      value: "1,834",
+      change: "+22%",
       trend: "up" as const,
       icon: Server,
-      description: "currently renting",
+      description: "currently running",
       sparklineData: generateSparklineData('up'),
       color: "text-purple-500",
       bgColor: "bg-purple-500/10",
     },
     {
-      title: "Revenue Tracked",
-      value: "$127K",
+      title: "Total Market Value",
+      value: "$2.4M",
       change: "+42%",
       trend: "up" as const,
       icon: DollarSign,
-      description: "total rental value",
+      description: "hourly rental capacity",
       sparklineData: generateSparklineData('up'),
       color: "text-emerald-500",
       bgColor: "bg-emerald-500/10",
     },
     {
-      title: "Avg Rental Time",
+      title: "Avg Session Time",
       value: "6.2h",
       change: "-12%",
       trend: "down" as const,
       icon: Clock,
-      description: "per session",
+      description: "per rental session",
       sparklineData: generateSparklineData('down'),
       color: "text-orange-500",
       bgColor: "bg-orange-500/10",
     },
     {
-      title: "Provider Network",
-      value: "24",
-      change: "+3",
+      title: "Active Users",
+      value: "12.8K",
+      change: "+28%",
       trend: "up" as const,
-      icon: Building2,
-      description: "connected providers",
+      icon: Users,
+      description: "monthly active",
       sparklineData: generateSparklineData('up'),
       color: "text-cyan-500",
       bgColor: "bg-cyan-500/10",
@@ -110,17 +112,21 @@ const InteractiveStatsGrid = () => {
         return (
           <Card 
             key={index}
-            className="group hover:scale-105 transition-all duration-300 cursor-pointer bg-card/50 backdrop-blur-sm border-border/60 hover:shadow-lg hover:shadow-primary/5"
+            className="group relative overflow-hidden bg-gradient-to-br from-card/95 via-card/98 to-card backdrop-blur-xl border-border/60 hover:border-primary/30 transition-all duration-500 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/5"
           >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            {/* Animated background effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.title}
               </CardTitle>
-              <div className={`p-2 rounded-lg ${stat.bgColor} transition-all duration-300 group-hover:scale-110`}>
-                <Icon className={`h-4 w-4 ${stat.color}`} />
+              <div className={`p-3 rounded-xl ${stat.bgColor} transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}>
+                <Icon className={`h-5 w-5 ${stat.color}`} />
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            
+            <CardContent className="space-y-4 relative z-10">
               <div className="flex items-baseline justify-between">
                 <div className="text-3xl font-bold">{stat.value}</div>
                 <div className="h-12 w-24">
@@ -129,8 +135,8 @@ const InteractiveStatsGrid = () => {
                       <Line
                         type="monotone"
                         dataKey="value"
-                        stroke={stat.color.replace('text-', '#')}
-                        strokeWidth={2}
+                        stroke={stat.color.replace('text-', '')}
+                        strokeWidth={2.5}
                         dot={false}
                         activeDot={false}
                       />
@@ -140,7 +146,7 @@ const InteractiveStatsGrid = () => {
               </div>
               
               <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">{stat.description}</p>
+                <p className="text-sm text-muted-foreground">{stat.description}</p>
                 <Badge 
                   variant="secondary" 
                   className={`flex items-center gap-1 ${
@@ -156,7 +162,7 @@ const InteractiveStatsGrid = () => {
               
               <Progress 
                 value={Math.abs(parseInt(stat.change.replace('%', '').replace('+', '')))} 
-                className="h-1.5"
+                className="h-2"
               />
             </CardContent>
           </Card>
