@@ -10,6 +10,7 @@ import {
 import { User, Menu, X, Sun, Moon, Monitor, BarChart3 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
+import WorkloadIndicator from "@/components/WorkloadIndicator";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -87,13 +88,14 @@ const Header = () => {
               </DropdownMenu>
             </div>
 
-            {/* Centered Logo */}
-            <div className="flex justify-center w-1/3">
+            {/* Centered Logo and Workload Indicator */}
+            <div className="flex items-center justify-center gap-4 w-1/3">
               <Link to="/">
                 <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
                   market01
                 </Button>
               </Link>
+              <WorkloadIndicator />
             </div>
 
             {/* Right Side - Analytics and Theme Selector */}
@@ -170,13 +172,14 @@ const Header = () => {
             </DropdownMenu>
           </div>
 
-          {/* Centered Logo */}
-          <div className="flex justify-center w-1/3">
+          {/* Centered Logo and Workload Indicator */}
+          <div className="flex items-center justify-center gap-4 w-1/3">
             <Link to="/">
               <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
                 market01
               </Button>
             </Link>
+            <WorkloadIndicator />
           </div>
 
           {/* Right Side - Analytics and Theme Selector */}
