@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -98,18 +99,18 @@ const Marketplace = () => {
   const matchCount = sortedOffers.filter(offer => offer.isPurposeMatch).length;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background transition-colors duration-300">
       <Header />
       
-      {/* Zen Header - Pure White Canvas */}
-      <div className="border-b border-gray-100/60">
+      {/* Zen Header - Pure Canvas */}
+      <div className="border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-6 py-8">
           {/* Ultra-Minimal Title */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-6">
-              <h1 className="text-3xl font-light text-gray-900 tracking-tight">Marketplace</h1>
+              <h1 className="text-3xl font-light text-foreground tracking-tight transition-colors duration-300">Marketplace</h1>
               {selectedPurpose && matchCount > 0 && (
-                <Badge className="bg-blue-50 text-blue-600 border-blue-200 px-3 py-1">
+                <Badge className="bg-primary/10 text-primary border-primary/20 px-3 py-1 transition-colors duration-300">
                   <Sparkles className="h-3 w-3 mr-1.5" />
                   {matchCount} Perfect Matches
                 </Badge>
@@ -117,12 +118,12 @@ const Marketplace = () => {
             </div>
             
             {/* Ghost View Controls */}
-            <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-muted/50 rounded-lg p-1 transition-colors duration-300">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("grid")}
-                className="h-8 px-3 text-xs"
+                className="h-8 px-3 text-xs transition-all duration-300"
               >
                 <Grid3X3 className="h-3.5 w-3.5" />
               </Button>
@@ -130,7 +131,7 @@ const Marketplace = () => {
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("list")}
-                className="h-8 px-3 text-xs"
+                className="h-8 px-3 text-xs transition-all duration-300"
               >
                 <List className="h-3.5 w-3.5" />
               </Button>
@@ -151,27 +152,27 @@ const Marketplace = () => {
             <div className="flex items-center gap-4">
               {/* Ultra-Minimal Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-300" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors duration-300" />
                 <Input 
                   placeholder="Search..." 
                   value={searchTerm} 
                   onChange={(e) => setSearchTerm(e.target.value)} 
-                  className="pl-10 h-9 w-56 border-gray-200/60 focus:border-gray-300 focus:ring-0 bg-transparent" 
+                  className="pl-10 h-9 w-56 border-border/60 focus:border-border bg-background transition-all duration-300" 
                 />
               </div>
 
               {/* Ghost Filters */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-9 text-gray-500 hover:text-gray-700">
+                  <Button variant="ghost" size="sm" className="h-9 text-muted-foreground hover:text-foreground transition-colors duration-300">
                     <Filter className="h-4 w-4 mr-2" />
                     Filters
                     <ChevronDown className="h-4 w-4 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-48 bg-white/95 backdrop-blur-md border border-gray-200/60">
-                  <div className="p-3 border-b border-gray-100">
-                    <div className="text-xs font-medium text-gray-600 mb-2">Price Range</div>
+                <DropdownMenuContent className="w-48 bg-background/95 backdrop-blur-md border border-border/60 transition-colors duration-300">
+                  <div className="p-3 border-b border-border/60">
+                    <div className="text-xs font-medium text-muted-foreground mb-2">Price Range</div>
                     <div className="space-y-1">
                       <DropdownMenuItem onClick={() => setPriceFilter("all")} className="text-sm">
                         All Prices
@@ -188,7 +189,7 @@ const Marketplace = () => {
                     </div>
                   </div>
                   <div className="p-3">
-                    <div className="text-xs font-medium text-gray-600 mb-2">Sort By</div>
+                    <div className="text-xs font-medium text-muted-foreground mb-2">Sort By</div>
                     <div className="space-y-1">
                       <DropdownMenuItem onClick={() => setSortBy("best-deals")} className="text-sm">
                         Best Deals
@@ -212,9 +213,9 @@ const Marketplace = () => {
           </div>
 
           {/* Breathing Status Dots */}
-          <div className="flex items-center gap-6 text-sm text-gray-400">
+          <div className="flex items-center gap-6 text-sm text-muted-foreground transition-colors duration-300">
             <span className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
               {sortedOffers.length} GPUs
             </span>
             <span className="flex items-center gap-2">
@@ -241,10 +242,10 @@ const Marketplace = () => {
           }>
             {Array.from({ length: 24 }).map((_, i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-gray-50/60 rounded-lg p-4 space-y-3">
-                  <div className="h-4 bg-gray-200/60 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200/60 rounded w-1/2"></div>
-                  <div className="h-5 bg-gray-200/60 rounded w-1/3"></div>
+                <div className="bg-muted/60 rounded-lg p-4 space-y-3 transition-colors duration-300">
+                  <div className="h-4 bg-muted rounded w-3/4"></div>
+                  <div className="h-3 bg-muted rounded w-1/2"></div>
+                  <div className="h-5 bg-muted rounded w-1/3"></div>
                 </div>
               </div>
             ))}
@@ -272,8 +273,8 @@ const Marketplace = () => {
         {!isLoading && sortedOffers.length === 0 && (
           <div className="text-center py-24">
             <div className="text-6xl mb-6">🔍</div>
-            <h3 className="text-xl font-light text-gray-900 mb-3">Nothing found</h3>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">
+            <h3 className="text-xl font-light text-foreground mb-3 transition-colors duration-300">Nothing found</h3>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed transition-colors duration-300">
               Try adjusting your search or filters to discover more GPU options
             </p>
             <Button 
@@ -283,7 +284,7 @@ const Marketplace = () => {
                 setPriceFilter("all");
                 setSelectedPurpose(null);
               }}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-muted-foreground hover:text-foreground transition-colors duration-300"
             >
               Clear all filters
             </Button>

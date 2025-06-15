@@ -119,23 +119,56 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border transition-colors duration-300;
   }
 
   body {
-    @apply bg-background text-foreground font-inter;
+    @apply bg-background text-foreground font-inter transition-colors duration-300;
+  }
+
+  /* Smooth theme transitions for all elements */
+  html {
+    transition: color-scheme 0.3s ease;
+  }
+
+  /* Ensure all components transition smoothly */
+  .transition-theme {
+    transition: 
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   /* Dark theme specific enhancements - minimal glow effects */
   .dark-glow-green {
     box-shadow: 0 0 4px rgba(22, 163, 74, 0.1);
+    transition: box-shadow 0.3s ease;
   }
 
   .dark-border-glow {
     border: 1px solid rgba(22, 163, 74, 0.2);
+    transition: border-color 0.3s ease;
   }
 
   .gradient-dark {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    transition: background 0.3s ease;
+  }
+
+  /* Enhanced smooth transitions for interactive elements */
+  button, a, input, select, textarea {
+    transition: all 0.3s ease;
+  }
+
+  /* Prevent flash of incorrect theme */
+  .theme-transition * {
+    transition: 
+      background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      fill 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      stroke 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
