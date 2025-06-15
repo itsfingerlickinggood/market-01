@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -10,7 +11,9 @@ import {
   TrendingUp,
   TrendingDown,
   Activity,
-  Eye
+  Cpu,
+  Server,
+  Building2
 } from "lucide-react";
 
 const InteractiveStatsGrid = () => {
@@ -31,9 +34,9 @@ const InteractiveStatsGrid = () => {
 
   const stats = [
     {
-      title: "Total Searches",
-      value: "2,847",
-      change: "+23%",
+      title: "GPU Searches",
+      value: "4,287",
+      change: "+28%",
       trend: "up" as const,
       icon: Search,
       description: "vs last month",
@@ -42,9 +45,9 @@ const InteractiveStatsGrid = () => {
       bgColor: "bg-blue-500/10",
     },
     {
-      title: "GPU Comparisons",
-      value: "1,234",
-      change: "+18%",
+      title: "Model Comparisons",
+      value: "1,834",
+      change: "+22%",
       trend: "up" as const,
       icon: GitCompare,
       description: "active comparisons",
@@ -53,45 +56,45 @@ const InteractiveStatsGrid = () => {
       bgColor: "bg-green-500/10",
     },
     {
-      title: "Time Spent",
-      value: "127h",
-      change: "+12%",
+      title: "Active Rentals",
+      value: "512",
+      change: "+18%",
       trend: "up" as const,
-      icon: Clock,
-      description: "research time",
+      icon: Server,
+      description: "currently renting",
       sparklineData: generateSparklineData('up'),
       color: "text-purple-500",
       bgColor: "bg-purple-500/10",
     },
     {
-      title: "Money Saved",
-      value: "$4,580",
-      change: "+34%",
+      title: "Revenue Tracked",
+      value: "$127K",
+      change: "+42%",
       trend: "up" as const,
       icon: DollarSign,
-      description: "through research",
+      description: "total rental value",
       sparklineData: generateSparklineData('up'),
       color: "text-emerald-500",
       bgColor: "bg-emerald-500/10",
     },
     {
-      title: "Active Sessions",
-      value: "89",
-      change: "-5%",
+      title: "Avg Rental Time",
+      value: "6.2h",
+      change: "-12%",
       trend: "down" as const,
-      icon: Activity,
-      description: "current active",
+      icon: Clock,
+      description: "per session",
       sparklineData: generateSparklineData('down'),
       color: "text-orange-500",
       bgColor: "bg-orange-500/10",
     },
     {
-      title: "Page Views",
-      value: "15.2k",
-      change: "+8%",
+      title: "Provider Network",
+      value: "24",
+      change: "+3",
       trend: "up" as const,
-      icon: Eye,
-      description: "this month",
+      icon: Building2,
+      description: "connected providers",
       sparklineData: generateSparklineData('up'),
       color: "text-cyan-500",
       bgColor: "bg-cyan-500/10",
@@ -152,7 +155,7 @@ const InteractiveStatsGrid = () => {
               </div>
               
               <Progress 
-                value={Math.abs(parseInt(stat.change.replace('%', '')))} 
+                value={Math.abs(parseInt(stat.change.replace('%', '').replace('+', '')))} 
                 className="h-1.5"
               />
             </CardContent>

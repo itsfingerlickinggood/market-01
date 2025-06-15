@@ -1,9 +1,10 @@
+
 import Header from "@/components/Header";
 import AnalyticsHeader from "@/components/analytics/AnalyticsHeader";
 import InteractiveStatsGrid from "@/components/analytics/InteractiveStatsGrid";
+import GpuRentalAnalyticsGrid from "@/components/analytics/GpuRentalAnalyticsGrid";
 import AdvancedChartGrid from "@/components/analytics/AdvancedChartGrid";
 import SmartInsightsPanel from "@/components/analytics/SmartInsightsPanel";
-import QuickInsights from "@/components/QuickInsights";
 
 const Analytics = () => {
   return (
@@ -18,14 +19,14 @@ const Analytics = () => {
           {/* Interactive Stats Grid */}
           <InteractiveStatsGrid />
 
+          {/* GPU Rental Analytics Grid */}
+          <GpuRentalAnalyticsGrid />
+
           {/* Advanced Chart Visualizations */}
           <AdvancedChartGrid />
 
           {/* AI-Powered Insights Panel */}
           <SmartInsightsPanel />
-
-          {/* Quick Insights for additional market data */}
-          <QuickInsights />
         </div>
       </main>
     </div>
