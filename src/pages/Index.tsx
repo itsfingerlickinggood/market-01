@@ -2,6 +2,8 @@
 import Header from "@/components/Header";
 import MarketplaceHero from "@/components/MarketplaceHero";
 import HeroSection from "@/components/HeroSection";
+import MarketplaceStats from "@/components/MarketplaceStats";
+import QuickInsights from "@/components/QuickInsights";
 import LiveMarketSection from "@/components/LiveMarketSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
@@ -47,6 +49,8 @@ const Index = () => {
         
         <div className="container mx-auto px-4 py-8 space-y-12">
           <HeroSection />
+          <MarketplaceStats />
+          <QuickInsights />
           <LiveMarketSection deals={mockDeals} />
           <FeaturesSection />
           <CTASection />
