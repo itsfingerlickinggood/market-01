@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Share2, Heart, Bell, ExternalLink } from "lucide-react";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import {
@@ -15,6 +15,10 @@ import {
 import CompactGpuHeader from "@/components/CompactGpuHeader";
 import CompactPricingSection from "@/components/CompactPricingSection";
 import CompactSpecsSection from "@/components/CompactSpecsSection";
+import TCOCalculator from "@/components/TCOCalculator";
+import UserReviews from "@/components/UserReviews";
+import DeploymentTemplates from "@/components/DeploymentTemplates";
+import TerraformIntegration from "@/components/TerraformIntegration";
 
 interface PlatformProvider {
   name: string;
@@ -94,6 +98,11 @@ const GpuDetails = () => {
     );
   }
 
+  const handleDeploy = (template: any) => {
+    console.log("Deploying template:", template);
+    // Deploy logic would go here
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Enhanced Header */}
@@ -160,19 +169,66 @@ const GpuDetails = () => {
       {/* Compact Hero Section */}
       <CompactGpuHeader gpu={gpu} />
 
-      {/* Main Content - Improved layout proportions */}
+      {/* Main Content with Tabs */}
       <main className="container mx-auto px-6 py-6">
-        <div className="grid lg:grid-cols-5 gap-8">
-          {/* Left Column - Pricing (60% width) */}
-          <div className="lg:col-span-3">
-            <CompactPricingSection gpu={gpu} providerData={providerData} />
-          </div>
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid grid-cols-6 w-full">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="pricing">Pricing & TCO</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews</TabsTrigger>
+            <TabsTrigger value="deploy">Deploy</TabsTrigger>
+            <TabsTrigger value="terraform">Terraform</TabsTrigger>
+            <TabsTrigger value="specs">Full Specs</TabsTrigger>
+          </TabsList>
 
-          {/* Right Column - Specs (40% width) */}
-          <div className="lg:col-span-2">
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid lg:grid-cols-5 gap-8">
+              <div className="lg:col-span-3">
+                <CompactPricingSection gpu={gpu} providerData={providerData} />
+              </div>
+              <div className="lg:col-span-2">
+                <CompactSpecsSection gpu={gpu} />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="pricing" className="space-y-6">
+            <TCOCalculator 
+              hourlyRate={gpu.dph_total || 1.0}
+              gpuName={gpu.gpu_name}
+              provider={gpu.datacenter || "Unknown"}
+              hasZeroEgress={true}
+            />
+          </TabsContent>
+
+          <TabsContent value="reviews" className="space-y-6">
+            <UserReviews 
+              gpuId={gpu.id}
+              averageRating={4.2}
+              totalReviews={23}
+            />
+          </TabsContent>
+
+          <TabsContent value="deploy" className="space-y-6">
+            <DeploymentTemplates 
+              gpuVram={gpu.gpu_ram || 24}
+              gpuName={gpu.gpu_name}
+              onDeploy={handleDeploy}
+            />
+          </TabsContent>
+
+          <TabsContent value="terraform" className="space-y-6">
+            <TerraformIntegration 
+              gpuName={gpu.gpu_name}
+              providerId={gpu.datacenter || "unknown"}
+              region={gpu.datacenter?.split(' ')[0] || "us-east"}
+            />
+          </TabsContent>
+
+          <TabsContent value="specs" className="space-y-6">
             <CompactSpecsSection gpu={gpu} />
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

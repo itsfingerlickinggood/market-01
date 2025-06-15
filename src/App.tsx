@@ -1,45 +1,44 @@
 
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "next-themes";
 import { WorkloadProvider } from "@/contexts/WorkloadContext";
 import Index from "./pages/Index";
-import Marketplace from "./pages/Marketplace";
+import GpuSelection from "./pages/GpuSelection";
 import GpuDetails from "./pages/GpuDetails";
 import GpuComparison from "./pages/GpuComparison";
-import GpuSelection from "./pages/GpuSelection";
-import Contact from "./pages/Contact";
+import Marketplace from "./pages/Marketplace";
 import Analytics from "./pages/Analytics";
+import Community from "./pages/Community";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <WorkloadProvider>
-          <TooltipProvider>
-            <Toaster />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/marketplace" element={<Marketplace />} />
-                <Route path="/gpu/:id" element={<GpuDetails />} />
-                <Route path="/gpu/:id/compare" element={<GpuComparison />} />
-                <Route path="/selection" element={<GpuSelection />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </WorkloadProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
-}
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <WorkloadProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/gpu-selection" element={<GpuSelection />} />
+            <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/gpu/:id" element={<GpuDetails />} />
+            <Route path="/gpu/:id/compare" element={<GpuComparison />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </WorkloadProvider>
+  </QueryClientProvider>
+);
 
 export default App;

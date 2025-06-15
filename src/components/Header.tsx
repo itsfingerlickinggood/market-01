@@ -1,249 +1,131 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { User, Menu, X, Sun, Moon, Monitor, BarChart3 } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { useTheme } from "next-themes";
-import WorkloadIndicator from "@/components/WorkloadIndicator";
+import { Menu, X, Zap, ChevronDown, Users } from "lucide-react";
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { theme, setTheme, resolvedTheme } = useTheme();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'GPU Selection', href: '/gpu-selection' },
+    { name: 'Marketplace', href: '/marketplace' },
+    { name: 'Analytics', href: '/analytics' },
+    { name: 'Community', href: '/community' },
+    { name: 'Contact', href: '/contact' }
+  ];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const getThemeIcon = () => {
-    if (!mounted) return <Sun className="h-5 w-5" />;
-    
-    // Use resolvedTheme instead of theme for better accuracy
-    const currentTheme = resolvedTheme || theme;
-    
-    switch (currentTheme) {
-      case 'light':
-        return <Sun className="h-5 w-5" />;
-      case 'dark':
-        return <Moon className="h-5 w-5" />;
-      default:
-        return <Monitor className="h-5 w-5" />;
-    }
+  const isActivePath = (path: string) => {
+    return location.pathname === path;
   };
-
-  const handleThemeChange = (newTheme: string) => {
-    console.log('Changing theme to:', newTheme);
-    setTheme(newTheme);
-  };
-
-  // Don't render theme selector until mounted to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-background/95 backdrop-blur-xl border-b border-border/40 shadow-xl' 
-            : 'bg-background/90 backdrop-blur-lg'
-        }`}
-      >
-        <div className="container mx-auto px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Left Side - User Dropdown */}
-            <div className="flex items-center justify-start w-1/3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
-                  <DropdownMenuItem className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200">
-                    <User className="h-4 w-4 mr-3" />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200">
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200">
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-
-            {/* Centered Logo and Workload Indicator */}
-            <div className="flex items-center justify-center gap-4 w-1/3">
-              <Link to="/">
-                <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
-                  market01
-                </Button>
-              </Link>
-              <WorkloadIndicator />
-            </div>
-
-            {/* Right Side - Analytics and Theme Selector */}
-            <div className="flex items-center justify-end space-x-4 w-1/3">
-              {/* Analytics Button */}
-              <Link to="/analytics">
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
-                  <BarChart3 className="h-5 w-5" />
-                </Button>
-              </Link>
-
-              {/* Theme Selector - Loading placeholder */}
-              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
-                <Sun className="h-5 w-5" />
-              </Button>
-
-              {/* Mobile Menu Button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="md:hidden h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
-            </div>
-          </div>
-
-          {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-border/30 bg-background/95 backdrop-blur-xl rounded-b-2xl mt-2 shadow-xl">
-              <nav className="py-8 space-y-4">
-                <div className="px-8">
-                  <p className="text-sm text-muted-foreground">Mobile menu</p>
-                </div>
-              </nav>
-            </div>
-          )}
-        </div>
-      </header>
-    );
-  }
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-background/95 backdrop-blur-xl border-b border-border/40 shadow-xl' 
-          : 'bg-background/90 backdrop-blur-lg'
-      }`}
-    >
-      <div className="container mx-auto px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Left Side - User Dropdown */}
-          <div className="flex items-center justify-start w-1/3">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <Zap className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="font-bold text-xl">GPU Market</span>
+            <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
+              Zero Egress
+            </Badge>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActivePath(item.href)
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
+              >
+                {item.name}
+                {item.name === 'Community' && (
+                  <Users className="h-3 w-3 ml-1 inline" />
+                )}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
-                  <User className="h-5 w-5" />
+                <Button variant="outline" size="sm">
+                  More
+                  <ChevronDown className="ml-1 h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
-                <DropdownMenuItem className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200">
-                  <User className="h-4 w-4 mr-3" />
-                  Profile
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link to="/community">
+                    <Users className="h-4 w-4 mr-2" />
+                    Community Forum
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200">
-                  Settings
+                <DropdownMenuItem>
+                  <span>Documentation</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200">
-                  Sign out
+                <DropdownMenuItem>
+                  <span>API Access</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <Button size="sm">Sign In</Button>
           </div>
 
-          {/* Centered Logo and Workload Indicator */}
-          <div className="flex items-center justify-center gap-4 w-1/3">
-            <Link to="/">
-              <Button variant="ghost" className="text-2xl font-medium tracking-tight text-foreground hover:opacity-80 transition-all duration-300 font-inter">
-                market01
-              </Button>
-            </Link>
-            <WorkloadIndicator />
-          </div>
-
-          {/* Right Side - Analytics and Theme Selector */}
-          <div className="flex items-center justify-end space-x-4 w-1/3">
-            {/* Analytics Button */}
-            <Link to="/analytics">
-              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
-                <BarChart3 className="h-5 w-5" />
-              </Button>
-            </Link>
-
-            {/* Theme Selector */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
-                  {getThemeIcon()}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl rounded-2xl p-2">
-                <DropdownMenuItem 
-                  onClick={() => handleThemeChange("light")}
-                  className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200"
-                >
-                  <Sun className="h-4 w-4 mr-3" />
-                  Light
-                  {theme === "light" && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => handleThemeChange("dark")}
-                  className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200"
-                >
-                  <Moon className="h-4 w-4 mr-3" />
-                  Dark
-                  {theme === "dark" && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => handleThemeChange("system")}
-                  className="h-12 rounded-xl hover:bg-muted/80 transition-all duration-200"
-                >
-                  <Monitor className="h-4 w-4 mr-3" />
-                  System Default
-                  {theme === "system" && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded-md"
+          >
+            {isMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </button>
         </div>
 
         {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border/30 bg-background/95 backdrop-blur-xl rounded-b-2xl mt-2 shadow-xl">
-            <nav className="py-8 space-y-4">
-              <div className="px-8">
-                <p className="text-sm text-muted-foreground">Mobile menu</p>
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border">
+            <nav className="flex flex-col space-y-2">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActivePath(item.href)
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  }`}
+                >
+                  {item.name}
+                  {item.name === 'Community' && (
+                    <Users className="h-3 w-3 ml-1 inline" />
+                  )}
+                </Link>
+              ))}
+              <div className="pt-2 border-t border-border">
+                <Button size="sm" className="w-full">Sign In</Button>
               </div>
             </nav>
           </div>
