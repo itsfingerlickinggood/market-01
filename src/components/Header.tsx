@@ -5,7 +5,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Menu, X, Zap, ChevronDown, Users } from "lucide-react";
 import SmartNotifications from "@/components/SmartNotifications";
 import { ThemeToggle } from "@/components/ThemeToggle";
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -33,7 +32,7 @@ const Header = () => {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-lg my-[15px] py-0 text-foreground font-semibold mx-[6px] tracking-normal px-px">market01</span>
+            <span className="my-[15px] py-0 text-foreground font-semibold mx-[6px] tracking-normal px-px text-xl">market01</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -95,5 +94,4 @@ const Header = () => {
       </div>
     </header>;
 };
-
 export default Header;
