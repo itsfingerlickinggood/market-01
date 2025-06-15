@@ -18,6 +18,7 @@ export interface GPUOffer {
   reliability: number;
   recommendationScore?: number;
   matchReason?: string[];
+  workloadScore?: number;
   marketData?: {
     trend: 'up' | 'down' | 'stable';
     demandLevel: 'low' | 'medium' | 'high';
