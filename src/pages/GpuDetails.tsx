@@ -1,24 +1,18 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Share2, Heart, Bell, ExternalLink } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowLeft, Share2, Heart, Bell, ExternalLink, Menu, ChevronRight } from "lucide-react";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import CompactGpuHeader from "@/components/CompactGpuHeader";
-import CompactPricingSection from "@/components/CompactPricingSection";
-import CompactSpecsSection from "@/components/CompactSpecsSection";
-import TCOCalculator from "@/components/TCOCalculator";
-import UserReviews from "@/components/UserReviews";
-import DeploymentTemplates from "@/components/DeploymentTemplates";
-import TerraformIntegration from "@/components/TerraformIntegration";
+import { useToast } from "@/hooks/use-toast";
+import ModernGpuHero from "@/components/ModernGpuHero";
+import ModernSpecsSection from "@/components/ModernSpecsSection";
+import ModernProviderComparison from "@/components/ModernProviderComparison";
+import ModernDeploymentWizard from "@/components/ModernDeploymentWizard";
+import ModernPriceAlerts from "@/components/ModernPriceAlerts";
 
 interface PlatformProvider {
   name: string;
@@ -38,9 +32,7 @@ const generateProviderData = (basePrice: number): PlatformProvider[] => {
     { name: 'Lambda Labs', multiplier: 1.2, url: 'https://lambdalabs.com', logo: '🟡', setupTime: '2-4 min', reliability: 88 },
     { name: 'Paperspace', multiplier: 1.15, url: 'https://paperspace.com', logo: '🔴', setupTime: '1-2 min', reliability: 80 },
     { name: 'CoreWeave', multiplier: 0.9, url: 'https://coreweave.com', logo: '⚫', setupTime: '10-20 min', reliability: 95 },
-    { name: 'Genesis Cloud', multiplier: 0.95, url: 'https://genesiscloud.com', logo: '🔵', setupTime: '5-10 min', reliability: 87 },
-    { name: 'AWS EC2', multiplier: 1.5, url: 'https://aws.amazon.com', logo: '🟧', setupTime: '5-10 min', reliability: 99 },
-    { name: 'Google Cloud', multiplier: 1.4, url: 'https://cloud.google.com', logo: '🔵', setupTime: '3-8 min', reliability: 98 }
+    { name: 'Genesis Cloud', multiplier: 0.95, url: 'https://genesiscloud.com', logo: '🔵', setupTime: '5-10 min', reliability: 87 }
   ];
 
   return providers.map((provider) => {
@@ -63,10 +55,12 @@ const generateProviderData = (basePrice: number): PlatformProvider[] => {
 const GpuDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { data: offers } = useVastAiOffers();
+  const { toast } = useToast();
   const [gpu, setGpu] = useState<any>(null);
   const [providerData, setProviderData] = useState<PlatformProvider[]>([]);
   const [isFavorited, setIsFavorited] = useState(false);
   const [hasAlert, setHasAlert] = useState(false);
+  const [activeSection, setActiveSection] = useState('overview');
 
   useEffect(() => {
     if (offers && id) {
@@ -80,156 +74,184 @@ const GpuDetails = () => {
     }
   }, [offers, id]);
 
+  const handleFavorite = () => {
+    setIsFavorited(!isFavorited);
+    toast({
+      title: isFavorited ? "Removed from favorites" : "Added to favorites",
+      description: isFavorited 
+        ? "This GPU has been removed from your favorites." 
+        : "This GPU has been added to your favorites.",
+    });
+  };
+
+  const handleAlert = () => {
+    setHasAlert(!hasAlert);
+    toast({
+      title: hasAlert ? "Alert removed" : "Price alert set",
+      description: hasAlert 
+        ? "You will no longer receive price alerts for this GPU." 
+        : "You'll be notified when the price changes.",
+    });
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link copied!",
+      description: "GPU details link has been copied to your clipboard.",
+    });
+  };
+
   if (!gpu) {
     return (
-      <div className="min-h-screen bg-background p-4">
-        <div className="container mx-auto">
-          <div className="text-center">
-            <p className="text-muted-foreground">GPU not found</p>
-            <Link to="/marketplace">
-              <Button variant="outline" className="mt-4" size="sm">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Marketplace
-              </Button>
-            </Link>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-muted-foreground">GPU not found</p>
+          <Link to="/marketplace">
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Marketplace
+            </Button>
+          </Link>
         </div>
       </div>
     );
   }
 
-  const handleDeploy = (template: any) => {
-    console.log("Deploying template:", template);
-    // Deploy logic would go here
-  };
+  const navigationSections = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'specs', label: 'Specifications' },
+    { id: 'providers', label: 'Providers' },
+    { id: 'deployment', label: 'Deploy' },
+    { id: 'alerts', label: 'Alerts' }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Enhanced Header */}
-      <header className="border-b border-border bg-background/95 backdrop-blur sticky top-0 z-40 shadow-sm">
-        <div className="container mx-auto px-6 py-3">
-          <div className="flex items-center justify-between mb-3">
-            <Link to="/marketplace">
-              <Button variant="outline" size="sm" className="flex items-center gap-2 shadow-sm">
-                <ArrowLeft className="h-4 w-4" />
-                <span className="font-medium">Back</span>
-              </Button>
-            </Link>
-            
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setIsFavorited(!isFavorited)}
-                className="shadow-sm"
-              >
-                <Heart className={`h-4 w-4 ${isFavorited ? 'fill-red-500 text-red-500' : ''}`} />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setHasAlert(!hasAlert)}
-                className="shadow-sm"
-              >
-                <Bell className={`h-4 w-4 ${hasAlert ? 'fill-yellow-500 text-yellow-500' : ''}`} />
-              </Button>
-              <Button variant="outline" size="sm" className="shadow-sm">
-                <Share2 className="h-4 w-4" />
-              </Button>
-              <Link to={`/gpu/${id}/compare`}>
-                <Button variant="outline" size="sm" className="shadow-sm">
-                  <ExternalLink className="h-4 w-4" />
+      {/* Modern Navigation Header */}
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link to="/marketplace">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back
                 </Button>
               </Link>
+              
+              {/* Breadcrumb */}
+              <nav className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
+                <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+                <ChevronRight className="h-3 w-3" />
+                <Link to="/marketplace" className="hover:text-foreground transition-colors">Marketplace</Link>
+                <ChevronRight className="h-3 w-3" />
+                <span className="text-foreground font-medium">{gpu.gpu_name}</span>
+              </nav>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={handleShare}>
+                <Share2 className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleFavorite}
+                className={isFavorited ? "text-red-500" : ""}
+              >
+                <Heart className={`h-4 w-4 ${isFavorited ? 'fill-current' : ''}`} />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleAlert}
+                className={hasAlert ? "text-yellow-500" : ""}
+              >
+                <Bell className={`h-4 w-4 ${hasAlert ? 'fill-current' : ''}`} />
+              </Button>
+              
+              {/* Mobile Menu */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="sm" className="md:hidden">
+                    <Menu className="h-4 w-4" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-80">
+                  <nav className="space-y-2 mt-8">
+                    {navigationSections.map((section) => (
+                      <Button
+                        key={section.id}
+                        variant={activeSection === section.id ? "secondary" : "ghost"}
+                        className="w-full justify-start"
+                        onClick={() => setActiveSection(section.id)}
+                      >
+                        {section.label}
+                      </Button>
+                    ))}
+                  </nav>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
-          
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/" className="text-sm font-medium">Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="/marketplace" className="text-sm font-medium">Marketplace</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage className="text-sm font-medium">{gpu.gpu_name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
         </div>
       </header>
 
-      {/* Compact Hero Section */}
-      <CompactGpuHeader gpu={gpu} />
+      {/* Hero Section */}
+      <ModernGpuHero gpu={gpu} />
 
-      {/* Main Content with Tabs */}
-      <main className="container mx-auto px-6 py-6">
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-6 w-full">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing & TCO</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            <TabsTrigger value="deploy">Deploy</TabsTrigger>
-            <TabsTrigger value="terraform">Terraform</TabsTrigger>
-            <TabsTrigger value="specs">Full Specs</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid lg:grid-cols-5 gap-8">
-              <div className="lg:col-span-3">
-                <CompactPricingSection gpu={gpu} providerData={providerData} />
-              </div>
-              <div className="lg:col-span-2">
-                <CompactSpecsSection gpu={gpu} />
-              </div>
+      {/* Main Content */}
+      <div className="container mx-auto px-6 py-8">
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* Desktop Sidebar Navigation */}
+          <aside className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24 space-y-2">
+              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-4">
+                Navigation
+              </h3>
+              {navigationSections.map((section) => (
+                <Button
+                  key={section.id}
+                  variant={activeSection === section.id ? "secondary" : "ghost"}
+                  className="w-full justify-start"
+                  onClick={() => setActiveSection(section.id)}
+                >
+                  {section.label}
+                </Button>
+              ))}
             </div>
-          </TabsContent>
+          </aside>
 
-          <TabsContent value="pricing" className="space-y-6">
-            <TCOCalculator 
-              hourlyRate={gpu.dph_total || 1.0}
-              gpuName={gpu.gpu_name}
-              provider={gpu.datacenter || "Unknown"}
-              hasZeroEgress={true}
-            />
-          </TabsContent>
-
-          <TabsContent value="reviews" className="space-y-6">
-            <UserReviews 
-              gpuId={gpu.id}
-              averageRating={4.2}
-              totalReviews={23}
-            />
-          </TabsContent>
-
-          <TabsContent value="deploy" className="space-y-6">
-            <DeploymentTemplates 
-              gpuVram={gpu.gpu_ram || 24}
-              gpuName={gpu.gpu_name}
-              onDeploy={handleDeploy}
-            />
-          </TabsContent>
-
-          <TabsContent value="terraform" className="space-y-6">
-            <TerraformIntegration 
-              gpuName={gpu.gpu_name}
-              providerId={gpu.datacenter || "unknown"}
-              region={gpu.datacenter?.split(' ')[0] || "us-east"}
-            />
-          </TabsContent>
-
-          <TabsContent value="specs" className="space-y-6">
-            <CompactSpecsSection gpu={gpu} />
-          </TabsContent>
-        </Tabs>
-      </main>
+          {/* Content Area */}
+          <main className="lg:col-span-9">
+            <div className="space-y-8">
+              {activeSection === 'overview' && (
+                <div className="space-y-8">
+                  <ModernSpecsSection gpu={gpu} />
+                  <ModernProviderComparison providers={providerData.slice(0, 3)} />
+                </div>
+              )}
+              
+              {activeSection === 'specs' && (
+                <ModernSpecsSection gpu={gpu} detailed />
+              )}
+              
+              {activeSection === 'providers' && (
+                <ModernProviderComparison providers={providerData} />
+              )}
+              
+              {activeSection === 'deployment' && (
+                <ModernDeploymentWizard gpu={gpu} />
+              )}
+              
+              {activeSection === 'alerts' && (
+                <ModernPriceAlerts gpu={gpu} />
+              )}
+            </div>
+          </main>
+        </div>
+      </div>
     </div>
   );
 };
