@@ -6,6 +6,7 @@ import MarketplaceHeader from "@/components/MarketplaceHeader";
 import MarketplaceFilters from "@/components/MarketplaceFilters";
 import MarketplaceStats from "@/components/MarketplaceStats";
 import MarketplaceGrid from "@/components/MarketplaceGrid";
+import MarketplaceEnhancedGrid from "@/components/MarketplaceEnhancedGrid";
 import MarketplaceEmptyState from "@/components/MarketplaceEmptyState";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";

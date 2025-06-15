@@ -56,6 +56,9 @@ const MarketplaceEnhancedGrid = ({
               setExpandedCard(null);
             }
           }}
+          onInteractionModeChange={(mode) => {
+            console.log('Interaction mode changed:', mode);
+          }}
           className={expandedCard === offer.id ? 'col-span-2 row-span-2' : ''}
         />
       ))}
