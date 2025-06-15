@@ -21,27 +21,20 @@ const initialState: ThemeProviderState = {
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
-// Cache the theme to avoid localStorage reads
-let cachedTheme: Theme | null = null
-
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  storageKey = "vite-ui-theme",
+  defaultTheme = "dark",
+  storageKey = "market01-theme",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
-    if (cachedTheme) return cachedTheme
+    if (typeof window === "undefined") return defaultTheme
     const stored = localStorage.getItem(storageKey) as Theme
-    cachedTheme = stored || defaultTheme
-    return cachedTheme
+    return stored || defaultTheme
   })
 
-  // Use useLayoutEffect for synchronous DOM updates before paint
   useLayoutEffect(() => {
     const root = window.document.documentElement
-
-    // Batch DOM operations for better performance
     root.classList.remove("light", "dark")
 
     let targetTheme = theme
@@ -49,17 +42,10 @@ export function ThemeProvider({
       targetTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
     }
 
-    // Apply theme class immediately
     root.classList.add(targetTheme)
-    
-    // Force hardware acceleration for smooth rendering
-    root.style.transform = "translateZ(0)"
   }, [theme])
 
-  // Memoize setTheme to prevent unnecessary re-renders
   const setThemeOptimized = useCallback((newTheme: Theme) => {
-    // Update cache immediately
-    cachedTheme = newTheme
     localStorage.setItem(storageKey, newTheme)
     setTheme(newTheme)
   }, [storageKey])
