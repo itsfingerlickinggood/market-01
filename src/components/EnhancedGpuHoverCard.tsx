@@ -3,7 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
-import { MapPin, Zap, Clock, Shield } from "lucide-react";
+import { MapPin, Zap, Clock, Shield, TrendingUp, TrendingDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import MinimalPriceSparkline from "./MinimalPriceSparkline";
 
 interface EnhancedGpuHoverCardProps {
@@ -13,8 +14,10 @@ interface EnhancedGpuHoverCardProps {
 }
 
 const EnhancedGpuHoverCard = ({ gpu, position, onClose }: EnhancedGpuHoverCardProps) => {
+  const navigate = useNavigate();
   const [priceHistory, setPriceHistory] = useState([]);
   const [priceChange, setPriceChange] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Generate minimal price history for sparkline
@@ -40,16 +43,20 @@ const EnhancedGpuHoverCard = ({ gpu, position, onClose }: EnhancedGpuHoverCardPr
     };
 
     generatePriceHistory();
+    
+    // Smooth entrance animation
+    const timer = setTimeout(() => setIsVisible(true), 50);
+    return () => clearTimeout(timer);
   }, [gpu]);
 
   // Smart positioning with edge detection
   const getDialogPosition = () => {
-    const dialogWidth = 280;
-    const dialogHeight = 240;
+    const dialogWidth = 300;
+    const dialogHeight = 280;
     const padding = 16;
     
     let left = position.x + 15;
-    let top = position.y - 120;
+    let top = position.y - 140;
     
     if (left + dialogWidth > window.innerWidth - padding) {
       left = position.x - dialogWidth - 15;
@@ -69,6 +76,13 @@ const EnhancedGpuHoverCard = ({ gpu, position, onClose }: EnhancedGpuHoverCardPr
   };
 
   const dialogPosition = getDialogPosition();
+  const isPositiveTrend = priceChange >= 0;
+
+  const handleRentNow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+    navigate(`/gpu/${gpu.id}`);
+  };
 
   return (
     <div 
@@ -76,97 +90,119 @@ const EnhancedGpuHoverCard = ({ gpu, position, onClose }: EnhancedGpuHoverCardPr
       onClick={onClose}
     >
       <Card 
-        className="absolute w-70 bg-white/98 backdrop-blur-sm border border-gray-200 shadow-xl animate-in fade-in-0 zoom-in-95 duration-150 pointer-events-auto"
+        className={`absolute w-75 bg-background/98 backdrop-blur-md border border-border shadow-2xl transition-all duration-300 pointer-events-auto ${
+          isVisible ? 'animate-in fade-in-0 zoom-in-95' : 'opacity-0 scale-95'
+        }`}
         style={{
           left: dialogPosition.left,
           top: dialogPosition.top,
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <CardContent className="p-4 space-y-4">
-          {/* Minimal Header */}
+        <CardContent className="p-5 space-y-4">
+          {/* Header */}
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-gray-900 text-base truncate">
+              <h4 className="font-semibold text-foreground text-base truncate">
                 {gpu.gpu_name || 'GPU'}
               </h4>
               <div className="flex items-center gap-2 mt-1">
+                <div className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                  gpu.rentable !== false ? "bg-emerald-400 animate-pulse" : "bg-rose-400"
+                }`} />
                 <Badge 
                   variant="outline"
-                  className={gpu.rentable !== false ? "border-green-200 text-green-700 bg-green-50" : "border-red-200 text-red-700 bg-red-50"}
+                  className={`text-xs ${gpu.rentable !== false ? 
+                    "border-emerald-200 text-emerald-700 bg-emerald-50 dark:border-emerald-800 dark:text-emerald-300 dark:bg-emerald-950/50" : 
+                    "border-rose-200 text-rose-700 bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:bg-rose-950/50"
+                  }`}
                 >
-                  {gpu.rentable !== false ? "Live" : "Offline"}
+                  {gpu.rentable !== false ? "Available" : "Offline"}
                 </Badge>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-lg font-semibold text-gray-900">
-                ${(gpu.dph_total || 1.0).toFixed(3)}/hr
+              <div className="text-xl font-bold text-foreground">
+                ${(gpu.dph_total || 1.0).toFixed(3)}
               </div>
+              <div className="text-xs text-muted-foreground">/hour</div>
             </div>
           </div>
 
-          {/* Minimal Price Sparkline */}
-          <MinimalPriceSparkline 
-            data={priceHistory} 
-            change={priceChange}
-          />
+          {/* Price Trend */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground">7-day price trend</span>
+              <div className={`flex items-center gap-1 text-xs font-medium ${
+                isPositiveTrend ? 'text-rose-600' : 'text-emerald-600'
+              }`}>
+                {isPositiveTrend ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {Math.abs(priceChange).toFixed(1)}%
+              </div>
+            </div>
+            
+            <MinimalPriceSparkline 
+              data={priceHistory} 
+              change={priceChange}
+            />
+          </div>
 
-          {/* Essential Stats Grid */}
+          {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2 text-sm">
-              <Zap className="h-4 w-4 text-blue-500" />
+              <Zap className="h-4 w-4 text-emerald-500" />
               <div>
-                <div className="font-medium text-gray-900">{Math.round((gpu.reliability2 || gpu.reliability || 0) * 100)}%</div>
-                <div className="text-xs text-gray-500">Uptime</div>
+                <div className="font-medium text-foreground">{Math.round((gpu.reliability2 || gpu.reliability || 0) * 100)}%</div>
+                <div className="text-xs text-muted-foreground">Uptime</div>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-green-500" />
+              <MapPin className="h-4 w-4 text-blue-500" />
               <div>
-                <div className="font-medium text-gray-900 truncate">{gpu.datacenter?.split('(')[0] || "Unknown"}</div>
-                <div className="text-xs text-gray-500">Location</div>
+                <div className="font-medium text-foreground truncate">{gpu.datacenter?.split('(')[0] || "Unknown"}</div>
+                <div className="text-xs text-muted-foreground">Location</div>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Clock className="h-4 w-4 text-orange-500" />
               <div>
-                <div className="font-medium text-gray-900">{gpu.num_gpus || 1}x</div>
-                <div className="text-xs text-gray-500">GPUs</div>
+                <div className="font-medium text-foreground">{gpu.num_gpus || 1}x</div>
+                <div className="text-xs text-muted-foreground">GPUs</div>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Shield className="h-4 w-4 text-purple-500" />
               <div>
-                <div className="font-medium text-gray-900">{gpu.gpu_ram || 24}GB</div>
-                <div className="text-xs text-gray-500">VRAM</div>
+                <div className="font-medium text-foreground">{gpu.gpu_ram || 24}GB</div>
+                <div className="text-xs text-muted-foreground">VRAM</div>
               </div>
             </div>
           </div>
 
-          {/* Quick Specs */}
-          <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg space-y-1">
+          {/* Specs */}
+          <div className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg space-y-1">
             <div className="flex justify-between">
               <span>CPU:</span>
-              <span className="font-medium">{gpu.cpu_cores || 16} cores</span>
+              <span className="font-medium text-foreground">{gpu.cpu_cores || 16} cores</span>
             </div>
             <div className="flex justify-between">
               <span>RAM:</span>
-              <span className="font-medium">{gpu.cpu_ram || 32}GB</span>
+              <span className="font-medium text-foreground">{gpu.cpu_ram || 32}GB</span>
             </div>
             <div className="flex justify-between">
               <span>Storage:</span>
-              <span className="font-medium">{gpu.disk_space || 500}GB</span>
+              <span className="font-medium text-foreground">{gpu.disk_space || 500}GB</span>
             </div>
           </div>
 
-          {/* Minimal Action */}
+          {/* Action Button */}
           <Button 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-colors" 
             disabled={gpu.rentable === false}
             size="sm"
+            onClick={handleRentNow}
           >
-            {gpu.rentable === false ? 'Unavailable' : 'Rent Now'}
+            {gpu.rentable === false ? 'Unavailable' : 'View Details & Rent'}
           </Button>
         </CardContent>
       </Card>
