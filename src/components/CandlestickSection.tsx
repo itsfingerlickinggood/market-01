@@ -15,23 +15,17 @@ const CandlestickSection = () => {
     { id: '8', model: 'RTX 4070', site: 'Azure', company: 'NVIDIA' }
   ]);
 
-  const [shuffledData, setShuffledData] = useState(gpuData);
+  const [currentGpuIndex, setCurrentGpuIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setShuffledData(prev => {
-        const newData = [...prev];
-        // Fisher-Yates shuffle algorithm
-        for (let i = newData.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [newData[i], newData[j]] = [newData[j], newData[i]];
-        }
-        return newData;
-      });
+      setCurrentGpuIndex((prevIndex) => (prevIndex + 1) % gpuData.length);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [gpuData.length]);
+
+  const currentGpu = gpuData[currentGpuIndex];
 
   return (
     <div className="mb-12">
@@ -46,22 +40,20 @@ const CandlestickSection = () => {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {shuffledData.slice(0, 8).map((gpu) => (
-          <Card key={gpu.id} className="hover:shadow-lg transition-all duration-500 transform hover:scale-105">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium flex items-center justify-between">
-                <span>{gpu.model}</span>
-                <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded">
-                  {gpu.site}
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <CandlestickChart gpuModel={gpu.model} className="w-full" />
-            </CardContent>
-          </Card>
-        ))}
+      <div className="flex justify-center">
+        <Card className="hover:shadow-lg transition-all duration-500 transform hover:scale-105 w-full max-w-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center justify-between">
+              <span>{currentGpu.model}</span>
+              <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded">
+                {currentGpu.site}
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <CandlestickChart gpuModel={currentGpu.model} className="w-full" />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
