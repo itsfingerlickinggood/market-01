@@ -100,12 +100,12 @@ const MarketplaceFilters = ({
         </div>
 
         {/* View Mode Controls */}
-        <div className="flex items-center bg-background border border-border rounded-lg p-1 shadow-sm h-10">
+        <div className="flex items-center bg-background border border-border rounded-lg p-1 shadow-sm h-10 gap-1">
           <Button 
             variant={viewMode === "enhanced" ? "default" : "ghost"} 
             size="sm" 
             onClick={() => onViewModeChange("enhanced")} 
-            className="px-3 h-8"
+            className="px-3 h-8 transition-all duration-200 hover:scale-105"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             Enhanced
@@ -114,7 +114,7 @@ const MarketplaceFilters = ({
             variant={viewMode === "grid" ? "default" : "ghost"} 
             size="sm" 
             onClick={() => onViewModeChange("grid")} 
-            className="px-3 h-8"
+            className="px-3 h-8 transition-all duration-200 hover:scale-105"
           >
             <Grid2X2 className="h-4 w-4 mr-2" />
             Grid
@@ -123,7 +123,7 @@ const MarketplaceFilters = ({
             variant={viewMode === "list" ? "default" : "ghost"} 
             size="sm" 
             onClick={() => onViewModeChange("list")} 
-            className="px-3 h-8"
+            className="px-3 h-8 transition-all duration-200 hover:scale-105"
           >
             <List className="h-4 w-4 mr-2" />
             List
