@@ -112,6 +112,14 @@ const MarketplaceGpuGrid = ({
                   </div>
                 </div>
                 
+                {/* Zero Egress Badge */}
+                <div className="mb-2">
+                  <div className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                    <ArrowDownToLine className="h-3 w-3" />
+                    Zero Egress Fees
+                  </div>
+                </div>
+                
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-lg font-bold">
                     ${(offer.dph_total || offer.pricing?.onDemand || 0).toFixed(3)}/hour
