@@ -79,13 +79,13 @@ const MarketplaceFilters = ({
       {/* Main Filter Row with View Mode Controls */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Search */}
-        <div className="relative flex-1 min-w-64">
+        <div className="relative flex-none w-80">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search GPUs..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-background border-border/50 focus:border-primary/50 transition-colors duration-300"
+            className="h-9 pl-10 bg-background border-border/50 focus:border-primary/50 transition-colors duration-300"
           />
           {searchTerm && (
             <Button
