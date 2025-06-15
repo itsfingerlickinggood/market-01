@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,29 +11,33 @@ import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
-
 const Marketplace = () => {
-  const { selectedWorkload } = useWorkload();
+  const {
+    selectedWorkload
+  } = useWorkload();
   const [hoveredGpu, setHoveredGpu] = useState<any>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState({
+    x: 0,
+    y: 0
+  });
   const [sortBy, setSortBy] = useState("best-deals");
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
-
-  const { data: offers, isLoading } = useVastAiOffers();
+  const {
+    data: offers,
+    isLoading
+  } = useVastAiOffers();
 
   // Add workload scores and deal rankings to offers
   const enhancedOffers = useMemo(() => {
     if (!offers) return [];
-    
     return offers.map(offer => {
       const workloadScore = selectedWorkload ? calculateWorkloadScore(offer, selectedWorkload.id) : 0;
       const price = offer.dph_total || 0;
       const reliability = offer.reliability2 || offer.reliability || 0;
-      
+
       // Calculate deal score based on price vs performance
-      const dealScore = reliability > 0 ? (reliability * 100) / Math.max(price, 0.1) : 0;
-      
+      const dealScore = reliability > 0 ? reliability * 100 / Math.max(price, 0.1) : 0;
       return {
         ...offer,
         workloadScore,
@@ -48,25 +51,24 @@ const Marketplace = () => {
   // Filter offers
   const filteredOffers = useMemo(() => {
     let filtered = enhancedOffers || [];
-
     if (searchTerm) {
-      filtered = filtered.filter(offer =>
-        offer.gpu_name?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      filtered = filtered.filter(offer => offer.gpu_name?.toLowerCase().includes(searchTerm.toLowerCase()));
     }
-
     if (priceFilter !== "all") {
       filtered = filtered.filter(offer => {
         const price = offer.dph_total || 0;
         switch (priceFilter) {
-          case "budget": return price < 0.5;
-          case "value": return price >= 0.5 && price < 2;
-          case "premium": return price >= 2;
-          default: return true;
+          case "budget":
+            return price < 0.5;
+          case "value":
+            return price >= 0.5 && price < 2;
+          case "premium":
+            return price >= 2;
+          default:
+            return true;
         }
       });
     }
-
     return filtered;
   }, [enhancedOffers, searchTerm, priceFilter]);
 
@@ -85,80 +87,38 @@ const Marketplace = () => {
         return 0;
     }
   });
-
   const handleGpuHover = (offer: any, e: React.MouseEvent) => {
-    setMousePosition({ x: e.clientX, y: e.clientY });
+    setMousePosition({
+      x: e.clientX,
+      y: e.clientY
+    });
     setHoveredGpu(offer);
   };
-
   const handleGpuLeave = () => {
     setHoveredGpu(null);
   };
 
   // Get featured deals
   const featuredDeals = sortedOffers.filter(offer => offer.isHotDeal).slice(0, 3);
-
-  return (
-    <div className="min-h-screen bg-background pt-16">
+  return <div className="min-h-screen bg-background pt-16">
       <Header />
       
       {/* Unique Marketplace Benefits Section */}
       <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative container mx-auto px-4 py-12">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-white mb-4">Why Choose Our Marketplace?</h2>
-            <p className="text-white/90 text-lg max-w-2xl mx-auto">
-              Experience the future of GPU computing with real-time pricing, verified providers, and instant deployment
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Verified Providers</h3>
-                <p className="text-white/80">All providers are thoroughly vetted with 99.9% uptime guarantees</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Instant Deployment</h3>
-                <p className="text-white/80">Deploy your workload in under 60 seconds with pre-configured environments</p>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 text-white">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Community Driven</h3>
-                <p className="text-white/80">Join 10,000+ developers sharing insights and optimizing costs together</p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        
       </div>
 
       <main className="container mx-auto px-4 py-8">
         {/* Featured Deals */}
-        {featuredDeals.length > 0 && (
-          <div className="mb-12">
+        {featuredDeals.length > 0 && <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
               <Zap className="h-6 w-6 text-orange-500" />
               <h2 className="text-2xl font-bold">Featured Deals</h2>
               <Badge variant="destructive" className="animate-pulse">Hot</Badge>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {featuredDeals.map((offer) => (
-                <Card key={offer.id} className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 hover:shadow-lg transition-all">
+              {featuredDeals.map(offer => <Card key={offer.id} className="border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 hover:shadow-lg transition-all">
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -186,11 +146,9 @@ const Marketplace = () => {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
-          </div>
-        )}
+          </div>}
 
         {/* Search and Filters */}
         <div className="mb-8">
@@ -198,12 +156,7 @@ const Marketplace = () => {
             {/* Search */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="Search RTX 4090, A100, H100..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12 text-base"
-              />
+              <Input placeholder="Search RTX 4090, A100, H100..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10 h-12 text-base" />
             </div>
 
             <div className="flex gap-3">
@@ -212,9 +165,7 @@ const Marketplace = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="h-12 min-w-[160px] justify-between">
                     <Filter className="h-4 w-4 mr-2" />
-                    {priceFilter === "all" ? "All Prices" : 
-                     priceFilter === "budget" ? "Budget" : 
-                     priceFilter === "value" ? "Value" : "Premium"}
+                    {priceFilter === "all" ? "All Prices" : priceFilter === "budget" ? "Budget" : priceFilter === "value" ? "Value" : "Premium"}
                     <ChevronDown className="h-4 w-4 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -238,9 +189,7 @@ const Marketplace = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="h-12 min-w-[180px] justify-between">
-                    Sort: {sortBy === "best-deals" ? "Best Deals" : 
-                           sortBy === "lowest-price" ? "Lowest Price" : 
-                           sortBy === "highest-performance" ? "Performance" : "Best Match"}
+                    Sort: {sortBy === "best-deals" ? "Best Deals" : sortBy === "lowest-price" ? "Lowest Price" : sortBy === "highest-performance" ? "Performance" : "Best Match"}
                     <ChevronDown className="h-4 w-4 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -254,11 +203,9 @@ const Marketplace = () => {
                   <DropdownMenuItem onClick={() => setSortBy("highest-performance")}>
                     ⚡ Best Performance
                   </DropdownMenuItem>
-                  {selectedWorkload && (
-                    <DropdownMenuItem onClick={() => setSortBy("workload-match")}>
+                  {selectedWorkload && <DropdownMenuItem onClick={() => setSortBy("workload-match")}>
                       🎯 Best Match
-                    </DropdownMenuItem>
-                  )}
+                    </DropdownMenuItem>}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -269,64 +216,41 @@ const Marketplace = () => {
             <Badge variant="outline" className="text-sm px-3 py-1">
               {sortedOffers.length} deals found
             </Badge>
-            {searchTerm && (
-              <Badge variant="secondary" className="px-3 py-1">
+            {searchTerm && <Badge variant="secondary" className="px-3 py-1">
                 "{searchTerm}"
-              </Badge>
-            )}
-            {priceFilter !== "all" && (
-              <Badge variant="secondary" className="px-3 py-1">
-                {priceFilter === "budget" ? "Budget" : 
-                 priceFilter === "value" ? "Value" : "Premium"} range
-              </Badge>
-            )}
+              </Badge>}
+            {priceFilter !== "all" && <Badge variant="secondary" className="px-3 py-1">
+                {priceFilter === "budget" ? "Budget" : priceFilter === "value" ? "Value" : "Premium"} range
+              </Badge>}
           </div>
         </div>
 
         {/* GPU Grid */}
         <div className="mb-8">
-          <MarketplaceGpuGrid
-            offers={sortedOffers}
-            isLoading={isLoading}
-            selectedPurpose={null}
-            onGpuHover={handleGpuHover}
-            onGpuLeave={handleGpuLeave}
-            onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
-          />
+          <MarketplaceGpuGrid offers={sortedOffers} isLoading={isLoading} selectedPurpose={null} onGpuHover={handleGpuHover} onGpuLeave={handleGpuLeave} onMouseMove={e => setMousePosition({
+          x: e.clientX,
+          y: e.clientY
+        })} />
         </div>
 
         {/* Empty State */}
-        {!isLoading && sortedOffers.length === 0 && (
-          <div className="text-center py-16">
+        {!isLoading && sortedOffers.length === 0 && <div className="text-center py-16">
             <div className="text-6xl mb-6">🔍</div>
             <h3 className="text-2xl font-bold mb-4">No deals found</h3>
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Try adjusting your search criteria or browse all available deals
             </p>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setSearchTerm("");
-                setPriceFilter("all");
-              }}
-              className="px-8"
-            >
+            <Button variant="outline" onClick={() => {
+          setSearchTerm("");
+          setPriceFilter("all");
+        }} className="px-8">
               Show all deals
             </Button>
-          </div>
-        )}
+          </div>}
       </main>
 
       {/* Hover Dialog */}
-      {hoveredGpu && (
-        <CompactGpuHoverDialog
-          gpu={hoveredGpu}
-          position={mousePosition}
-          onClose={() => setHoveredGpu(null)}
-        />
-      )}
-    </div>
-  );
+      {hoveredGpu && <CompactGpuHoverDialog gpu={hoveredGpu} position={mousePosition} onClose={() => setHoveredGpu(null)} />}
+    </div>;
 };
-
 export default Marketplace;
