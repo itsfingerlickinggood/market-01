@@ -1,11 +1,10 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 import { 
   Search, 
-  Compare, 
+  GitCompare, 
   DollarSign, 
   Clock,
   TrendingUp,
@@ -47,7 +46,7 @@ const InteractiveStatsGrid = () => {
       value: "1,234",
       change: "+18%",
       trend: "up" as const,
-      icon: Compare,
+      icon: GitCompare,
       description: "active comparisons",
       sparklineData: generateSparklineData('up'),
       color: "text-green-500",
