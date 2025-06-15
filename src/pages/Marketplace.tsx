@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ChevronDown, Search, Filter, Target } from "lucide-react";
+import { ChevronDown, Search, Filter, Target, Sparkles } from "lucide-react";
 import Header from "@/components/Header";
 import MinimalMarketplaceCard from "@/components/MinimalMarketplaceCard";
 import EnhancedGpuHoverCard from "@/components/EnhancedGpuHoverCard";
-import PurposeDrivenMarketplace from "@/components/PurposeDrivenMarketplace";
+import PurposeFilterTags from "@/components/PurposeFilterTags";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
@@ -20,7 +20,7 @@ const Marketplace = () => {
   const [sortBy, setSortBy] = useState("best-deals");
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"purpose" | "browse">("purpose");
+  const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
   const { data: offers, isLoading } = useVastAiOffers();
 
   // Add workload scores and deal rankings to offers
@@ -28,18 +28,22 @@ const Marketplace = () => {
     if (!offers) return [];
     return offers.map(offer => {
       const workloadScore = selectedWorkload ? calculateWorkloadScore(offer, selectedWorkload.id) : 0;
+      const purposeScore = selectedPurpose ? calculateWorkloadScore(offer, selectedPurpose) : 0;
       const price = offer.dph_total || 0;
       const reliability = offer.reliability2 || offer.reliability || 0;
       const dealScore = reliability > 0 ? reliability * 100 / Math.max(price, 0.1) : 0;
+      
       return {
         ...offer,
         workloadScore,
+        purposeScore,
         dealScore,
         isBestDeal: dealScore > 30,
-        isHotDeal: price < 1 && reliability > 0.8
+        isHotDeal: price < 1 && reliability > 0.8,
+        isPurposeMatch: selectedPurpose && purposeScore > 70
       };
     });
-  }, [offers, selectedWorkload]);
+  }, [offers, selectedWorkload, selectedPurpose]);
 
   const filteredOffers = useMemo(() => {
     let filtered = enhancedOffers || [];
@@ -68,6 +72,7 @@ const Marketplace = () => {
       case 'lowest-price': return (a.dph_total || 0) - (b.dph_total || 0);
       case 'highest-performance': return (b.reliability2 || b.reliability || 0) - (a.reliability2 || a.reliability || 0);
       case 'workload-match': return (b.workloadScore || 0) - (a.workloadScore || 0);
+      case 'purpose-match': return (b.purposeScore || 0) - (a.purposeScore || 0);
       default: return 0;
     }
   });
@@ -81,38 +86,14 @@ const Marketplace = () => {
     setHoveredGpu(null);
   };
 
-  if (viewMode === "purpose") {
-    return (
-      <div className="min-h-screen bg-gray-50 pt-16">
-        <Header />
-        
-        <div className="bg-white border-b border-gray-200">
-          <div className="container mx-auto px-4 py-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  Smart GPU Marketplace
-                </h1>
-                <p className="text-lg text-gray-600">
-                  AI-powered recommendations for your specific use case
-                </p>
-              </div>
-              <Button 
-                variant="outline" 
-                onClick={() => setViewMode("browse")}
-                className="flex items-center gap-2"
-              >
-                <Search className="h-4 w-4" />
-                Browse All GPUs
-              </Button>
-            </div>
-          </div>
-        </div>
+  const handlePurposeChange = (purpose: string | null) => {
+    setSelectedPurpose(purpose);
+    if (purpose) {
+      setSortBy("purpose-match");
+    }
+  };
 
-        <PurposeDrivenMarketplace />
-      </div>
-    );
-  }
+  const purposeMatchCount = sortedOffers.filter(offer => offer.isPurposeMatch).length;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
@@ -124,25 +105,32 @@ const Marketplace = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                GPU Marketplace
+                Smart GPU Marketplace
               </h1>
               <p className="text-lg text-gray-600">
-                Rent high-performance GPUs from verified providers worldwide
+                {selectedPurpose ? "AI-powered recommendations for your use case" : "Rent high-performance GPUs from verified providers worldwide"}
               </p>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={() => setViewMode("purpose")}
-              className="flex items-center gap-2"
-            >
-              <Target className="h-4 w-4" />
-              Smart Recommendations
-            </Button>
+            {selectedPurpose && purposeMatchCount > 0 && (
+              <div className="text-right">
+                <Badge className="bg-primary text-primary-foreground mb-2">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  {purposeMatchCount} Perfect Matches
+                </Badge>
+                <p className="text-sm text-muted-foreground">Optimized for your purpose</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       <main className="container mx-auto px-4 py-8">
+        {/* Purpose Filter Tags */}
+        <PurposeFilterTags 
+          selectedPurpose={selectedPurpose}
+          onPurposeChange={handlePurposeChange}
+        />
+
         {/* Simplified Search and Filters */}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-stretch mb-6">
@@ -188,7 +176,8 @@ const Marketplace = () => {
                   <Button variant="outline" className="h-10 min-w-[160px] justify-between border-gray-300">
                     Sort: {sortBy === "best-deals" ? "Best Deals" : 
                            sortBy === "lowest-price" ? "Lowest Price" : 
-                           sortBy === "highest-performance" ? "Performance" : "Best Match"}
+                           sortBy === "highest-performance" ? "Performance" : 
+                           sortBy === "purpose-match" ? "Perfect Match" : "Best Match"}
                     <ChevronDown className="h-4 w-4 ml-2" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -202,9 +191,14 @@ const Marketplace = () => {
                   <DropdownMenuItem onClick={() => setSortBy("highest-performance")}>
                     Best Performance
                   </DropdownMenuItem>
+                  {selectedPurpose && (
+                    <DropdownMenuItem onClick={() => setSortBy("purpose-match")}>
+                      Perfect Match
+                    </DropdownMenuItem>
+                  )}
                   {selectedWorkload && (
                     <DropdownMenuItem onClick={() => setSortBy("workload-match")}>
-                      Best Match
+                      Workload Match
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
@@ -225,6 +219,12 @@ const Marketplace = () => {
               <Badge variant="secondary" className="px-3 py-1 bg-green-50 text-green-700">
                 {priceFilter === "budget" ? "Budget" : 
                  priceFilter === "value" ? "Value" : "Premium"} range
+              </Badge>
+            )}
+            {selectedPurpose && (
+              <Badge className="px-3 py-1 bg-primary text-primary-foreground">
+                <Target className="h-3 w-3 mr-1" />
+                Purpose: {selectedPurpose.replace('-', ' ')}
               </Badge>
             )}
           </div>
@@ -253,6 +253,7 @@ const Marketplace = () => {
                   onHover={handleGpuHover}
                   onLeave={handleGpuLeave}
                   onMouseMove={(e) => setMousePosition({ x: e.clientX, y: e.clientY })}
+                  showPurposeMatch={selectedPurpose && offer.isPurposeMatch}
                 />
               ))}
             </div>
@@ -272,6 +273,7 @@ const Marketplace = () => {
               onClick={() => {
                 setSearchTerm("");
                 setPriceFilter("all");
+                setSelectedPurpose(null);
               }} 
               className="px-6"
             >

@@ -1,30 +1,43 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 
 interface MinimalMarketplaceCardProps {
   offer: any;
   onHover: (offer: any, e: React.MouseEvent) => void;
   onLeave: () => void;
   onMouseMove: (e: React.MouseEvent) => void;
+  showPurposeMatch?: boolean;
 }
 
 const MinimalMarketplaceCard = ({ 
   offer, 
   onHover, 
   onLeave, 
-  onMouseMove 
+  onMouseMove,
+  showPurposeMatch = false 
 }: MinimalMarketplaceCardProps) => {
   return (
     <Link to={`/gpu/${offer.id}`}>
       <Card 
-        className="group relative transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 border border-gray-200 bg-white cursor-pointer"
+        className={`group relative overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1 cursor-pointer bg-white border border-gray-200 ${
+          showPurposeMatch ? 'ring-2 ring-primary shadow-md' : ''
+        }`}
         onMouseEnter={(e) => onHover(offer, e)}
         onMouseLeave={onLeave}
         onMouseMove={onMouseMove}
       >
+        {showPurposeMatch && (
+          <div className="absolute top-2 right-2 z-10">
+            <Badge className="bg-primary text-primary-foreground text-xs">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Perfect Match
+            </Badge>
+          </div>
+        )}
+        
         <CardContent className="p-4">
           <div className="space-y-3">
             {/* Header */}
