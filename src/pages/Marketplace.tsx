@@ -7,29 +7,123 @@ import { ChevronDown, SortAsc } from "lucide-react";
 import Header from "@/components/Header";
 import MarketplaceHero from "@/components/MarketplaceHero";
 import PurposeFilterTags, { purposeTags } from "@/components/PurposeFilterTags";
-import MarketplaceFilters from "@/components/MarketplaceFilters";
+import SimpleFilterTags from "@/components/SimpleFilterTags";
 import MarketplaceGpuGrid from "@/components/MarketplaceGpuGrid";
 import CompactGpuHoverDialog from "@/components/CompactGpuHoverDialog";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
-import { useMarketplaceFilters } from "@/hooks/useMarketplaceFilters";
 
 const Marketplace = () => {
   const [hoveredGpu, setHoveredGpu] = useState<any>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [sortBy, setSortBy] = useState("recommendation");
+  const [selectedPurpose, setSelectedPurpose] = useState<string | null>(null);
+  
+  // Simple filter states
+  const [selectedModels, setSelectedModels] = useState<string[]>([]);
+  const [selectedVrams, setSelectedVrams] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [selectedCompanies, setSelectedCompanies] = useState<string[]>([]);
 
   const { data: offers, isLoading } = useVastAiOffers();
-  
-  const {
-    sortBy,
-    setSortBy,
-    priceRange,
-    setPriceRange,
-    selectedBrands,
-    setSelectedBrands,
-    selectedPurpose,
-    setSelectedPurpose,
-    sortedOffers
-  } = useMarketplaceFilters(offers || []);
+
+  const handleModelToggle = (model: string) => {
+    setSelectedModels(prev => 
+      prev.includes(model) 
+        ? prev.filter(m => m !== model)
+        : [...prev, model]
+    );
+  };
+
+  const handleVramToggle = (vram: string) => {
+    setSelectedVrams(prev => 
+      prev.includes(vram) 
+        ? prev.filter(v => v !== vram)
+        : [...prev, vram]
+    );
+  };
+
+  const handleRegionToggle = (region: string) => {
+    setSelectedRegions(prev => 
+      prev.includes(region) 
+        ? prev.filter(r => r !== region)
+        : [...prev, region]
+    );
+  };
+
+  const handleCompanyToggle = (company: string) => {
+    setSelectedCompanies(prev => 
+      prev.includes(company) 
+        ? prev.filter(c => c !== company)
+        : [...prev, company]
+    );
+  };
+
+  const handleClearAllFilters = () => {
+    setSelectedModels([]);
+    setSelectedVrams([]);
+    setSelectedRegions([]);
+    setSelectedCompanies([]);
+  };
+
+  // Filter offers based on selected tags
+  const filteredOffers = (offers || []).filter(offer => {
+    // Model filter
+    if (selectedModels.length > 0) {
+      const matchesModel = selectedModels.some(model =>
+        offer.gpu_name?.toLowerCase().includes(model.toLowerCase())
+      );
+      if (!matchesModel) return false;
+    }
+
+    // VRAM filter
+    if (selectedVrams.length > 0) {
+      const offerVram = offer.gpu_ram || 0;
+      const matchesVram = selectedVrams.some(vram => {
+        const vramNum = parseInt(vram);
+        return offerVram >= vramNum && offerVram < (vramNum + 8);
+      });
+      if (!matchesVram) return false;
+    }
+
+    // Company filter
+    if (selectedCompanies.length > 0) {
+      const matchesCompany = selectedCompanies.some(company =>
+        offer.gpu_name?.toLowerCase().includes(company.toLowerCase())
+      );
+      if (!matchesCompany) return false;
+    }
+
+    // Region filter (using datacenter as proxy for region)
+    if (selectedRegions.length > 0) {
+      const matchesRegion = selectedRegions.some(region => {
+        const datacenter = offer.datacenter?.toLowerCase() || '';
+        if (region === 'US East') return datacenter.includes('us') || datacenter.includes('east');
+        if (region === 'US West') return datacenter.includes('us') || datacenter.includes('west');
+        if (region === 'Europe') return datacenter.includes('eu') || datacenter.includes('europe');
+        if (region === 'Asia Pacific') return datacenter.includes('asia') || datacenter.includes('ap');
+        return datacenter.includes(region.toLowerCase());
+      });
+      if (!matchesRegion) return false;
+    }
+
+    return true;
+  });
+
+  const sortedOffers = [...filteredOffers].sort((a, b) => {
+    switch (sortBy) {
+      case 'price':
+        return (a.dph_total || a.pricing?.onDemand || 0) - (b.dph_total || b.pricing?.onDemand || 0);
+      case 'performance':
+        return (b.reliability2 || b.reliability || 0) - (a.reliability2 || a.reliability || 0);
+      case 'availability':
+        const orderMap = { 'available': 0, 'limited': 1, 'unavailable': 2 };
+        return (orderMap[a.availability] || 2) - (orderMap[b.availability] || 2);
+      case 'recommendation':
+        return (b.recommendationScore || 0) - (a.recommendationScore || 0);
+      default:
+        return 0;
+    }
+  });
 
   const getSortLabel = (value: string) => {
     switch (value) {
@@ -58,11 +152,16 @@ const Marketplace = () => {
       <main className="container mx-auto px-4 py-6">
         <div className="flex gap-8">
           {/* Filter Sidebar */}
-          <MarketplaceFilters
-            priceRange={priceRange}
-            setPriceRange={setPriceRange}
-            selectedBrands={selectedBrands}
-            setSelectedBrands={setSelectedBrands}
+          <SimpleFilterTags
+            selectedModels={selectedModels}
+            selectedVrams={selectedVrams}
+            selectedRegions={selectedRegions}
+            selectedCompanies={selectedCompanies}
+            onModelToggle={handleModelToggle}
+            onVramToggle={handleVramToggle}
+            onRegionToggle={handleRegionToggle}
+            onCompanyToggle={handleCompanyToggle}
+            onClearAll={handleClearAllFilters}
           />
 
           {/* Main Content */}

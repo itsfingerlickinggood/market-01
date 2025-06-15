@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -97,7 +96,7 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Right Side - Analytics, Live Status and Theme Selector */}
+            {/* Right Side - Analytics and Theme Selector */}
             <div className="flex items-center justify-end space-x-4 w-1/3">
               {/* Analytics Button */}
               <Link to="/analytics">
@@ -105,11 +104,6 @@ const Header = () => {
                   <BarChart3 className="h-5 w-5" />
                 </Button>
               </Link>
-
-              <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 px-3 py-1 text-xs font-medium animate-pulse">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                LIVE
-              </Badge>
 
               {/* Theme Selector - Loading placeholder */}
               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted/60 transition-all duration-300 shadow-lg border border-border/20">
@@ -185,7 +179,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Right Side - Analytics, Live Status and Theme Selector */}
+          {/* Right Side - Analytics and Theme Selector */}
           <div className="flex items-center justify-end space-x-4 w-1/3">
             {/* Analytics Button */}
             <Link to="/analytics">
@@ -193,11 +187,6 @@ const Header = () => {
                 <BarChart3 className="h-5 w-5" />
               </Button>
             </Link>
-
-            <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30 px-3 py-1 text-xs font-medium animate-pulse">
-              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-              LIVE
-            </Badge>
 
             {/* Theme Selector */}
             <DropdownMenu>
