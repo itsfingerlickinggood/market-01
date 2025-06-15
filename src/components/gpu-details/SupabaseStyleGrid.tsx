@@ -163,7 +163,7 @@ const SupabaseStyleGrid = ({ gpu, enhancedData, providerData }: SupabaseStyleGri
           </div>
           <div className="flex justify-between items-center">
             <span className="text-sm text-gray-500">Latency</span>
-            <span className="font-medium">< 1ms</span>
+            <span className="font-medium">{"< 1ms"}</span>
           </div>
         </div>
       ),
