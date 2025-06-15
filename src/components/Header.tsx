@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ const Header = () => {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-lg my-[15px] px-[2px] py-0 text-slate-50 font-semibold mx-[6px] tracking-wider">market01</span>
+            <span className="text-lg my-[15px] px-[2px] py-0 text-foreground font-semibold mx-[6px] tracking-wider">market01</span>
           </Link>
 
           {/* Desktop Navigation */}
