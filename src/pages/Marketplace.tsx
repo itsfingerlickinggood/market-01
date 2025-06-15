@@ -10,6 +10,7 @@ import MarketplaceEmptyState from "@/components/MarketplaceEmptyState";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
+
 const Marketplace = () => {
   const {
     selectedWorkload
@@ -131,12 +132,18 @@ const Marketplace = () => {
       <Header />
       
       <div className="border-b border-border transition-colors duration-300">
-        <div className="container mx-auto px-6 py-8 my-[11px]">
-          <MarketplaceHeader selectedPurpose={selectedPurpose} matchCount={matchCount} viewMode={viewMode} onViewModeChange={setViewMode} />
-          
-          <MarketplaceFilters selectedPurpose={selectedPurpose} onPurposeChange={handlePurposeChange} searchTerm={searchTerm} onSearchChange={setSearchTerm} priceFilter={priceFilter} onPriceFilterChange={setPriceFilter} sortBy={sortBy} onSortChange={setSortBy} trendFilter={trendFilter} onTrendFilterChange={setTrendFilter} />
+        <div className="container mx-auto px-6 py-12 space-y-8">
+          {/* User-Centric Features - First Priority */}
+          <div className="space-y-6">
+            <MarketplaceHeader selectedPurpose={selectedPurpose} matchCount={matchCount} viewMode={viewMode} onViewModeChange={setViewMode} />
+            
+            <MarketplaceStats totalOffers={sortedOffers.length} availableCount={availableCount} selectedPurpose={selectedPurpose} matchCount={matchCount} searchTerm={searchTerm} />
+          </div>
 
-          <MarketplaceStats totalOffers={sortedOffers.length} availableCount={availableCount} selectedPurpose={selectedPurpose} matchCount={matchCount} searchTerm={searchTerm} />
+          {/* Manual Options - Second Priority */}
+          <div className="pt-4 border-t border-border/30">
+            <MarketplaceFilters selectedPurpose={selectedPurpose} onPurposeChange={handlePurposeChange} searchTerm={searchTerm} onSearchChange={setSearchTerm} priceFilter={priceFilter} onPriceFilterChange={setPriceFilter} sortBy={sortBy} onSortChange={setSortBy} trendFilter={trendFilter} onTrendFilterChange={setTrendFilter} />
+          </div>
         </div>
       </div>
 
@@ -150,4 +157,5 @@ const Marketplace = () => {
       {hoveredGpu && <EnhancedGpuHoverCard gpu={hoveredGpu} position={mousePosition} onClose={() => setHoveredGpu(null)} />}
     </div>;
 };
+
 export default Marketplace;
