@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Sphere, Html } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface ServerLocation {
@@ -56,10 +56,10 @@ const LocationMarker = ({ location, onSelect, isSelected }: {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (meshRef.current) {
-      const scale = hovered || isSelected ? 1.5 : 1;
-      meshRef.current.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.1);
+      const targetScale = hovered || isSelected ? 1.5 : 1;
+      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
     }
   });
 
@@ -80,13 +80,20 @@ const LocationMarker = ({ location, onSelect, isSelected }: {
       </mesh>
       
       {(hovered || isSelected) && (
-        <Html center>
-          <div className="bg-background/95 backdrop-blur-sm border rounded-lg p-2 text-xs shadow-lg pointer-events-none">
-            <div className="font-medium">{location.name}</div>
-            <div className="text-muted-foreground">{location.count} GPUs</div>
-            <div className="text-muted-foreground">~{location.latency}</div>
-          </div>
-        </Html>
+        <group position={[0, 0.1, 0]}>
+          <mesh>
+            <planeGeometry args={[0.8, 0.4]} />
+            <meshBasicMaterial 
+              color="#000000" 
+              transparent 
+              opacity={0.8}
+            />
+          </mesh>
+          <mesh position={[0, 0, 0.001]}>
+            <planeGeometry args={[0.75, 0.35]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+        </group>
       )}
     </group>
   );
@@ -95,7 +102,7 @@ const LocationMarker = ({ location, onSelect, isSelected }: {
 const Globe = ({ onLocationSelect, selectedLocation }: InteractiveGlobeProps) => {
   const globeRef = useRef<THREE.Mesh>(null);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (globeRef.current) {
       globeRef.current.rotation.y += 0.002;
     }
@@ -107,25 +114,23 @@ const Globe = ({ onLocationSelect, selectedLocation }: InteractiveGlobeProps) =>
       <pointLight position={[10, 10, 10]} intensity={1} />
       
       <mesh ref={globeRef}>
-        <Sphere args={[2, 64, 64]}>
-          <meshStandardMaterial 
-            color="#1e293b" 
-            transparent 
-            opacity={0.8}
-            wireframe={false}
-          />
-        </Sphere>
+        <sphereGeometry args={[2, 64, 64]} />
+        <meshStandardMaterial 
+          color="#1e293b" 
+          transparent 
+          opacity={0.8}
+          wireframe={false}
+        />
       </mesh>
 
       <mesh>
-        <Sphere args={[2.01, 64, 64]}>
-          <meshBasicMaterial 
-            color="#334155" 
-            transparent 
-            opacity={0.1}
-            wireframe
-          />
-        </Sphere>
+        <sphereGeometry args={[2.01, 64, 64]} />
+        <meshBasicMaterial 
+          color="#334155" 
+          transparent 
+          opacity={0.1}
+          wireframe
+        />
       </mesh>
 
       {serverLocations.map((location) => (
@@ -151,7 +156,11 @@ const Globe = ({ onLocationSelect, selectedLocation }: InteractiveGlobeProps) =>
 const InteractiveGlobe: React.FC<InteractiveGlobeProps> = ({ onLocationSelect, selectedLocation }) => {
   return (
     <div className="w-full h-full">
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+      <Canvas 
+        camera={{ position: [0, 0, 5], fov: 50 }}
+        gl={{ antialias: true }}
+        dpr={[1, 2]}
+      >
         <Globe onLocationSelect={onLocationSelect} selectedLocation={selectedLocation} />
       </Canvas>
     </div>

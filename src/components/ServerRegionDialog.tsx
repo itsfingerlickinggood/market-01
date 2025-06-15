@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
-import InteractiveGlobe from "./InteractiveGlobe";
 
 interface ServerRegionDialogProps {
   selectedRegion: string;
@@ -39,15 +38,40 @@ const ServerRegionDialog = ({ selectedRegion, onRegionSelect }: ServerRegionDial
               </div>
             </div>
           }>
-            <InteractiveGlobe
-              onLocationSelect={handleRegionSelect}
-              selectedLocation={selectedRegion}
-            />
+            <React.ErrorBoundary
+              fallback={
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-4">3D Globe unavailable</p>
+                    <div className="space-y-2">
+                      {['US East', 'US West', 'Europe', 'Asia Pacific'].map((region) => (
+                        <Button
+                          key={region}
+                          variant={selectedRegion === region ? "default" : "outline"}
+                          className="w-full"
+                          onClick={() => handleRegionSelect(region)}
+                        >
+                          {region}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              }
+            >
+              <InteractiveGlobe
+                onLocationSelect={handleRegionSelect}
+                selectedLocation={selectedRegion}
+              />
+            </React.ErrorBoundary>
           </React.Suspense>
         </div>
       </DialogContent>
     </Dialog>
   );
 };
+
+// Lazy load the InteractiveGlobe to avoid SSR issues
+const InteractiveGlobe = React.lazy(() => import('./InteractiveGlobe'));
 
 export default ServerRegionDialog;
