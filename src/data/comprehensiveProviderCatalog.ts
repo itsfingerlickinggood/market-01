@@ -1,4 +1,3 @@
-
 export interface ComprehensiveProvider {
   id: string;
   name: string;
@@ -41,10 +40,10 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     website: 'https://aws.amazon.com',
     supportedGpus: ['H100', 'A100', 'V100', 'T4'],
     pricing: [
-      { gpuModel: 'H100', hourly: 4.10 },
-      { gpuModel: 'A100', hourly: 2.05 },
-      { gpuModel: 'V100', hourly: 1.25 },
-      { gpuModel: 'T4', hourly: 0.526 }
+      { gpuModel: 'H100', hourly: 4.10, monthly: 2952 },
+      { gpuModel: 'A100', hourly: 2.05, monthly: 1476 },
+      { gpuModel: 'V100', hourly: 1.25, monthly: 900 },
+      { gpuModel: 'T4', hourly: 0.35, monthly: 252 }
     ],
     features: ['Auto-scaling', 'Spot instances', 'Reserved pricing', 'Global availability'],
     trustScore: 95,
@@ -70,12 +69,13 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     category: 'major-cloud',
     logo: '🔵',
     website: 'https://cloud.google.com',
-    supportedGpus: ['H100', 'A100', 'V100', 'T4', 'TPU'],
+    supportedGpus: ['H100', 'A100', 'V100', 'T4', 'L4'],
     pricing: [
-      { gpuModel: 'H100', hourly: 4.20 },
-      { gpuModel: 'A100', hourly: 2.15 },
-      { gpuModel: 'V100', hourly: 1.35 },
-      { gpuModel: 'T4', hourly: 0.45 }
+      { gpuModel: 'H100', hourly: 3.22, monthly: 2318 },
+      { gpuModel: 'A100', hourly: 1.31, monthly: 943 },
+      { gpuModel: 'V100', hourly: 1.35, monthly: 972 },
+      { gpuModel: 'T4', hourly: 0.35, monthly: 252 },
+      { gpuModel: 'L4', hourly: 0.45, monthly: 324 }
     ],
     features: ['TPU support', 'Preemptible instances', 'Custom machine types', 'AI Platform'],
     trustScore: 93,
@@ -101,12 +101,12 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     category: 'major-cloud',
     logo: '🔷',
     website: 'https://azure.microsoft.com',
-    supportedGpus: ['H100', 'A100', 'V100', 'K80'],
+    supportedGpus: ['H100', 'A100', 'V100', 'T4'],
     pricing: [
-      { gpuModel: 'H100', hourly: 4.00 },
-      { gpuModel: 'A100', hourly: 2.00 },
-      { gpuModel: 'V100', hourly: 1.20 },
-      { gpuModel: 'K80', hourly: 0.90 }
+      { gpuModel: 'H100', hourly: 3.65, monthly: 2628 },
+      { gpuModel: 'A100', hourly: 1.82, monthly: 1310 },
+      { gpuModel: 'V100', hourly: 1.20, monthly: 864 },
+      { gpuModel: 'T4', hourly: 0.34, monthly: 245 }
     ],
     features: ['Azure ML', 'Spot instances', 'Reserved capacity', 'Hybrid connectivity'],
     trustScore: 92,
@@ -133,12 +133,11 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     category: 'specialized',
     logo: '🟡',
     website: 'https://lambdalabs.com',
-    supportedGpus: ['H100', 'A100', 'A6000', 'RTX 4090'],
+    supportedGpus: ['H100', 'A100', 'RTX A6000'],
     pricing: [
-      { gpuModel: 'H100', hourly: 2.49 },
-      { gpuModel: 'A100', hourly: 1.10 },
-      { gpuModel: 'A6000', hourly: 0.50 },
-      { gpuModel: 'RTX 4090', hourly: 0.75 }
+      { gpuModel: 'H100', hourly: 2.49, monthly: 1793 },
+      { gpuModel: 'A100', hourly: 1.29, monthly: 929 },
+      { gpuModel: 'RTX A6000', hourly: 0.50, monthly: 360 }
     ],
     features: ['Pre-configured for ML', 'JupyterHub', 'Persistent storage', 'SSH access'],
     trustScore: 88,
@@ -164,12 +163,12 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     category: 'specialized',
     logo: '⚫',
     website: 'https://coreweave.com',
-    supportedGpus: ['H100', 'A100', 'A40', 'RTX A6000'],
+    supportedGpus: ['H100', 'A100', 'A40', 'RTX 4090'],
     pricing: [
-      { gpuModel: 'H100', hourly: 2.65 },
-      { gpuModel: 'A100', hourly: 1.28 },
-      { gpuModel: 'A40', hourly: 0.57 },
-      { gpuModel: 'RTX A6000', hourly: 0.80 }
+      { gpuModel: 'H100', hourly: 2.65, monthly: 1908 },
+      { gpuModel: 'A100', hourly: 1.28, monthly: 922 },
+      { gpuModel: 'A40', hourly: 0.57, monthly: 410 },
+      { gpuModel: 'RTX 4090', hourly: 0.80, monthly: 576 }
     ],
     features: ['Kubernetes native', 'InfiniBand networking', 'Spot pricing', 'API access'],
     trustScore: 90,
@@ -197,10 +196,10 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     website: 'https://runpod.io',
     supportedGpus: ['H100', 'A100', 'RTX 4090', 'RTX 3090'],
     pricing: [
-      { gpuModel: 'H100', hourly: 3.89, spot: 1.69 },
-      { gpuModel: 'A100', hourly: 1.69, spot: 0.79 },
-      { gpuModel: 'RTX 4090', hourly: 0.69, spot: 0.34 },
-      { gpuModel: 'RTX 3090', hourly: 0.44, spot: 0.22 }
+      { gpuModel: 'H100', hourly: 2.39, spot: 1.69, monthly: 1721 },
+      { gpuModel: 'A100', hourly: 1.69, spot: 0.79, monthly: 1217 },
+      { gpuModel: 'RTX 4090', hourly: 0.69, spot: 0.34, monthly: 497 },
+      { gpuModel: 'RTX 3090', hourly: 0.44, spot: 0.22, monthly: 317 }
     ],
     features: ['Spot pricing', 'Templates', 'Persistent storage', 'Community images'],
     trustScore: 85,
@@ -220,6 +219,68 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     },
     certifications: ['In Progress']
   },
+  {
+    id: 'paperspace',
+    name: 'Paperspace',
+    category: 'specialized',
+    logo: '🔴',
+    website: 'https://paperspace.com',
+    supportedGpus: ['H100', 'A100', 'A6000', 'A4000'],
+    pricing: [
+      { gpuModel: 'H100', hourly: 3.18, monthly: 2290 },
+      { gpuModel: 'A100', hourly: 1.10, monthly: 792 },
+      { gpuModel: 'A6000', hourly: 0.76, monthly: 547 },
+      { gpuModel: 'A4000', hourly: 0.23, monthly: 166 }
+    ],
+    features: ['MLOps platform', 'Gradient workflows', 'Team collaboration', 'Auto-scaling'],
+    trustScore: 82,
+    reliability: {
+      uptime: 98.8,
+      averageSetupTime: '1-2 minutes',
+      supportResponse: '< 4 hours'
+    },
+    locations: ['US East', 'US West', 'Europe'],
+    operatingSystems: ['Ubuntu 20.04', 'Paperspace Linux'],
+    cudaVersions: ['12.1', '11.8', '11.4'],
+    templates: ['Gradient', 'PyTorch', 'TensorFlow', 'Jupyter', 'Docker'],
+    networkSpecs: {
+      downloadSpeed: '1 Gbps',
+      uploadSpeed: '1 Gbps',
+      latency: '< 5ms'
+    },
+    certifications: ['SOC 2', 'GDPR']
+  },
+  {
+    id: 'vultr',
+    name: 'Vultr',
+    category: 'specialized',
+    logo: '🌐',
+    website: 'https://vultr.com',
+    supportedGpus: ['H100', 'A100', 'A40', 'A16'],
+    pricing: [
+      { gpuModel: 'H100', hourly: 3.39, monthly: 2441 },
+      { gpuModel: 'A100', hourly: 2.25, monthly: 1620 },
+      { gpuModel: 'A40', hourly: 1.20, monthly: 864 },
+      { gpuModel: 'A16', hourly: 0.60, monthly: 432 }
+    ],
+    features: ['Developer-friendly', 'Global presence', 'Simple pricing', 'API access'],
+    trustScore: 84,
+    reliability: {
+      uptime: 99.0,
+      averageSetupTime: '2-3 minutes',
+      supportResponse: '< 3 hours'
+    },
+    locations: ['Global', 'Multiple regions'],
+    operatingSystems: ['Ubuntu 22.04', 'CentOS 8', 'Debian'],
+    cudaVersions: ['12.1', '11.8'],
+    templates: ['PyTorch', 'TensorFlow', 'Docker', 'Custom'],
+    networkSpecs: {
+      downloadSpeed: '10 Gbps',
+      uploadSpeed: '10 Gbps',
+      latency: '< 10ms'
+    },
+    certifications: ['SOC 2']
+  },
   // Decentralized Providers
   {
     id: 'vast-ai',
@@ -229,10 +290,10 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
     website: 'https://vast.ai',
     supportedGpus: ['H100', 'A100', 'RTX 4090', 'RTX 3090', 'GTX 1080'],
     pricing: [
-      { gpuModel: 'H100', hourly: 1.50, spot: 0.80 },
-      { gpuModel: 'A100', hourly: 0.65, spot: 0.35 },
-      { gpuModel: 'RTX 4090', hourly: 0.35, spot: 0.20 },
-      { gpuModel: 'RTX 3090', hourly: 0.25, spot: 0.15 }
+      { gpuModel: 'H100', hourly: 2.00, spot: 0.80, monthly: 1440 },
+      { gpuModel: 'A100', hourly: 0.65, spot: 0.35, monthly: 468 },
+      { gpuModel: 'RTX 4090', hourly: 0.35, spot: 0.20, monthly: 252 },
+      { gpuModel: 'RTX 3090', hourly: 0.25, spot: 0.15, monthly: 180 }
     ],
     features: ['P2P marketplace', 'Spot pricing', 'Custom images', 'SSH access'],
     trustScore: 75,
@@ -251,68 +312,6 @@ export const comprehensiveProviders: ComprehensiveProvider[] = [
       latency: 'Variable'
     },
     certifications: ['Community driven']
-  },
-  {
-    id: 'akash',
-    name: 'Akash Network',
-    category: 'decentralized',
-    logo: '🔴',
-    website: 'https://akash.network',
-    supportedGpus: ['RTX 4090', 'RTX 3090', 'A100', 'GTX 1080'],
-    pricing: [
-      { gpuModel: 'A100', hourly: 0.80 },
-      { gpuModel: 'RTX 4090', hourly: 0.40 },
-      { gpuModel: 'RTX 3090', hourly: 0.30 },
-      { gpuModel: 'GTX 1080', hourly: 0.15 }
-    ],
-    features: ['Blockchain-based', 'Pay with AKT', 'Decentralized', 'Open source'],
-    trustScore: 72,
-    reliability: {
-      uptime: 94.0,
-      averageSetupTime: '2-10 minutes',
-      supportResponse: 'Community support'
-    },
-    locations: ['Global', 'Decentralized'],
-    operatingSystems: ['Ubuntu 20.04', 'Custom'],
-    cudaVersions: ['11.8', '11.2', '10.2'],
-    templates: ['Docker', 'Custom deployments'],
-    networkSpecs: {
-      downloadSpeed: '100 Mbps - 1 Gbps',
-      uploadSpeed: '100 Mbps - 1 Gbps',
-      latency: 'Variable'
-    },
-    certifications: ['Open source']
-  },
-  // European Providers
-  {
-    id: 'ovhcloud',
-    name: 'OVHcloud',
-    category: 'european',
-    logo: '🔵',
-    website: 'https://ovhcloud.com',
-    supportedGpus: ['A100', 'V100', 'T4'],
-    pricing: [
-      { gpuModel: 'A100', hourly: 1.85 },
-      { gpuModel: 'V100', hourly: 1.15 },
-      { gpuModel: 'T4', hourly: 0.48 }
-    ],
-    features: ['GDPR compliant', 'European data centers', 'AI training', 'Public cloud'],
-    trustScore: 86,
-    reliability: {
-      uptime: 99.2,
-      averageSetupTime: '3-7 minutes',
-      supportResponse: '< 4 hours'
-    },
-    locations: ['France', 'Germany', 'UK', 'Poland'],
-    operatingSystems: ['Ubuntu 22.04', 'CentOS 8', 'Debian 11'],
-    cudaVersions: ['12.1', '11.8', '11.2'],
-    templates: ['PyTorch', 'TensorFlow', 'Jupyter', 'Docker'],
-    networkSpecs: {
-      downloadSpeed: '10 Gbps',
-      uploadSpeed: '10 Gbps',
-      latency: '< 3ms'
-    },
-    certifications: ['GDPR', 'ISO 27001', 'SOC 2']
   }
 ];
 
