@@ -3,6 +3,9 @@ import ModernSpecsSection from "@/components/ModernSpecsSection";
 import ModernProviderComparison from "@/components/ModernProviderComparison";
 import ModernDeploymentWizard from "@/components/ModernDeploymentWizard";
 import ModernPriceAlerts from "@/components/ModernPriceAlerts";
+import EnhancedHardwareSection from "./EnhancedHardwareSection";
+import SoftwareEnvironmentSection from "./SoftwareEnvironmentSection";
+import ProviderNetworkSection from "./ProviderNetworkSection";
 
 interface PlatformProvider {
   name: string;
@@ -27,17 +30,23 @@ const GpuDetailsContent = ({ activeSection, gpu, providerData }: GpuDetailsConte
       <div className="space-y-8">
         {activeSection === 'overview' && (
           <div className="space-y-8">
-            <ModernSpecsSection gpu={gpu} />
+            <EnhancedHardwareSection gpu={gpu} />
             <ModernProviderComparison providers={providerData.slice(0, 3)} />
           </div>
         )}
         
         {activeSection === 'specs' && (
-          <ModernSpecsSection gpu={gpu} detailed />
+          <div className="space-y-8">
+            <EnhancedHardwareSection gpu={gpu} detailed />
+            <SoftwareEnvironmentSection gpu={gpu} />
+          </div>
         )}
         
         {activeSection === 'providers' && (
-          <ModernProviderComparison providers={providerData} />
+          <div className="space-y-8">
+            <ProviderNetworkSection gpu={gpu} />
+            <ModernProviderComparison providers={providerData} />
+          </div>
         )}
         
         {activeSection === 'deployment' && (
