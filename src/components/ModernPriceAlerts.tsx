@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -207,7 +206,7 @@ const ModernPriceAlerts = ({ gpu }: ModernPriceAlertsProps) => {
         <CardContent>
           <div className="space-y-4">
             {alerts.map((alert) => {
-              const alertType = alertTypes.find(t => t.type === alert.type);
+              const alertType = alertTypes.find(t => t.id === alert.type);
               const method = notificationMethods.find(m => m.id === alert.method);
               
               return (
