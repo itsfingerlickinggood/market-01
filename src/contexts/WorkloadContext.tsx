@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Workload } from '@/components/WorkloadSelector';
 
@@ -25,12 +24,11 @@ interface WorkloadProviderProps {
 
 export const WorkloadProvider = ({ children }: WorkloadProviderProps) => {
   const [selectedWorkload, setSelectedWorkload] = useState<Workload | null>(null);
-  const [isOnboarded, setIsOnboarded] = useState(false);
+  const [isOnboarded, setIsOnboarded] = useState(true); // Set to true by default to skip onboarding
 
   // Load from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem('userWorkload');
-    const savedOnboarded = localStorage.getItem('isOnboarded');
     
     if (saved) {
       try {
@@ -40,9 +38,9 @@ export const WorkloadProvider = ({ children }: WorkloadProviderProps) => {
       }
     }
     
-    if (savedOnboarded === 'true') {
-      setIsOnboarded(true);
-    }
+    // Always set isOnboarded to true to skip the onboarding flow
+    setIsOnboarded(true);
+    localStorage.setItem('isOnboarded', 'true');
   }, []);
 
   // Save to localStorage when workload changes
