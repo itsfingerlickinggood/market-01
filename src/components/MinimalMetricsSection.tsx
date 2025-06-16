@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 
@@ -25,14 +24,14 @@ const MinimalMetricsSection = () => {
   ];
 
   return (
-    <div className="py-20">
+    <div className="py-20 bg-black">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {metrics.map((metric, index) => (
-          <Card key={index} className="border-border/40 bg-card/30 backdrop-blur-sm">
+          <Card key={index} className="border-border/40 bg-black text-white">
             <CardContent className="p-8">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground font-medium">
+                  <span className="text-sm text-gray-400 font-medium">
                     {metric.label}
                   </span>
                   <span className="text-sm text-primary font-medium">
@@ -40,7 +39,7 @@ const MinimalMetricsSection = () => {
                   </span>
                 </div>
                 
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-white">
                   {metric.value}
                 </div>
                 

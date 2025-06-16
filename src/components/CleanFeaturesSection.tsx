@@ -1,4 +1,3 @@
-
 import { Zap, Target, TrendingUp } from "lucide-react";
 
 const CleanFeaturesSection = () => {
@@ -6,17 +5,17 @@ const CleanFeaturesSection = () => {
     {
       icon: TrendingUp,
       title: "Real-time pricing",
-      description: "Live market data updated every 3 seconds"
+      description: "Live market data updated every 3 seconds across all providers"
     },
     {
       icon: Target,
       title: "Smart matching",
-      description: "AI-powered recommendations for your workload"
+      description: "AI-powered recommendations based on your specific workload needs"
     },
     {
       icon: Zap,
       title: "Instant deployment",
-      description: "Deploy in under 60 seconds across providers"
+      description: "Deploy in under 60 seconds with one-click templates across providers"
     }
   ];
 

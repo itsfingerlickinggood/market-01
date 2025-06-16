@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+
 const CleanHeroSection = () => {
-  return <div className="text-center space-y-8 py-[59px]">
+  return (
+    <div className="text-center space-y-8 py-20">
       <div className="space-y-6">
-        <h1 className="text-6xl tracking-tight leading-tight md:text-6xl font-bold text-center">
+        <h1 className="text-6xl tracking-tight leading-tight md:text-7xl font-bold text-center">
           Find GPUs in minutes,
           <br />
           <span className="text-primary">Scale to millions</span>
@@ -14,14 +16,16 @@ const CleanHeroSection = () => {
         </p>
       </div>
       
-      <div className="pt-8 py-[23px]">
+      <div className="pt-8">
         <Link to="/marketplace">
-          <Button size="lg" className="rounded-lg text-white font-normal text-lg py-[10px] px-[17px]">
+          <Button size="lg" className="rounded-lg text-white font-normal text-lg py-6 px-8">
             Start exploring
             <ArrowRight className="h-5 w-5 ml-2" />
           </Button>
         </Link>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default CleanHeroSection;
