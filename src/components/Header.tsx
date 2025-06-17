@@ -65,13 +65,13 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center">
             <img 
               src="/20250617_1731_Emerald Energy Logo_remix_01jxyw3d72eeevxq4cdty9ypg1 (1) (1).png" 
               alt="Market01 Logo" 
-              className="w-10 h-10 object-contain"
+              className="w-14 h-14 object-contain"
             />
-            <span className="my-[15px] py-0 text-foreground font-semibold mx-[6px] tracking-normal px-px text-xl">market01</span>
+            <span className="text-foreground font-semibold text-xl ml-1">market01</span>
           </Link>
 
           {/* Desktop Navigation */}
