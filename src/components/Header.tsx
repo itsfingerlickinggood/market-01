@@ -66,7 +66,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-md bg-black">
+            <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-md">
               <img 
                 src="/20250617_1731_Emerald Energy Logo_remix_01jxyw3d72eeevxq4cdty9ypg1 (1) (1).png" 
                 alt="Market01 Logo" 
