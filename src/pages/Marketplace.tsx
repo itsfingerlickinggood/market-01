@@ -10,6 +10,8 @@ import MarketplaceEmptyState from "@/components/MarketplaceEmptyState";
 import { useVastAiOffers } from "@/hooks/useVastAiOffers";
 import { useWorkload } from "@/contexts/WorkloadContext";
 import { calculateWorkloadScore } from "@/utils/workloadRecommendations";
+import { Badge } from "@/components/ui/badge";
+import { Info } from "lucide-react";
 
 const Marketplace = () => {
   const {
@@ -131,6 +133,14 @@ const Marketplace = () => {
       
       <div className="border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-6 py-12 space-y-8">
+          {/* Simulated Data Tag */}
+          <div className="flex justify-center mb-2">
+            <Badge variant="outline" className="flex items-center gap-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800">
+              <Info className="h-3 w-3" />
+              <span className="text-xs">The data displayed is simulated for demonstration purposes</span>
+            </Badge>
+          </div>
+          
           {/* User-Centric Features - First Priority */}
           <div className="space-y-6">
             <MarketplaceHeader selectedPurpose={selectedPurpose} matchCount={matchCount} viewMode={viewMode} onViewModeChange={setViewMode} />
