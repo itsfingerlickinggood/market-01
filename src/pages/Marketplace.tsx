@@ -135,11 +135,11 @@ const Marketplace = () => {
         <div className="container mx-auto px-6 py-12 space-y-8">
           {/* User-Centric Features - First Priority */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center">
               <MarketplaceHeader selectedPurpose={selectedPurpose} matchCount={matchCount} viewMode={viewMode} onViewModeChange={setViewMode} />
               
-              {/* Simulated Data Tag - Vertically aligned with the Marketplace title */}
-              <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 border-amber-300 dark:border-amber-800 py-0.5 px-2 text-[10px] ml-2">
+              {/* Simulated Data Tag - Horizontally aligned with the Marketplace title */}
+              <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 border-amber-300 dark:border-amber-800 py-0.5 px-2 text-[10px] ml-4">
                 <Info className="h-2.5 w-2.5 mr-1" />
                 The data displayed is simulated for demonstration purposes
               </Badge>
