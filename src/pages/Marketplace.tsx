@@ -134,10 +134,10 @@ const Marketplace = () => {
       <div className="border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-6 py-12 space-y-8">
           {/* Simulated Data Tag */}
-          <div className="flex justify-center mb-2">
-            <Badge variant="outline" className="flex items-center gap-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800">
-              <Info className="h-3 w-3" />
-              <span className="text-xs">The data displayed is simulated for demonstration purposes</span>
+          <div className="flex justify-center">
+            <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 border-amber-300 dark:border-amber-800 py-0.5 px-2 text-[10px]">
+              <Info className="h-2.5 w-2.5 mr-1" />
+              The data displayed is simulated for demonstration purposes
             </Badge>
           </div>
           
