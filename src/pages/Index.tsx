@@ -1,9 +1,9 @@
+
 import Header from "@/components/Header";
 import CleanHeroSection from "@/components/CleanHeroSection";
 import MinimalMetricsSection from "@/components/MinimalMetricsSection";
 import CleanFeaturesSection from "@/components/CleanFeaturesSection";
 import CleanCTASection from "@/components/CleanCTASection";
-import CommunityFeedbackSection from "@/components/CommunityFeedbackSection";
 
 const Index = () => {
   return (
@@ -16,7 +16,6 @@ const Index = () => {
           <MinimalMetricsSection />
           <CleanFeaturesSection />
           <CleanCTASection />
-          <CommunityFeedbackSection />
         </div>
       </main>
     </div>

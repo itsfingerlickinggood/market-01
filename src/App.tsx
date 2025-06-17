@@ -13,7 +13,6 @@ import GpuComparison from "./pages/GpuComparison";
 import Marketplace from "./pages/Marketplace";
 import Analytics from "./pages/Analytics";
 import Community from "./pages/Community";
-import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,7 +33,6 @@ const App = () => (
               <Route path="/gpu/:id/compare" element={<GpuComparison />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/community" element={<Community />} />
-              <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

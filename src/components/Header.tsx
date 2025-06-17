@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -44,15 +43,6 @@ const Header = () => {
         <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
         <path d="M22 21V19C22 18.1332 21.7139 17.3332 21.2219 16.7045C20.7299 16.0759 20.0641 15.6632 19.32 15.53" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         <path d="M16 3.13C16.7441 3.26324 17.4099 3.67591 17.9019 4.30454C18.3939 4.93318 18.68 5.73318 18.68 6.6C18.68 7.46682 18.3939 8.26682 17.9019 8.89546C17.4099 9.52409 16.7441 9.93676 16 10.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    )
-  }, {
-    name: 'Contact',
-    href: '/contact',
-    icon: (
-      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <polyline points="22,6 12,13 2,6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     )
   }];
