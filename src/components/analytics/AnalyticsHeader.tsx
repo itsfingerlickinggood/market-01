@@ -1,16 +1,20 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, RefreshCcw, Calendar, Share, Fullscreen, Zap, TrendingUp } from "lucide-react";
+import { Download, RefreshCcw, Calendar, Share, Fullscreen } from "lucide-react";
+
 const AnalyticsHeader = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [timePeriod, setTimePeriod] = useState("30d");
+
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => setIsRefreshing(false), 2000);
   };
-  return <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10 border border-border/50 rounded-2xl p-8 mb-8">
+
+  return (
+    <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-primary/10 border border-border/50 rounded-2xl p-8 mb-8">
       {/* Enhanced animated background particles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-4 -right-4 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-pulse"></div>
@@ -26,16 +30,6 @@ const AnalyticsHeader = () => {
               <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground via-primary to-foreground/70 bg-clip-text text-transparent">
                 GPU Analytics Hub
               </h1>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="px-3 py-1 bg-primary/10 text-primary border-primary/20">
-                  <Zap className="h-3 w-3 mr-1" />
-                  AI-Powered
-                </Badge>
-                <Badge variant="secondary" className="px-3 py-1 bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400">
-                  <TrendingUp className="h-3 w-3 mr-1" />
-                  Live Market
-                </Badge>
-              </div>
             </div>
             <p className="text-muted-foreground max-w-2xl font-light text-lg">
               Comprehensive insights into GPU rental markets, pricing trends, and provider performance across the ecosystem
@@ -95,6 +89,8 @@ const AnalyticsHeader = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default AnalyticsHeader;
