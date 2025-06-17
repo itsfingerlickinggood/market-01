@@ -133,17 +133,17 @@ const Marketplace = () => {
       
       <div className="border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-6 py-12 space-y-8">
-          {/* Simulated Data Tag */}
-          <div className="flex justify-center">
-            <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 border-amber-300 dark:border-amber-800 py-0.5 px-2 text-[10px]">
-              <Info className="h-2.5 w-2.5 mr-1" />
-              The data displayed is simulated for demonstration purposes
-            </Badge>
-          </div>
-          
           {/* User-Centric Features - First Priority */}
           <div className="space-y-6">
             <MarketplaceHeader selectedPurpose={selectedPurpose} matchCount={matchCount} viewMode={viewMode} onViewModeChange={setViewMode} />
+            
+            {/* Simulated Data Tag - Placed under the Marketplace title */}
+            <div className="flex justify-center">
+              <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-300 border-amber-300 dark:border-amber-800 py-0.5 px-2 text-[10px]">
+                <Info className="h-2.5 w-2.5 mr-1" />
+                The data displayed is simulated for demonstration purposes
+              </Badge>
+            </div>
             
             <MarketplaceStats totalOffers={sortedOffers.length} availableCount={availableCount} selectedPurpose={selectedPurpose} matchCount={matchCount} searchTerm={searchTerm} />
           </div>
