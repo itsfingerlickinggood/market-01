@@ -66,12 +66,14 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img 
-              src="/20250617_1731_Emerald Energy Logo_remix_01jxyw3d72eeevxq4cdty9ypg1 (1) (1).png" 
-              alt="Market01 Logo" 
-              className="w-14 h-14 object-contain"
-            />
-            <span className="text-foreground font-semibold text-xl ml-1">market01</span>
+            <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-md bg-black">
+              <img 
+                src="/20250617_1731_Emerald Energy Logo_remix_01jxyw3d72eeevxq4cdty9ypg1 (1) (1).png" 
+                alt="Market01 Logo" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-foreground font-semibold text-xl ml-2">market01</span>
           </Link>
 
           {/* Desktop Navigation */}
