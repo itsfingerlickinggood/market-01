@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, X, Zap, ChevronDown, Users } from "lucide-react";
+import { Menu, X, ChevronDown, Users } from "lucide-react";
 import SmartNotifications from "@/components/SmartNotifications";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -67,9 +66,11 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <Zap className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <img 
+              src="/20250617_1716_Dynamic_App_Logo_remix_01jxyvafnqemrs7d2xrdxe729x-removebg-preview.png" 
+              alt="Market01 Logo" 
+              className="w-10 h-10"
+            />
             <span className="my-[15px] py-0 text-foreground font-semibold mx-[6px] tracking-normal px-px text-xl">market01</span>
           </Link>
 
