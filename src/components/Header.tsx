@@ -67,9 +67,9 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <img 
-              src="/20250617_1716_Dynamic_App_Logo_remix_01jxyvafnqemrs7d2xrdxe729x-removebg-preview.png" 
+              src="/20250617_1731_Emerald Energy Logo_remix_01jxyw3d72eeevxq4cdty9ypg1 (1) (1).png" 
               alt="Market01 Logo" 
-              className="w-8 h-8 object-contain"
+              className="w-10 h-10 object-contain"
             />
             <span className="my-[15px] py-0 text-foreground font-semibold mx-[6px] tracking-normal px-px text-xl">market01</span>
           </Link>
