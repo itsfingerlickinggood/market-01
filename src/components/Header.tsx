@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -68,12 +69,12 @@ const Header = () => {
           <Link to="/" className="flex items-center">
             <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-md">
               <img 
-                src="/20250617_1731_Emerald Energy Logo_remix_01jxyw3d72eeevxq4cdty9ypg1 (1) (1).png" 
+                src="/lovable-uploads/e31db23c-006e-4ebe-ac39-e2dcce526c71.png" 
                 alt="Market01 Logo" 
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="text-foreground font-semibold text-xl ml-2">market01</span>
+            <span className="text-foreground font-semibold text-xl ml-2 tracking-normal">market01</span>
           </Link>
 
           {/* Desktop Navigation */}
