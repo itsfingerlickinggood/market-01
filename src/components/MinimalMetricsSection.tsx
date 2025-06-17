@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { LineChart, Line, ResponsiveContainer } from "recharts";
 
@@ -24,43 +25,45 @@ const MinimalMetricsSection = () => {
   ];
 
   return (
-    <div className="py-20 bg-black">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {metrics.map((metric, index) => (
-          <Card key={index} className="border-border/40 bg-black text-white">
-            <CardContent className="p-8">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-400 font-medium">
-                    {metric.label}
-                  </span>
-                  <span className="text-sm text-primary font-medium">
-                    {metric.change}
-                  </span>
+    <div className="py-20 bg-muted/30">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {metrics.map((metric, index) => (
+            <Card key={index} className="border-border bg-card hover:bg-accent/50 transition-colors duration-200">
+              <CardContent className="p-8">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground font-medium">
+                      {metric.label}
+                    </span>
+                    <span className="text-sm text-primary font-medium">
+                      {metric.change}
+                    </span>
+                  </div>
+                  
+                  <div className="text-3xl font-bold text-foreground">
+                    {metric.value}
+                  </div>
+                  
+                  <div className="h-16 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={metric.data}>
+                        <Line 
+                          type="monotone" 
+                          dataKey="value" 
+                          stroke="hsl(var(--primary))" 
+                          strokeWidth={2}
+                          dot={false}
+                          strokeOpacity={0.8}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-                
-                <div className="text-3xl font-bold text-white">
-                  {metric.value}
-                </div>
-                
-                <div className="h-16 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={metric.data}>
-                      <Line 
-                        type="monotone" 
-                        dataKey="value" 
-                        stroke="hsl(var(--primary))" 
-                        strokeWidth={2}
-                        dot={false}
-                        strokeOpacity={0.8}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );
