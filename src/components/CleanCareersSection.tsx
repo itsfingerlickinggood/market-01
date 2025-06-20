@@ -23,17 +23,6 @@ const CleanCareersSection = () => {
               </button>
             </div>
           </div>
-          
-          {/* Right image */}
-          <div className="relative">
-            <div className="aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-primary/20 via-accent/10 to-background">
-              <img 
-                src="/lovable-uploads/fde9a1bc-d335-4962-8f7f-7dae4b04bcbc.png"
-                alt="Join our team"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
         </div>
       </div>
     </div>
