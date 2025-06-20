@@ -10,10 +10,10 @@ const MinimalMetricsSection = () => {
   ];
 
   return (
-    <div className="py-16 border-t border-border/20">
+    <div className="py-12 border-t border-border/20">
       <div className="container mx-auto px-4">
         {/* Live pricing ticker */}
-        <div className="bg-card/30 backdrop-blur-sm border border-border/40 rounded-lg p-4 mb-8">
+        <div className="bg-card/30 backdrop-blur-sm border border-border/40 rounded-lg p-4 mb-6">
           <div className="flex items-center justify-between overflow-x-auto">
             {metrics.map((metric, index) => {
               const Icon = metric.icon;
@@ -36,7 +36,7 @@ const MinimalMetricsSection = () => {
         
         {/* Trust indicators */}
         <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-muted-foreground mb-3">
             Proud to be backed by leading builders and investors.
           </p>
           <div className="flex justify-center items-center space-x-8 opacity-60">

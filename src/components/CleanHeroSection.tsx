@@ -1,16 +1,19 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+
 const CleanHeroSection = () => {
-  return <div className="relative min-h-[80vh] flex items-center">
+  return (
+    <div className="relative min-h-[75vh] flex items-center">
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/10"></div>
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl">
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Main heading with gradient text */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h1 className="text-5xl md:text-7xl font-light tracking-tight leading-tight">
                 Find Compute. Train models.
                 <br />
@@ -26,7 +29,7 @@ const CleanHeroSection = () => {
             </div>
             
             {/* CTA Button */}
-            <div className="pt-4">
+            <div className="pt-2">
               <Link to="/marketplace">
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-lg font-medium">
                   GET STARTED
@@ -37,6 +40,8 @@ const CleanHeroSection = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default CleanHeroSection;

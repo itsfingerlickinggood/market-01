@@ -1,11 +1,11 @@
 
 const CleanCareersSection = () => {
   return (
-    <div className="py-24 bg-card/30">
+    <div className="py-16 bg-card/30">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left content */}
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div className="text-sm text-muted-foreground font-mono uppercase tracking-wider">
               CAREERS
             </div>
@@ -16,7 +16,7 @@ const CleanCareersSection = () => {
               We are seeking the most ambitious developers to join our team. 
               Please send us examples of your exceptional work.
             </p>
-            <div className="pt-4">
+            <div className="pt-2">
               <button className="bg-transparent border border-border text-foreground px-6 py-3 rounded-md hover:bg-muted transition-colors font-medium">
                 CAREERS
                 <span className="ml-2">→</span>

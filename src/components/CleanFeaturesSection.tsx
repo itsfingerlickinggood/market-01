@@ -42,10 +42,10 @@ const CleanFeaturesSection = () => {
   ];
 
   return (
-    <div className="py-24">
+    <div className="py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center space-y-4 mb-16">
+          <div className="text-center space-y-3 mb-12">
             <h2 className="text-4xl md:text-5xl font-light text-foreground">
               Built for speed and scale
             </h2>
@@ -54,17 +54,17 @@ const CleanFeaturesSection = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
                 <div key={index} className="group">
-                  <div className="border border-border/20 rounded-lg p-6 h-full hover:border-primary/30 transition-all duration-300 bg-card/20 backdrop-blur-sm">
-                    <div className="flex items-start space-x-4">
+                  <div className="border border-border/20 rounded-lg p-5 h-full hover:border-primary/30 transition-all duration-300 bg-card/20 backdrop-blur-sm">
+                    <div className="flex items-start space-x-3">
                       <div className="text-primary/60 text-sm font-mono min-w-[24px]">
                         {feature.number}
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         <div className="flex items-center space-x-3">
                           <Icon className="h-5 w-5 text-primary" />
                           <h3 className="text-lg font-medium text-foreground">
