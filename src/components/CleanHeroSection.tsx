@@ -1,28 +1,48 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const CleanHeroSection = () => {
   return (
-    <div className="text-center space-y-8 py-20">
-      <div className="space-y-6">
-        <h1 className="text-6xl tracking-tight leading-tight md:text-7xl font-bold text-center">
-          Find GPUs in minutes,
-          <br />
-          <span className="text-primary">Scale to millions</span>
-        </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed text-lg font-normal">
-          Compare real-time pricing across cloud providers and deploy high-performance GPUs instantly.
-        </p>
-      </div>
+    <div className="relative min-h-[80vh] flex items-center">
+      {/* Background gradient effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/10"></div>
       
-      <div className="pt-8">
-        <Link to="/marketplace">
-          <Button size="lg" className="rounded-lg text-white font-normal text-lg py-6 px-8">
-            Start exploring
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
-        </Link>
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-4xl">
+          <div className="space-y-8">
+            {/* Main heading with gradient text */}
+            <div className="space-y-4">
+              <h1 className="text-5xl md:text-7xl font-light tracking-tight leading-tight">
+                Find Compute. Train models.
+                <br />
+                <span className="bg-gradient-to-r from-primary via-green-400 to-primary bg-clip-text text-transparent font-normal">
+                  Scale Intelligence.
+                </span>
+              </h1>
+            </div>
+            
+            {/* Description */}
+            <div className="max-w-2xl">
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-light">
+                Market01 democratizes AI development at scale. Our platform makes it easy to find global 
+                compute resources and train state-of-the-art models through distributed training across 
+                clusters. Collectively own the resulting innovations.
+              </p>
+            </div>
+            
+            {/* CTA Button */}
+            <div className="pt-4">
+              <Link to="/marketplace">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg rounded-lg font-medium">
+                  GET STARTED
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

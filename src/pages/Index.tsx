@@ -11,12 +11,10 @@ const Index = () => {
       <Header />
       
       <main className="pt-16">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <CleanHeroSection />
-          <MinimalMetricsSection />
-          <CleanFeaturesSection />
-          <CleanCTASection />
-        </div>
+        <CleanHeroSection />
+        <MinimalMetricsSection />
+        <CleanFeaturesSection />
+        <CleanCTASection />
       </main>
     </div>
   );
