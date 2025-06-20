@@ -4,6 +4,7 @@ import CleanHeroSection from "@/components/CleanHeroSection";
 import MinimalMetricsSection from "@/components/MinimalMetricsSection";
 import CleanFeaturesSection from "@/components/CleanFeaturesSection";
 import CleanCTASection from "@/components/CleanCTASection";
+import CleanCareersSection from "@/components/CleanCareersSection";
 
 const Index = () => {
   return (
@@ -15,6 +16,7 @@ const Index = () => {
         <MinimalMetricsSection />
         <CleanFeaturesSection />
         <CleanCTASection />
+        <CleanCareersSection />
       </main>
     </div>
   );
