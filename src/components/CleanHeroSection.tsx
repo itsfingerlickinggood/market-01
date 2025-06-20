@@ -1,11 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
 const CleanHeroSection = () => {
-  return (
-    <div className="relative min-h-[80vh] flex items-center">
+  return <div className="relative min-h-[80vh] flex items-center">
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/10"></div>
       
@@ -25,11 +22,7 @@ const CleanHeroSection = () => {
             
             {/* Description */}
             <div className="max-w-2xl">
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-light">
-                Market01 democratizes AI development at scale. Our platform makes it easy to find global 
-                compute resources and train state-of-the-art models through distributed training across 
-                clusters. Collectively own the resulting innovations.
-              </p>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-light">Market01 makes AI development easy and accessible for everyone. Our platform helps you find computing power from around the world and train advanced models by connecting multiple systems. Everyone shares in the results and benefits together.</p>
             </div>
             
             {/* CTA Button */}
@@ -44,8 +37,6 @@ const CleanHeroSection = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default CleanHeroSection;
