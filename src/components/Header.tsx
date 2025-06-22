@@ -58,14 +58,14 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <div className="w-12 h-12 flex items-center justify-center overflow-hidden rounded-md">
+            <div className="w-10 h-10 flex items-center justify-center overflow-hidden rounded-lg">
               <img 
                 src="/lovable-uploads/e31db23c-006e-4ebe-ac39-e2dcce526c71.png" 
                 alt="Market01 Logo" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
-            <span className="text-foreground font-semibold text-xl ml-3 tracking-normal">market01</span>
+            <span className="text-foreground font-semibold text-xl ml-2 tracking-tight">market01</span>
           </Link>
 
           {/* Desktop Navigation */}
